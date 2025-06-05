@@ -8,6 +8,7 @@ import {
 
 type initialType = {
 	isLoading: boolean;
+	loadingUser: boolean;
 	message: string;
 	isSuccess: boolean;
 	student: any | null;
@@ -15,6 +16,7 @@ type initialType = {
 
 const initialState: initialType = {
 	isLoading: false,
+	loadingUser: false,
 	message: "",
 	isSuccess: false,
 	student: null,
@@ -100,18 +102,26 @@ export const StudentSlice = createSlice({
 	extraReducers: (builders) => {
 		builders
 			.addCase(getCurrentUser.pending, (state) => {
-				state.isLoading = true;
+				state.loadingUser = true;
 			})
 			.addCase(getCurrentUser.fulfilled, (state, action) => {
-				state.isLoading = false;
+				state.loadingUser = false;
 				state.isSuccess = true;
-				console.log(action.payload);
 				state.student = action.payload;
 			})
 			.addCase(getCurrentUser.rejected, (state) => {
-				state.isLoading = false;
+				state.loadingUser = false;
 				state.isSuccess = false;
 				state.student = null;
+			})
+			.addCase(UpdateUser.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(UpdateUser.fulfilled, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(UpdateUser.rejected, (state) => {
+				state.isLoading = false;
 			});
 	},
 });

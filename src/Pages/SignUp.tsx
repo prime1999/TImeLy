@@ -5,7 +5,7 @@ import registerImg from "../assets/images/getStarted.jpg";
 
 const page = () => {
 	return (
-		<main className="w-[100vw] h-[100vh] flex items-center justify-between">
+		<main className="w-[100vw] h-screen flex items-center justify-between overflow-hidden">
 			<div className="w-full h-full flex items-center justify-center lg:w-1/2">
 				<div className="w-10/12 mx-auto flex flex-col lg:w-9/12 xl:w-7/12">
 					<Logo />
@@ -32,7 +32,7 @@ const page = () => {
 					</p>
 				</div>
 			</div>
-			<div className="hidden w-1/2 h-[100vh] lg:block">
+			<div className="hidden w-1/2 h-full lg:block">
 				<img
 					src={registerImg}
 					alt="student-image"

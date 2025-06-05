@@ -10,14 +10,18 @@ import RootLayout from "./Layouts/RootLayout";
 import SignUp from "./Pages/SignUp";
 import SignIn from "./Pages/SignIn";
 import Register from "./Pages/Register";
+import HomePage from "./Pages/HomePage";
+import Dashboard from "./Pages/Dashboard";
 function App() {
 	const router = createBrowserRouter(
 		createRoutesFromElements(
 			<>
 				<Route path="/" element={<RootLayout />}>
-					<Route index={true} path="/" element={<SignUp />} />
+					<Route index={true} path="/" element={<HomePage />} />
+					<Route path="/register" element={<SignUp />} />
 					<Route path="/signIn" element={<SignIn />} />
-					<Route path="/students/:userId/register" element={<Register />} />
+					<Route path="/register/student/:userId" element={<Register />} />
+					<Route path="/dashboard" element={<Dashboard />} />
 					{/* <Route path="/order" element={<PrivateUserRoutes />}>
 						<Route path="/order" element={<OrderPage />} />
 					</Route> */}

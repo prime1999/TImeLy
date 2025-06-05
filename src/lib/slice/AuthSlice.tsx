@@ -42,15 +42,19 @@ export const createUser = createAsyncThunk(
 			console.log(studentRes);
 			// if positive res was gotten, then
 			if (studentRes.$id) {
-				const student = {
-					id: studentRes.$id,
-					email: studentRes.email,
-					MatricNumber: studentRes.MatricNumber,
-				};
+				// const student = {
+				// 	id: studentRes.$id,
+				// 	email: studentRes.email,
+				// 	MatricNumber: studentRes.MatricNumber,
+				// };
+				console.log({
+					isAuthenticated: true,
+					student: { ...studentRes },
+				});
 				// return the response after formatting the the response
 				return {
 					isAuthenticated: true,
-					student,
+					student: { ...studentRes },
 				};
 			}
 			// else return a false response

@@ -50,7 +50,7 @@ const CreateUserForm = () => {
 			console.log("check");
 			const newUser = (await dispatch(createUser(user))) as any;
 			if (newUser.payload.student) {
-				navigate(`students/${newUser?.payload?.student?.id as any}/register`);
+				navigate(`/register/student/${newUser?.payload?.student?.$id as any}`);
 			}
 			// show error message from the server
 			toast.error(newUser.payload.message, {

@@ -1,8 +1,6 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { usePathname, useRouter } from "next/navigation";
+import { useNavigate, useLocation } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -28,8 +26,10 @@ const GenderOptions = ["Male", "Female"];
 //Later add the full list of universities when the app goes pass UI alone
 
 const StudentForm = () => {
-	const router = useRouter();
+	const location = useLocation();
 	const dispatch = useDispatch<AppDispatch>();
+	const navigate = useNavigate();
+
 	const [pathId, setPathId] = useState<string>("");
 	const [faculties, setFaculties] = useState<any>(facultyNames);
 	const [departments, setdepartments] = useState<any>(null);
@@ -53,8 +53,7 @@ const StudentForm = () => {
 	});
 
 	// to get the student doculment ID from the url
-	const pathname = usePathname();
-	const paths = pathname.split("/");
+	const paths = location.pathname.split("/");
 
 	useEffect(() => {
 		if (student && student.email) {
@@ -62,15 +61,17 @@ const StudentForm = () => {
 				email: student.email,
 			});
 			// save the pathname to the state
-			setPathId(paths[2]);
+			setPathId(paths[3]);
 		}
 	}, [student]);
 
+	// function to handle the faculty selection to get the right departments
 	const handleSelect = (value: string) => {
 		const departments = departmentsByFaculty[value];
 		setdepartments(departments);
 	};
 
+	// function to submit the form
 	const onSubmitForm = async (values: z.infer<typeof StudenFormSchema>) => {
 		const DataToUpdate = {
 			docId: pathId,
@@ -87,7 +88,7 @@ const StudentForm = () => {
 		console.log(resData);
 		// if the process is successful then redirect to the dashboard page
 		if (resData) {
-			router.push(`/dashboard`);
+			navigate(`/dashboard`);
 		}
 	};
 	return (
@@ -189,8 +190,12 @@ const StudentForm = () => {
 											defaultValue={field.value}
 										>
 											{GenderOptions.map((option, i) => (
-												<div key={option + i}>
-													<RadioGroupItem value={option} id={option} />
+												<div key={i}>
+													<RadioGroupItem
+														onClick={() => console.log(option)}
+														value={option}
+														id={option}
+													/>
 													<Label htmlFor={option} className="cursor-pointer">
 														{option}
 													</Label>

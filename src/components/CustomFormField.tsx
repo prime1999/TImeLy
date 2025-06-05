@@ -89,7 +89,7 @@ const RenderInput = ({ props, field }: { props: CustomProps; field: any }) => {
 						withCountryCallingCode
 						value={field.value as E164Number | undefined}
 						onChange={field.onChange}
-						className="mt-2 h-10 rounded-md bg-[#151515] px-3 text-sm border bg-dark-400 placeholder:text-dark-600 border-dark-500 focus:border-green-400 focus:ring-green-400 focus:shadow-green-400 focus:shadow-md"
+						className="mt-2 h-10 rounded-md px-3 text-sm border placeholder:text-dark-600 border-dark-500 focus:border-green-400 focus:ring-green-400 focus:shadow-green-400 focus:shadow-md dark:bg-[#151515] dark:text-white"
 					/>
 				</FormControl>
 			);
@@ -97,8 +97,8 @@ const RenderInput = ({ props, field }: { props: CustomProps; field: any }) => {
 			return (
 				<Select
 					onValueChange={(value) => {
-						field.onChange(value); // ✅ Updates form state
-						props.handleSelect?.(value); // ✅ Optional custom side effect
+						field.onChange(value); // Updates form state
+						props.handleSelect?.(value); // Optional custom side effect
 					}}
 				>
 					<SelectTrigger className={`w-full ${props.className}`}>
