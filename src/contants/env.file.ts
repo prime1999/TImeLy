@@ -12,6 +12,7 @@ const COURSES_ID = import.meta.env.VITE_COURSES_ID as string;
 const COURSE_UPDATE_REQUEST_ID = import.meta.env
 	.VITE_COURSE_UPDATE_REQUEST_ID as string;
 const NOTIFICATION_ID = import.meta.env.VITE_NOTIFICATION_ID as string;
+const USER_REALTION_ID = import.meta.env.VITE_USER_RELATION_ID as string;
 
 export {
 	ENDPOINT,
@@ -26,4 +27,5 @@ export {
 	COURSES_ID,
 	COURSE_UPDATE_REQUEST_ID,
 	NOTIFICATION_ID,
+	USER_REALTION_ID,
 };

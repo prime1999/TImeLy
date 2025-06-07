@@ -113,7 +113,7 @@
 
 @layer base {
 	* {
-		@apply border-border outline-ring/50 m-0 p-0 overflow-clip;
+		@apply border-border outline-ring/50 m-0 p-0;
 	}
 	body {
 		@apply bg-background text-foreground p-0 m-0 box-border h-screen;

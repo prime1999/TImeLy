@@ -20,7 +20,6 @@ export const registerCourse = createAsyncThunk(
 	"course/registerCourse",
 	async (dataSent: any, thunkAPI: any) => {
 		try {
-			console.log(dataSent);
 			const response = await addCourse(dataSent);
 			if (response) {
 				console.log(response);
@@ -38,11 +37,7 @@ export const submitUpdateRequest = createAsyncThunk(
 	async (data: any, thunkAPI: any) => {
 		try {
 			console.log(data);
-			const res = await submitCourseUpdateRequest(
-				data.userId,
-				data.updateData,
-				data.courseId
-			);
+			const res = await submitCourseUpdateRequest(data);
 			console.log(res);
 		} catch (error) {
 			console.log(error);

@@ -5,8 +5,12 @@ import {
 	COURSES_ID,
 	USER_COURSE_ID,
 	COURSE_UPDATE_REQUEST_ID,
+	NOTIFICATION_ID,
+	USER_REALTION_ID,
+	STUDENTID,
 } from "@/contants/env.file";
 import { normalizeString } from "../utils/helperFunctions/helper";
+import { checkCurrentSession } from "./Student.actions";
 
 const databases = new Databases(client);
 
@@ -22,11 +26,13 @@ export const addCourse = async (courseData: any) => {
 			lecturer: courseData.lecturer,
 			schedule: JSON.stringify(courseData.schedule),
 		};
+
 		// check if the course already exist in the database
 		const checkCourse = await databases.listDocuments(DBID, COURSES_ID, [
 			Query.equal("CourseTitle", course.CourseTitle),
 			Query.equal("CourseCode", course.CourseCode),
 		]);
+
 		// if it does
 		if (checkCourse.total > 0) {
 			// check if the user already registered for the course
@@ -39,7 +45,7 @@ export const addCourse = async (courseData: any) => {
 				]
 			);
 			// if the user hasn't registered for the course,
-			if (checkUserCourse.total < 0) {
+			if (checkUserCourse.total < 1) {
 				// then register the user
 				await databases.createDocument(DBID, USER_COURSE_ID, ID.unique(), {
 					userId: courseData.userId,
@@ -154,29 +160,100 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 };
 
 // function to update a course
-export const submitCourseUpdateRequest = async (
-	userId: string,
-	courseId: string,
-	updateData: any
-) => {
+export const submitCourseUpdateRequest = async (data: any) => {
 	try {
+		// Get the current user
+		const user = await checkCurrentSession();
+		// If somehow the user is not authenticated, then
+		if (!user || !user.$id) return "User not Authorized";
+		// if the user authenticated
+		const userId = user.$id;
 		// submit the request
 		const req = await databases.createDocument(
 			DBID,
 			COURSE_UPDATE_REQUEST_ID,
 			ID.unique(),
 			{
-				proposedChange: JSON.stringify(updateData),
-				courses: courseId,
+				proposedChange: JSON.stringify(data.updateData),
+				courses: data.courseId,
 				student: userId,
-				createdAt: Date.now(),
+				createdAt: new Date().toISOString(),
 			}
 		);
-		if (req && req.$id)
-			return { submitted: true, description: "Request submitted to admin" };
+		// if the course update request was created
+		if (req && req.$id) {
+			console.log(3);
+			const course = await databases.getDocument(
+				DBID,
+				COURSES_ID,
+				data.courseId
+			);
+			// if the course exists
+			if (course) {
+				// create the actions array
+				let actions = [
+					{
+						label: "approve key",
+						function: "approveUpdate()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
+					{
+						label: "decline key",
+						function: "declineUpdate()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
+					{
+						label: "show details",
+						function: "showDetails()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
+				];
+				// create the notification data to be sent
+				const notificationData = {
+					title: "Request to update course details",
+					message: `There is a request to correct ${course.courseTitle} course info, Please do review.`,
+					type: "request",
+					actions: JSON.stringify(actions),
+					isRead: false,
+					createdAt: new Date().toISOString(),
+					student: [userId],
+				};
+				// create a notification on the course update request
+				const notification = await databases.createDocument(
+					DBID,
+					NOTIFICATION_ID,
+					ID.unique(),
+					notificationData
+				);
+				// if the cotification was created
+				if (notification) {
+					// get the current user's info
+					const user = await databases.getDocument(DBID, STUDENTID, userId);
+					// get the list of admins
+					const admins = await databases.listDocuments(DBID, STUDENTID, [
+						Query.equal("school", user.school),
+						Query.equal("faculty", user.faculty),
+						Query.equal("department", user.department),
+						Query.equal("level", user.level),
+						Query.equal("admin", true),
+					]);
+					// send the notification to each admin
+					const msgs = admins.documents.map(async (user) => {
+						// create the document for tieing the user to the notification
+						await databases.createDocument(
+							DBID,
+							USER_REALTION_ID,
+							ID.unique(),
+							{ userId: user.$id, notifications: notification.$id }
+						);
+					});
+					return { submitted: true, description: "Request submitted to admin" };
+				}
+			}
+		}
 		return { submitted: false, description: "Request not sumitted, try again" };
-	} catch (error) {
-		console.log(error);
-		return error;
+	} catch (error: any) {
+		console.log(error.message);
+		return { submitted: false, description: "Request not sumitted, try again" };
 	}
 };

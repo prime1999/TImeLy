@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 import { BsPersonCircle } from "react-icons/bs";
-import { AppDispatch } from "@/lib/store";
-import { getCurrentUser } from "@/lib/slice/StudentSlice";
 import Logo from "./Logo";
 import ThemeToggler from "./ThemeToggler";
 import {
@@ -19,13 +15,12 @@ import { BiLogOutCircle } from "react-icons/bi";
 import { checkCurrentSession } from "@/lib/actions/Student.actions";
 
 const Navbar = () => {
-	const dispatch = useDispatch<AppDispatch>();
-	const router = useRouter();
-	const { isLoading, student } = useSelector((state: any) => state.student);
+	const location = useLocation();
 
-	const pathname = usePathname();
+	const navigate = useNavigate();
 	// get the pathname from the current url
-	const paths = pathname.split("/");
+	const paths = location.pathname.split("/");
+
 	useEffect(() => {
 		const handleLoad = async () => {
 			try {
@@ -34,7 +29,7 @@ const Navbar = () => {
 				// if not then redirect back to the register page
 				console.log(student);
 				if (!student) {
-					router.push("/logIn");
+					navigate("/logIn");
 				}
 			} catch (error) {
 				console.error("Failed to load user:", error);
@@ -56,25 +51,22 @@ const Navbar = () => {
 				<div>
 					<ul className="flex items-center gap-8 text-md font-inter font-normal">
 						<li>
-							<Link href="/" className="duration-700 hover:text-green-400">
+							<Link to="/" className="duration-700 hover:text-green-400">
 								Classes
 							</Link>
 						</li>
 						<li>
-							<Link href="/" className="duration-700 hover:text-green-400">
+							<Link to="/" className="duration-700 hover:text-green-400">
 								Exams
 							</Link>
 						</li>
 						<li>
-							<Link href="/" className="duration-700 hover:text-green-400">
+							<Link to="/" className="duration-700 hover:text-green-400">
 								Notes
 							</Link>
 						</li>
 						<li>
-							<Link
-								href={`/students/${paths[2]}/courses`}
-								className="duration-700 hover:text-green-400"
-							>
+							<Link to="/courses" className="duration-700 hover:text-green-400">
 								Courses
 							</Link>
 						</li>
@@ -91,7 +83,7 @@ const Navbar = () => {
 								<ul className="font-inter text-sm">
 									<li className="group mb-4">
 										<Link
-											href="/"
+											to="/"
 											className="flex items-center gap-2 duration-700 group-hover:gap-4 group-hover:text-green-400"
 										>
 											<BsPersonCircle className="text-green-400 text-xl w-12 cursor-pointer" />

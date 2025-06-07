@@ -24,8 +24,7 @@ const HomeSlider = () => {
 		startPlay: false,
 		stopPlay: false,
 	});
-	const { isPlaying, startPlay, isLastSlider, sliderId, isEnd, stopPlay } =
-		sliderAnimation;
+	const { isPlaying, startPlay, sliderId, isEnd, stopPlay } = sliderAnimation;
 	useGSAP(() => {
 		// slider animation to move the slide out of the screen and bring the next slide in
 		gsap.to("#slider", {

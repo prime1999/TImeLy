@@ -1,7 +1,4 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { TimeTable } from "@/contants/Timetable";
@@ -13,18 +10,11 @@ const FacultyTable = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const [table, setTable] = useState<any>([]);
 
-	const pathname = usePathname();
-	// get the pathname from the current url
-	const paths = pathname.split("/");
-
 	useEffect(() => {
 		const getTableData = async () => {
 			try {
-				const userId = paths[2];
-				console.log("table");
 				// call the dispatch function to get the faculty time-table details form the DB
 				const res: any = await dispatch(getFacultyTable()).unwrap();
-				console.log(paths[2]);
 				// get the stringified table form the DB and parse it to an array
 				const table = JSON.parse(JSON.parse(res.documents[0].table));
 				// set the table data

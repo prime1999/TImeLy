@@ -1,8 +1,7 @@
-"use client";
-
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { usePathname } from "next/navigation";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import {
@@ -11,7 +10,7 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -20,11 +19,11 @@ import CustomFormField, { FormFieldType } from "../CustomFormField";
 import { courseSchema } from "@/lib/Validation";
 import { MdNumbers, MdTextFields, MdOutlineLocationOn } from "react-icons/md";
 import DayAndTime from "../DayAndTime";
-import { useEffect, useState } from "react";
 import SubmitButton from "@/lib/utils/SubmitButton";
 import { registerCourse, submitUpdateRequest } from "@/lib/slice/CourseSlice";
 import { formatScheduleTime } from "@/lib/utils/helperFunctions/TimeFormater";
 import Loader from "@/lib/utils/Loader";
+import { checkCurrentSession } from "@/lib/actions/Student.actions";
 
 const days = [
 	{ name: "Monday", value: "monday" },
@@ -36,9 +35,9 @@ const days = [
 
 const AddCourse = () => {
 	const dispatch = useDispatch<AppDispatch>();
-	const pathname = usePathname();
+	const location = useLocation();
 	// get the pathname from the current url
-	const paths = pathname.split("/");
+	const paths = location.pathname.split("/");
 	const [startDate, setStartDate] = useState<any>(new Date());
 	const [endDate, setEndDate] = useState<any>(new Date());
 	const [day, setDay] = useState<string>("");
@@ -95,9 +94,10 @@ const AddCourse = () => {
 	// function to submit the add course form
 	const onSubmit = async (values: z.infer<any>) => {
 		try {
+			const student = await checkCurrentSession();
 			// put the data to send together
 			const data = {
-				userId: paths[2],
+				userId: student?.$id,
 				courseCode: values.courseCode,
 				courseTitle: values.courseTitle,
 				unit: values.courseUnit,
@@ -111,6 +111,7 @@ const AddCourse = () => {
 			if (res && res.exist) {
 				// if it existrs and does not correspons,
 				// open the submit request modal
+				console.log(res);
 				setOpen(true);
 			}
 		} catch (error) {
@@ -126,11 +127,12 @@ const AddCourse = () => {
 				// TODO
 				// update directly
 			} else {
+				console.log(data);
 				const updateData = {
 					updateData: data.data,
 					courseId: data.courseId,
-					userId: paths[2],
 				};
+				console.log;
 				// dispatch the function to submit the course request
 				const updateRes = await dispatch(submitUpdateRequest(updateData));
 				// check if the request was submitted
