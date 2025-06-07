@@ -238,7 +238,7 @@ export const submitCourseUpdateRequest = async (data: any) => {
 						Query.equal("admin", true),
 					]);
 					// send the notification to each admin
-					const msgs = admins.documents.map(async (user) => {
+					admins.documents.map(async (user) => {
 						// create the document for tieing the user to the notification
 						await databases.createDocument(
 							DBID,

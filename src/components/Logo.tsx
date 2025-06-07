@@ -1,11 +1,11 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 const Logo = () => {
 	return (
 		<main className="font-sans text-3xl font-bold">
-			<h1>
-				TIME<span className="text-green-400 -ml-3">LY</span>
-			</h1>
+			<Link to="/">
+				TIME<span className="text-green-400 -ml-4">LY</span>
+			</Link>
 		</main>
 	);
 };

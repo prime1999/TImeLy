@@ -149,81 +149,87 @@ const AddCourse = () => {
 	};
 	return (
 		<main>
-			<h4 className="mt-8 font-inter">
-				Check, Add, update and remove your courses here for better App
-				experience.
-			</h4>
 			<div className="mt-8">
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className="flex flex-start flex-wrap gap-4 space-y-6 w-full mx-auto"
+						className="space-y-6 w-full mx-auto"
 					>
-						<CustomFormField
-							fieldType={FormFieldType.input}
-							control={form.control}
-							name="courseTitle"
-							label="Course Title"
-							placeholder="Title of the course"
-							type="text"
-							iconSrc={<MdTextFields />}
-							className="w-[400px]"
-						/>
-						<CustomFormField
-							fieldType={FormFieldType.input}
-							control={form.control}
-							name="courseCode"
-							label="Course-Code"
-							placeholder="course code"
-							type="text"
-							iconSrc={<MdTextFields />}
-						/>
-						<CustomFormField
-							fieldType={FormFieldType.input}
-							control={form.control}
-							name="courseUnit"
-							label="Course-Unit"
-							placeholder="course unit"
-							type="number"
-							inputMode="numeric"
-							iconSrc={<MdNumbers />}
-						/>
-						<CustomFormField
-							fieldType={FormFieldType.input}
-							control={form.control}
-							name="lecturer"
-							label="Lecturer"
-							placeholder="lecturer"
-							type="text"
-							iconSrc={<MdTextFields />}
-							className="w-[300px]"
-						/>
-						<CustomFormField
-							fieldType={FormFieldType.input}
-							control={form.control}
-							name="venue"
-							label="Venue"
-							placeholder="venue"
-							type="text"
-							iconSrc={<MdOutlineLocationOn />}
-						/>
-						<DayAndTime
-							startDate={startDate}
-							endDate={endDate}
-							day={day}
-							setStartDate={setStartDate}
-							setEndDate={setEndDate}
-							setDay={setDay}
-							handleSelect={handleSelect}
-							form={form}
-							array={days}
-							handleSetDate={handleSetDate}
-							schedule={schedule}
-							removeSchedule={removeSchedule}
-						/>
+						<div className="">
+							<div className="col-span-2 mb-4 lg:mb-0">
+								<CustomFormField
+									fieldType={FormFieldType.input}
+									control={form.control}
+									name="courseTitle"
+									label="Course Title"
+									placeholder="Title of the course"
+									type="text"
+									iconSrc={<MdTextFields />}
+									className="w-full"
+								/>
+							</div>
+							<div className="my-4 mg:my-0">
+								<CustomFormField
+									fieldType={FormFieldType.input}
+									control={form.control}
+									name="courseCode"
+									label="Course-Code"
+									placeholder="course code"
+									type="text"
+									iconSrc={<MdTextFields />}
+								/>
+							</div>
+							<CustomFormField
+								fieldType={FormFieldType.input}
+								control={form.control}
+								name="courseUnit"
+								label="Course-Unit"
+								placeholder="course unit"
+								type="number"
+								inputMode="numeric"
+								iconSrc={<MdNumbers />}
+							/>
+							<div className="mt-4">
+								<CustomFormField
+									fieldType={FormFieldType.input}
+									control={form.control}
+									name="lecturer"
+									label="Lecturer"
+									placeholder="lecturer"
+									type="text"
+									iconSrc={<MdTextFields />}
+								/>
+							</div>
+						</div>
+						<div className="flex flex-col gap-4 mt-4">
+							<CustomFormField
+								fieldType={FormFieldType.input}
+								control={form.control}
+								name="venue"
+								label="Venue"
+								placeholder="venue"
+								type="text"
+								iconSrc={<MdOutlineLocationOn />}
+							/>
+							<DayAndTime
+								startDate={startDate}
+								endDate={endDate}
+								day={day}
+								setStartDate={setStartDate}
+								setEndDate={setEndDate}
+								setDay={setDay}
+								handleSelect={handleSelect}
+								form={form}
+								array={days}
+								handleSetDate={handleSetDate}
+								schedule={schedule}
+								removeSchedule={removeSchedule}
+							/>
+						</div>
+
 						<SubmitButton
 							isLoading={isLoading}
-							className="w-1/2 mx-auto flex justify-center mt-4 bg-green-400 text-black rounded-lg font-inter font-bold"
+							className="w-full mx-auto flex justify-center mt-4 bg-green-400 text-black rounded-lg font-inter font-bold"
 						>
 							Add Course
 						</SubmitButton>

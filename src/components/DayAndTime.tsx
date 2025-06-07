@@ -23,7 +23,7 @@ const DayAndTime = ({ ...props }: any) => {
 
 	return (
 		<div>
-			<div className="flex gap-2 items-start">
+			<div className="flex flex-col gap-2 items-start">
 				<CustomFormField
 					fieldType={FormFieldType.select}
 					control={props.form.control}
@@ -34,80 +34,82 @@ const DayAndTime = ({ ...props }: any) => {
 					placeholder="day of lecture"
 					className="w-[300px]"
 				/>
-				{/* ------------------------ for the startTime --------------------------- */}
-				<div className="flex flex-col items-start gap-2">
-					<h4 className="text-sm font-inter font-semibold">Start-time</h4>
-					<div className="flex items-center gap-2">
-						<div className="grid gap-1 text-center">
-							<TimePickerInput
-								picker="hours"
-								date={props.startDate}
-								setDate={props.setStartDate}
-								ref={hourRef}
-								onRightFocus={() => minuteRef.current?.focus()}
-							/>
-						</div>
-						<div className="grid gap-1 text-center">
-							<TimePickerInput
-								picker="minutes"
-								date={props.startDate}
-								setDate={props.setStartDate}
-								ref={minuteRef}
-								onLeftFocus={() => hourRef.current?.focus()}
-								onRightFocus={() => secondRef.current?.focus()}
-							/>
-						</div>
-						<div className="grid gap-1 text-center">
-							<TimePeriodSelect
-								period={period}
-								setPeriod={setPeriod}
-								date={props.startDate}
-								setDate={props.setStartDate}
-								ref={periodRef}
-								onLeftFocus={() => secondRef.current?.focus()}
-							/>
+				<div className="flex flex-col gap-2">
+					{/* ------------------------ for the startTime --------------------------- */}
+					<div className="flex flex-col items-start gap-2">
+						<h4 className="text-sm font-inter font-semibold">Start-time</h4>
+						<div className="flex items-center gap-2">
+							<div className="grid gap-1 text-center">
+								<TimePickerInput
+									picker="hours"
+									date={props.startDate}
+									setDate={props.setStartDate}
+									ref={hourRef}
+									onRightFocus={() => minuteRef.current?.focus()}
+								/>
+							</div>
+							<div className="grid gap-1 text-center">
+								<TimePickerInput
+									picker="minutes"
+									date={props.startDate}
+									setDate={props.setStartDate}
+									ref={minuteRef}
+									onLeftFocus={() => hourRef.current?.focus()}
+									onRightFocus={() => secondRef.current?.focus()}
+								/>
+							</div>
+							<div className="grid gap-1 text-center">
+								<TimePeriodSelect
+									period={period}
+									setPeriod={setPeriod}
+									date={props.startDate}
+									setDate={props.setStartDate}
+									ref={periodRef}
+									onLeftFocus={() => secondRef.current?.focus()}
+								/>
+							</div>
 						</div>
 					</div>
-				</div>
-				{/* ------------------------ for the endTime --------------------------- */}
-				<div className="flex flex-col items-start gap-2 ml-8">
-					<h4 className="text-sm font-inter font-semibold">End-time</h4>
-					<div className="flex items-center gap-2">
-						<div className="grid gap-2 text-center">
-							<TimePickerInput
-								picker="hours"
-								date={props.endDate}
-								setDate={props.setEndDate}
-								ref={hourRef}
-								onRightFocus={() => minuteRef.current?.focus()}
-							/>
+					{/* ------------------------ for the endTime --------------------------- */}
+					<div className="flex flex-col items-start gap-2">
+						<h4 className="text-sm font-inter font-semibold">End-time</h4>
+						<div className="flex items-center gap-2">
+							<div className="grid gap-2 text-center">
+								<TimePickerInput
+									picker="hours"
+									date={props.endDate}
+									setDate={props.setEndDate}
+									ref={hourRef}
+									onRightFocus={() => minuteRef.current?.focus()}
+								/>
+							</div>
+							<div className="grid gap-1 text-center">
+								<TimePickerInput
+									picker="minutes"
+									date={props.endDate}
+									setDate={props.setEndDate}
+									ref={minuteRef}
+									onLeftFocus={() => hourRef.current?.focus()}
+									onRightFocus={() => secondRef.current?.focus()}
+								/>
+							</div>
+							<div className="grid gap-1 text-center">
+								<TimePeriodSelect
+									period={period}
+									setPeriod={setPeriod}
+									date={props.endDate}
+									setDate={props.setEndDate}
+									ref={periodRef}
+									onLeftFocus={() => secondRef.current?.focus()}
+								/>
+							</div>
+							<button
+								onClick={props.handleSetDate}
+								className="w-full font-inter bg-green-500 rounded-md p-2 px-4 text-black font-semibold duration-700 cursor-pointer hover:bg-green-700"
+							>
+								Set
+							</button>
 						</div>
-						<div className="grid gap-1 text-center">
-							<TimePickerInput
-								picker="minutes"
-								date={props.endDate}
-								setDate={props.setEndDate}
-								ref={minuteRef}
-								onLeftFocus={() => hourRef.current?.focus()}
-								onRightFocus={() => secondRef.current?.focus()}
-							/>
-						</div>
-						<div className="grid gap-1 text-center">
-							<TimePeriodSelect
-								period={period}
-								setPeriod={setPeriod}
-								date={props.endDate}
-								setDate={props.setEndDate}
-								ref={periodRef}
-								onLeftFocus={() => secondRef.current?.focus()}
-							/>
-						</div>
-						<button
-							onClick={props.handleSetDate}
-							className="font-inter bg-green-500 rounded-md p-2 px-4 text-black font-semibold duration-700 cursor-pointer hover:bg-green-700"
-						>
-							Set
-						</button>
 					</div>
 				</div>
 			</div>

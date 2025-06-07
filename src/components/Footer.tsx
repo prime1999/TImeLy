@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
 	return (
@@ -8,7 +8,7 @@ const Footer = () => {
 			<span className="flex items-center gap-2 text-sm">
 				created by{" "}
 				<Link
-					href="https://portfolio-site-lac-six.vercel.app/"
+					to="https://portfolio-site-lac-six.vercel.app/"
 					target="blank"
 					className="font-mono text-green-500 text-lg font-bold duration-700 hover:text-green-700 dark:hover:text-green-600"
 				>
