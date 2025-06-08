@@ -169,14 +169,15 @@ export const submitCourseUpdateRequest = async (data: any) => {
 		// if the user authenticated
 		const userId = user.$id;
 		// submit the request
+
 		const req = await databases.createDocument(
 			DBID,
 			COURSE_UPDATE_REQUEST_ID,
 			ID.unique(),
 			{
 				proposedChange: JSON.stringify(data.updateData),
-				courses: data.courseId,
-				student: userId,
+				courses: [data.courseId],
+				student: [userId],
 				createdAt: new Date().toISOString(),
 			}
 		);
@@ -192,6 +193,11 @@ export const submitCourseUpdateRequest = async (data: any) => {
 			if (course) {
 				// create the actions array
 				let actions = [
+					{
+						label: "approve and merge",
+						function: "MergeUpdate()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
 					{
 						label: "approve key",
 						function: "approveUpdate()",
@@ -211,7 +217,7 @@ export const submitCourseUpdateRequest = async (data: any) => {
 				// create the notification data to be sent
 				const notificationData = {
 					title: "Request to update course details",
-					message: `There is a request to correct ${course.courseTitle} course info, Please do review.`,
+					message: `There is a request to correct course info, Please do review.`,
 					type: "request",
 					actions: JSON.stringify(actions),
 					isRead: false,
@@ -227,9 +233,11 @@ export const submitCourseUpdateRequest = async (data: any) => {
 				);
 				// if the cotification was created
 				if (notification) {
+					console.log(5);
 					// get the current user's info
 					const user = await databases.getDocument(DBID, STUDENTID, userId);
 					// get the list of admins
+					console.log(user);
 					const admins = await databases.listDocuments(DBID, STUDENTID, [
 						Query.equal("school", user.school),
 						Query.equal("faculty", user.faculty),
@@ -237,16 +245,17 @@ export const submitCourseUpdateRequest = async (data: any) => {
 						Query.equal("level", user.level),
 						Query.equal("admin", true),
 					]);
+
 					// send the notification to each admin
-					admins.documents.map(async (user) => {
-						// create the document for tieing the user to the notification
-						await databases.createDocument(
-							DBID,
-							USER_REALTION_ID,
-							ID.unique(),
-							{ userId: user.$id, notifications: notification.$id }
-						);
-					});
+					await Promise.all(
+						admins.documents.map((user) =>
+							databases.createDocument(DBID, USER_REALTION_ID, ID.unique(), {
+								student: [user.$id],
+								notifications: [notification.$id],
+							})
+						)
+					);
+
 					return { submitted: true, description: "Request submitted to admin" };
 				}
 			}

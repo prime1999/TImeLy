@@ -109,7 +109,7 @@ const AddCourse = () => {
 			const res = await dispatch(registerCourse(data)).unwrap();
 			// check if the course info exist and if the user info corresponds
 			if (res && res.exist) {
-				// if it existrs and does not correspons,
+				// if it exists and does not correspond,
 				// open the submit request modal
 				console.log(res);
 				setOpen(true);

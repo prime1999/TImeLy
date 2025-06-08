@@ -18,7 +18,7 @@ const initialState: initialType = {
 // function to reister a course
 export const registerCourse = createAsyncThunk(
 	"course/registerCourse",
-	async (dataSent: any, thunkAPI: any) => {
+	async (dataSent: any) => {
 		try {
 			const response = await addCourse(dataSent);
 			if (response) {
@@ -34,7 +34,7 @@ export const registerCourse = createAsyncThunk(
 // function to submit update request
 export const submitUpdateRequest = createAsyncThunk(
 	"course/requestUpdate",
-	async (data: any, thunkAPI: any) => {
+	async (data: any) => {
 		try {
 			console.log(data);
 			const res = await submitCourseUpdateRequest(data);
