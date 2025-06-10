@@ -169,7 +169,6 @@ export const submitCourseUpdateRequest = async (data: any) => {
 		// if the user authenticated
 		const userId = user.$id;
 		// submit the request
-
 		const req = await databases.createDocument(
 			DBID,
 			COURSE_UPDATE_REQUEST_ID,
@@ -195,7 +194,7 @@ export const submitCourseUpdateRequest = async (data: any) => {
 				let actions = [
 					{
 						label: "approve and merge",
-						function: "MergeUpdate()",
+						function: "mergeUpdate()",
 						payload: { courseId: data.courseId, data: data.updateData },
 					},
 					{
@@ -266,3 +265,6 @@ export const submitCourseUpdateRequest = async (data: any) => {
 		return { submitted: false, description: "Request not sumitted, try again" };
 	}
 };
+
+// function to get the list of the user's courses
+export const getCourses = async () => {};
