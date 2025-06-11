@@ -52,7 +52,4 @@ export const courseSchema = z.object({
 	courseUnit: z.coerce.number({ required_error: "Unit is required" }),
 	lecturer: z.string(),
 	venue: z.string(),
-	days: z.string(),
-	startTime: z.string(),
-	endTime: z.string(),
 });

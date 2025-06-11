@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addCourse, submitCourseUpdateRequest } from "../actions/Course.action";
+import {
+	addCourse,
+	getCoursesFromAppwrite,
+	submitCourseUpdateRequest,
+} from "../actions/Course.action";
 
 type initialType = {
 	isLoading: boolean;
@@ -38,12 +42,23 @@ export const submitUpdateRequest = createAsyncThunk(
 		try {
 			console.log(data);
 			const res = await submitCourseUpdateRequest(data);
-			console.log(res);
+			return res;
 		} catch (error) {
 			console.log(error);
 		}
 	}
 );
+
+// export fundton to handle the get courses function int the redux slice
+export const getCourses = createAsyncThunk("course/getCourse", async () => {
+	try {
+		const courses = await getCoursesFromAppwrite();
+		console.log(courses);
+		return courses;
+	} catch (error) {
+		console.log(error);
+	}
+});
 
 export const CourseSlice = createSlice({
 	name: "course",
@@ -78,6 +93,19 @@ export const CourseSlice = createSlice({
 			})
 			.addCase(submitUpdateRequest.rejected, (state) => {
 				state.isLoading = false;
+				state.isSuccess = false;
+			})
+			.addCase(getCourses.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.data = action.payload;
+			})
+			.addCase(getCourses.rejected, (state) => {
+				state.isLoading = false;
+				state.isSuccess = false;
+			})
+			.addCase(getCourses.pending, (state) => {
+				state.isLoading = true;
 				state.isSuccess = false;
 			});
 	},

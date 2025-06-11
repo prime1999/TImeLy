@@ -49,7 +49,7 @@ const Navbar = () => {
 			<div className="hidden w-11/12 mx-auto p-2 items-center justify-between lg:flex">
 				<Logo />
 				<div>
-					<ul className="flex items-center gap-8 text-md font-inter font-normal">
+					<ul className="flex items-center gap-8 text-md font-inter font-normal text-sm">
 						<li>
 							<Link to="/" className="duration-700 hover:text-green-400">
 								Classes

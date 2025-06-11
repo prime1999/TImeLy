@@ -4,13 +4,6 @@ import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from "../../components/ui/dialog";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -22,8 +15,9 @@ import DayAndTime from "../DayAndTime";
 import SubmitButton from "@/lib/utils/SubmitButton";
 import { registerCourse, submitUpdateRequest } from "@/lib/slice/CourseSlice";
 import { formatScheduleTime } from "@/lib/utils/helperFunctions/TimeFormater";
-import Loader from "@/lib/utils/Loader";
+
 import { checkCurrentSession } from "@/lib/actions/Student.actions";
+import SubmitCourseUpdateRequest from "../modals/SubmitCourseUpdateRequest";
 
 const days = [
 	{ name: "Monday", value: "monday" },
@@ -49,8 +43,6 @@ const AddCourse = () => {
 			courseTitle: "",
 			courseUnit: 0,
 			lecturer: "",
-			startTime: "",
-			endTime: "",
 			venue: "",
 		},
 	});
@@ -127,12 +119,10 @@ const AddCourse = () => {
 				// TODO
 				// update directly
 			} else {
-				console.log(data);
 				const updateData = {
 					updateData: data.data,
 					courseId: data.courseId,
 				};
-				console.log;
 				// dispatch the function to submit the course request
 				const updateRes = await dispatch(submitUpdateRequest(updateData));
 				// check if the request was submitted
@@ -155,7 +145,7 @@ const AddCourse = () => {
 						onSubmit={form.handleSubmit(onSubmit)}
 						className="space-y-6 w-full mx-auto"
 					>
-						<div className="">
+						<div>
 							<div className="col-span-2 mb-4 lg:mb-0">
 								<CustomFormField
 									fieldType={FormFieldType.input}
@@ -236,46 +226,11 @@ const AddCourse = () => {
 					</form>
 				</Form>
 			</div>
-			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Course Info Exists.</DialogTitle>
-						<DialogDescription className="my-2">
-							{student?.admin ? (
-								<>
-									Would you like to update the course with the submitted info as
-									an admin?.
-								</>
-							) : (
-								<>
-									The course info is quite different from what is in the current
-									database <br />
-									Would you like to submit a request to update the course.
-									<br />
-									Your request will be submitted to the admin for review.
-								</>
-							)}
-						</DialogDescription>
-						<button
-							onClick={handleUpdate}
-							disabled={isLoading}
-							className={`w-full bg-green-400 rounded-md text-black font-inter font-semibold py-2 cursor-pointer duration-500 hover:bg-green-600 ${
-								isLoading && '"cursor-default py-1"'
-							}`}
-						>
-							{isLoading ? (
-								<span className="flex gap-2 justify-center">
-									<Loader /> <p>Loading...</p>
-								</span>
-							) : student?.admin ? (
-								<p>Update Course</p>
-							) : (
-								<p>Submit update request</p>
-							)}
-						</button>
-					</DialogHeader>
-				</DialogContent>
-			</Dialog>
+			<SubmitCourseUpdateRequest
+				setOpen={setOpen}
+				open={open}
+				handleUpdate={handleUpdate}
+			/>
 			<Toaster />
 		</main>
 	);

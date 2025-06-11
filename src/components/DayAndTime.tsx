@@ -1,17 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import CustomFormField, { FormFieldType } from "./CustomFormField";
 import { TimePickerInput } from "@/lib/utils/TimePickerInput";
 import { Period } from "@/lib/utils/TimePicker";
 import { TimePeriodSelect } from "@/lib/utils/PeriodInput";
-import { formatScheduleTime } from "@/lib/utils/helperFunctions/TimeFormater";
-
-interface TimePickerDemoProps {
-	date: Date | undefined;
-	setDate: (date: Date | undefined) => void;
-}
 
 const DayAndTime = ({ ...props }: any) => {
 	console.log(props.schedule);

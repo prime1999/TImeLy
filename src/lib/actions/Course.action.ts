@@ -101,6 +101,7 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 			COURSES_ID,
 			courseId
 		);
+		console.log({ existingCourse, updateData });
 		// if the document exists
 		if (existingCourse && existingCourse.$id) {
 			// create an empty object where the user will store the data to update
@@ -162,6 +163,7 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 // function to update a course
 export const submitCourseUpdateRequest = async (data: any) => {
 	try {
+		console.log(data);
 		// Get the current user
 		const user = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
@@ -182,7 +184,6 @@ export const submitCourseUpdateRequest = async (data: any) => {
 		);
 		// if the course update request was created
 		if (req && req.$id) {
-			console.log(3);
 			const course = await databases.getDocument(
 				DBID,
 				COURSES_ID,
@@ -267,4 +268,67 @@ export const submitCourseUpdateRequest = async (data: any) => {
 };
 
 // function to get the list of the user's courses
-export const getCourses = async () => {};
+export const getCoursesFromAppwrite = async () => {
+	try {
+		// get the user's id
+		const session = await checkCurrentSession();
+		//if the user is not authorized
+		if (!session || !session.$id) return "User not Authorized";
+		// if the user is authorised ten get the courses id the user registered for
+		const coursesId = await databases.listDocuments(DBID, USER_COURSE_ID);
+		// if the user has not registered for any course
+		if (coursesId.total < 1) return "User not register to any course";
+		// if the user has regitered, then get the use the ids to get the courses
+		let courses = await Promise.all(
+			coursesId.documents.map(async (course) => {
+				try {
+					let list = await databases.getDocument(
+						DBID,
+						COURSES_ID,
+						course.courseId
+					);
+					return list?.$id ? list : null;
+				} catch (error) {
+					console.error("Error fetching course:", error);
+					return null;
+				}
+			})
+		);
+
+		// Remove any nulls (failed fetches)
+		courses = courses.filter((course) => course !== null);
+		console.log(courses);
+		return courses;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// function for a user to unregister a course
+export const unRegisterCourse = async (courseId: string) => {
+	try {
+		// get the user's session
+		const session = await checkCurrentSession();
+		// if the user is not authenticated
+		if (!session || !session.$id) return "User not Authorised";
+		// if the user is authorised then,
+		// get the course to be unregistered from
+		const courses: any = await databases.listDocuments(DBID, USER_COURSE_ID, [
+			Query.equal("courseId", courseId),
+			Query.equal("userId", session.$id),
+		]);
+		// if the course was not registered for
+		if (courses.total < 1) return "Not Registered";
+
+		// if the user registered for the course, the rmove the course
+		await databases.deleteDocument(
+			DBID,
+			USER_COURSE_ID,
+			courses.documents[0].$id
+		);
+		return { done: true };
+	} catch (error) {
+		return { done: false };
+		console.log(error);
+	}
+};
