@@ -85,7 +85,7 @@ export const addCourse = async (courseData: any) => {
 			ID.unique(),
 			{ userId: courseData.userId, courseId: courseRes.$id }
 		);
-		console.log(userCourseRes);
+
 		return userCourseRes;
 	} catch (error) {
 		console.log(error);
@@ -163,7 +163,6 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 // function to update a course
 export const submitCourseUpdateRequest = async (data: any) => {
 	try {
-		console.log(data);
 		// Get the current user
 		const user = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
@@ -233,11 +232,10 @@ export const submitCourseUpdateRequest = async (data: any) => {
 				);
 				// if the cotification was created
 				if (notification) {
-					console.log(5);
 					// get the current user's info
 					const user = await databases.getDocument(DBID, STUDENTID, userId);
 					// get the list of admins
-					console.log(user);
+
 					const admins = await databases.listDocuments(DBID, STUDENTID, [
 						Query.equal("school", user.school),
 						Query.equal("faculty", user.faculty),
@@ -275,12 +273,14 @@ export const getCoursesFromAppwrite = async () => {
 		//if the user is not authorized
 		if (!session || !session.$id) return "User not Authorized";
 		// if the user is authorised ten get the courses id the user registered for
-		const coursesId = await databases.listDocuments(DBID, USER_COURSE_ID);
+		const courses = await databases.listDocuments(DBID, USER_COURSE_ID, [
+			Query.equal("userId", session.$id),
+		]);
 		// if the user has not registered for any course
-		if (coursesId.total < 1) return "User not register to any course";
-		// if the user has regitered, then get the use the ids to get the courses
-		let courses = await Promise.all(
-			coursesId.documents.map(async (course) => {
+		if (courses.total < 1) return "User not registered to any course";
+		// if the user has registered, then get the use the ids to get the courses
+		let userCourses = await Promise.all(
+			courses.documents.map(async (course) => {
 				try {
 					let list = await databases.getDocument(
 						DBID,
@@ -296,9 +296,8 @@ export const getCoursesFromAppwrite = async () => {
 		);
 
 		// Remove any nulls (failed fetches)
-		courses = courses.filter((course) => course !== null);
-		console.log(courses);
-		return courses;
+		userCourses = userCourses.filter((course) => course !== null);
+		return userCourses;
 	} catch (error) {
 		console.log(error);
 	}
@@ -319,7 +318,6 @@ export const unRegisterCourse = async (courseId: string) => {
 		]);
 		// if the course was not registered for
 		if (courses.total < 1) return "Not Registered";
-
 		// if the user registered for the course, the rmove the course
 		await databases.deleteDocument(
 			DBID,
@@ -328,7 +326,7 @@ export const unRegisterCourse = async (courseId: string) => {
 		);
 		return { done: true };
 	} catch (error) {
-		return { done: false };
 		console.log(error);
+		return { done: false };
 	}
 };

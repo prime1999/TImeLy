@@ -40,12 +40,15 @@ const days = [
 ];
 
 const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
-	const { isLoading } = useSelector((state: any) => state.course);
+	// init the dispatch
 	const dispatch = useDispatch<AppDispatch>();
+	// state to handle the state needed for this component
+	const { isLoading } = useSelector((state: any) => state.course);
 	const [startDate, setStartDate] = useState<any>(new Date());
 	const [endDate, setEndDate] = useState<any>(new Date());
 	const [day, setDay] = useState<string>("");
 	const [schedule, setSchedule] = useState<any>(JSON.parse(course.schedule));
+	// init the initial form values using the schema for this form
 	const form = useForm<z.infer<typeof courseSchema>>({
 		resolver: zodResolver(courseSchema),
 		defaultValues: {
@@ -90,7 +93,6 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 
 	const onSubmit = async (values: z.infer<any>) => {
 		try {
-			console.log({ values, schedule });
 			// create the data to send
 			const data = {
 				venue: values.venue,
@@ -100,29 +102,23 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 				unit: values.unit,
 				schedule,
 			};
-			console.log({ course, data });
-			// check if the course exists with te sme info
+			// check if the course exists with the same info
 			const existingCourse: any = await compareCourseInfo(course.$id, data);
 			if (existingCourse && !existingCourse.exists) {
-				console.log(existingCourse);
 				// show error msg
 				toast("Course details already existed");
 				return;
 			}
 			// if the course info to updte is different then,
-			console.log(existingCourse);
 			const updateData = {
 				updateData: existingCourse.payload,
 				courseId: course.$id,
 			};
-			const sendRequest = await dispatch(
-				submitUpdateRequest(updateData)
-			).unwrap();
-
-			console.log(sendRequest);
-			// TODO
+			// call the function to dispatch the submit update request function in the redux store state
+			await dispatch(submitUpdateRequest(updateData)).unwrap();
 			// show success msg
 			toast("Course update request has been sent");
+			setOpen(false);
 		} catch (error) {
 			console.log(error);
 		}

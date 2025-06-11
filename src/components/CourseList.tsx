@@ -14,16 +14,21 @@ import { getCourses } from "@/lib/slice/CourseSlice";
 import CourseDetail from "./modals/CourseDetail";
 import UpdateCourseModal from "./modals/UpdateCourseModal";
 import TableLoader from "@/lib/utils/tableLoader";
+import DeleteModal from "./modals/DeleteModal";
 
 const CourseList = () => {
+	// state for the modals
+	const [openRemoveModal, setOpenRemoveModal] = useState<boolean>(false);
 	const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
 	const [showCourseDetails, setShowCourseDetails] = useState<boolean>(false);
+	// init the dispatch
 	const dispatch = useDispatch<AppDispatch>();
-	const { isLoading, data } = useSelector((state: any) => state.course);
+	// state for the course state selection from the store
+	const { isLoading, reload, data } = useSelector((state: any) => state.course);
 
 	useEffect(() => {
 		dispatch(getCourses());
-	}, []);
+	}, [reload]);
 
 	return (
 		<main className="w-full bg-gray-100 rounded-md p-2 mt-4 dark:bg-gray-700">
@@ -40,7 +45,7 @@ const CourseList = () => {
 						className="relative w-full font-inter text-xs capitalize mt-4 bg-white shadow-md p-4 rounded-md dark:bg-gray-900 dark:shadow-gray-600"
 					>
 						<div className="w-full flex items-center flex-auto gap-2">
-							<div className="flex flex-col w-2/12">
+							<div className="w-4/12 flex flex-col lg:w-2/12">
 								<h6 className="text-xs mb-2 text-gray-500 dark:text-gray-400">
 									Course-Code
 								</h6>
@@ -48,7 +53,7 @@ const CourseList = () => {
 									{course.CourseCode}
 								</p>
 							</div>
-							<div className="flex flex-col w-4/12">
+							<div className="hidden flex-col w-4/12 lg:flex">
 								<h6 className="text-xs mb-2 text-gray-500 dark:text-gray-400">
 									Course-Title
 								</h6>
@@ -64,7 +69,7 @@ const CourseList = () => {
 									{course.unit}
 								</p>
 							</div>
-							<div className="flex flex-col w-1/12">
+							<div className="w-3/12 flex flex-col lg:w-1/12">
 								<h6 className="text-xs mb-2 text-gray-500 dark:text-gray-400">
 									Venue
 								</h6>
@@ -72,7 +77,7 @@ const CourseList = () => {
 									{course.venue}
 								</p>
 							</div>
-							<div className="flex flex-col w-2/12">
+							<div className="hidden flex-col w-2/12 lg:flex">
 								<h6 className="text-xs mb-2 text-gray-500 dark:text-gray-400">
 									Lecturer
 								</h6>
@@ -101,7 +106,10 @@ const CourseList = () => {
 									<PopoverContent className="w-[150px] py-2 px-2">
 										<ul className="font-inter">
 											<li className="text-sm mt-2">
-												<button className="flex items-center gap-2  cursor-pointer duration-700 hover:gap-4">
+												<button
+													onClick={() => setOpenRemoveModal(true)}
+													className="flex items-center gap-2  cursor-pointer duration-700 hover:gap-4"
+												>
 													<MdRemoveCircle className="text-red-500" />{" "}
 													<p className="text-xs">Remove</p>
 												</button>
@@ -122,6 +130,7 @@ const CourseList = () => {
 						</div>
 						{showCourseDetails && (
 							<CourseDetail
+								course={course}
 								showCourseDetails={showCourseDetails}
 								setShowCourseDetails={setShowCourseDetails}
 							/>
@@ -131,6 +140,23 @@ const CourseList = () => {
 							open={openUpdateModal}
 							setOpen={setOpenUpdateModal}
 						/>
+						<DeleteModal
+							open={openRemoveModal}
+							setOpen={setOpenRemoveModal}
+							//	handleRemove={handleRemove}
+							course={course}
+						>
+							<div>
+								<h4 className="font-inter text-md font-semibold text-black dark:text-gray-300">
+									Remove Course
+								</h4>
+								<hr className="my-2" />
+								<p className="text-xs font-inter">
+									You are about to un-register this course and won't get any
+									update about the course after this.
+								</p>
+							</div>
+						</DeleteModal>
 					</div>
 				))
 			)}
