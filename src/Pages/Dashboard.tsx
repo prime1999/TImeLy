@@ -4,6 +4,12 @@ import {
 	TabsList,
 	TabsTrigger,
 } from "../components/ui/tabs";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { FaFileUpload } from "react-icons/fa";
 import FacultyTable from "@/components/tables/faculty/facultyTable";
 import { CountDown, Courses } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
@@ -82,6 +88,18 @@ const Dashboard = () => {
 					</Tabs>
 				</div>
 				<div className="col-span-1">afs</div>
+			</div>
+			<div className="sticky bottom-10 left-10 z-[100]">
+				<Tooltip>
+					<TooltipTrigger>
+						<button className="bg-green-400 p-4 rounded-full">
+							<FaFileUpload className="text-2xl text-black" />
+						</button>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>Add to library</p>
+					</TooltipContent>
+				</Tooltip>
 			</div>
 		</main>
 	);
