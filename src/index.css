@@ -231,6 +231,29 @@
 	animation: rotation 1s linear infinite;
 }
 
+/* HTML: <div class="loader"></div> */
+.full-loader {
+	width: 32px;
+	aspect-ratio: 1;
+	--_g: no-repeat radial-gradient(farthest-side, #04f233 90%, #00ea5a);
+	background: var(--_g), var(--_g), var(--_g), var(--_g);
+	background-size: 40% 40%;
+	animation: l46 1s infinite;
+}
+@keyframes l46 {
+	0% {
+		background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+	}
+	40%,
+	50% {
+		background-position: 100% 100%, 100% 0, 0 0, 0 100%;
+	}
+	90%,
+	100% {
+		background-position: 100% 100%, 0 100%, 0 0, 100% 0;
+	}
+}
+
 @keyframes rotation {
 	0% {
 		transform: rotate(0deg);

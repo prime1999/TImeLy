@@ -15,28 +15,23 @@ import { BiLogOutCircle } from "react-icons/bi";
 import { checkCurrentSession } from "@/lib/actions/Student.actions";
 
 const Navbar = () => {
-	const location = useLocation();
-
 	const navigate = useNavigate();
-	// get the pathname from the current url
-	const paths = location.pathname.split("/");
 
-	useEffect(() => {
-		const handleLoad = async () => {
-			try {
-				console.log("navbar");
-				const student = await checkCurrentSession();
-				// if not then redirect back to the register page
-				console.log(student);
-				if (!student) {
-					navigate("/logIn");
-				}
-			} catch (error) {
-				console.error("Failed to load user:", error);
-			}
-		};
-		handleLoad();
-	}, []);
+	// useEffect(() => {
+	// 	const handleLoad = async () => {
+	// 		try {
+	// 			const student = await checkCurrentSession();
+	// 			// if not then redirect back to the register page
+	// 			console.log(student);
+	// 			if (!student) {
+	// 				navigate("/logIn");
+	// 			}
+	// 		} catch (error) {
+	// 			console.error("Failed to load user:", error);
+	// 		}
+	// 	};
+	// 	handleLoad();
+	// }, []);
 	return (
 		<nav className="">
 			<div className="flex items-center justify-between p-4 lg:hidden">

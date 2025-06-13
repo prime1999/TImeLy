@@ -46,9 +46,9 @@ const UploadTimeTable = ({ open, setOpen }: any) => {
 			// Convert the sheet to a 2D array
 			const data: any = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 			console.log("Extracted Data:", data);
-
+			const newData = data.filter((_: any, i: number) => i !== 0);
 			// Store as stringified array
-			setParsedData(data);
+			setParsedData(newData);
 		};
 		console.log(parsedData);
 
@@ -75,6 +75,7 @@ const UploadTimeTable = ({ open, setOpen }: any) => {
 			// check if the time table for the department is already in the DB
 			const timeTable = await dispatch(checkTimeTable("faculty")).unwrap();
 			if (timeTable && timeTable.exist === true) {
+				console.log(parsedData);
 				setOpen(false);
 				setOpenModal(true);
 				return;
@@ -93,6 +94,8 @@ const UploadTimeTable = ({ open, setOpen }: any) => {
 			// dispatch the redux function to update the timetable
 			const res: any = await dispatch(updateTimeTable(data));
 			if (res && res.$id) {
+				console.log("done");
+				setOpenModal(false);
 				toast("Time table updated");
 				return;
 			}

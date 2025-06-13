@@ -30,6 +30,7 @@ export const checkAppriteTimeTable = async (type: string) => {
 // Appwrite function to create a new faculty timeTable in the DB
 export const createAppwritTimeTable = async (data: string) => {
 	try {
+		console.log(JSON.stringify(data));
 		// get the current user
 		const user: any = await checkCurrentSession();
 		if (!user) return "User not Authorized";
@@ -40,7 +41,7 @@ export const createAppwritTimeTable = async (data: string) => {
 			part: student.faculty,
 			level: student.level,
 			uploadedBy: user.$id,
-			table: data,
+			table: JSON.stringify(data),
 		};
 		// create the timetable for the faculty
 		const res = await databases.createDocument(
@@ -58,6 +59,7 @@ export const createAppwritTimeTable = async (data: string) => {
 // Appwrite function to update a time table doc in the DB
 export const updateAppwriteTimeTable = async (data: any) => {
 	try {
+		console.log(data);
 		// get the current user
 		const user: any = await checkCurrentSession();
 		if (!user) return "User not Authorized";
@@ -71,6 +73,7 @@ export const updateAppwriteTimeTable = async (data: any) => {
 		]);
 		if (timetable && timetable.total < 1) return "No document found";
 		// create the timetable for the faculty
+		console.log(timetable);
 		const res = await databases.updateDocument(
 			DBID,
 			TIME_TABLE_ID,

@@ -1,39 +1,47 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
-import { TimeTable } from "@/contants/Timetable";
 import { DataTable } from "./data-table";
-import { columns } from "./columns";
+import { generateDynamicColumns } from "./columns";
 import { getFacultyTable } from "@/lib/slice/StudentSlice";
+import { reStructureTableData } from "@/lib/utils/helperFunctions/helper";
 
 const FacultyTable = () => {
+	const [columns, setColumns] = useState<any[]>([]); // Start as empty array
 	const dispatch = useDispatch<AppDispatch>();
-	const [table, setTable] = useState<any>([]);
+	const [table, setTable] = useState<any[]>([]);
+	const [isLoading, setIsLoading] = useState(true); // Track loading state
 
 	useEffect(() => {
 		const getTableData = async () => {
 			try {
-				// call the dispatch function to get the faculty time-table details form the DB
 				const res: any = await dispatch(getFacultyTable()).unwrap();
-				// get the stringified table form the DB and parse it to an array
-				const table = JSON.parse(JSON.parse(res.documents[0].table));
-				// set the table data
-				const data = table.map((slot: any) => ({
-					time: slot.time,
-					Monday: slot.Monday,
-					Tuesday: slot.Tuesday,
-					Wednesday: slot.Wednesday,
-					Thursday: slot.Thursday,
-					Friday: slot.Friday,
-				}));
+				const data = JSON.parse(JSON.parse(res.documents[0].table));
+				const structuredData = reStructureTableData(data);
 
-				setTable(data);
+				setTable(structuredData);
+
+				const headers = Object.keys(structuredData[0]);
+				const dynamicColumns = generateDynamicColumns(headers);
+				setColumns(dynamicColumns);
 			} catch (error) {
-				console.log(error);
+				console.error(error);
+			} finally {
+				setIsLoading(false); // Done loading
 			}
 		};
+
 		getTableData();
 	}, []);
+
+	if (isLoading) {
+		return <div>Loading table...</div>;
+	}
+
+	if (!columns.length || !table.length) {
+		return <div>No timetable data available</div>;
+	}
+
 	return (
 		<main className="pb-8">
 			<DataTable columns={columns} data={table} />
