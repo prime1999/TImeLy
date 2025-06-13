@@ -14,22 +14,22 @@ const Register = () => {
 	// get the pathname from the current url
 	const paths = location.pathname.split("/");
 
-	// useEffect(() => {
-	// 	// function to check if the user has created an account
-	// 	const handleLoad = async () => {
-	// 		try {
-	// 			const student: any = await dispatch(getCurrentUser(paths[3])).unwrap();
-	// 			// if not then redirect back to the register page
-	// 			if (!student?.email || !student?.matricNumber) {
-	// 				navigate("/register");
-	// 			}
-	// 		} catch (error) {
-	// 			console.error("Failed to load user:", error);
-	// 		}
-	// 	};
+	useEffect(() => {
+		// function to check if the user has created an account
+		const handleLoad = async () => {
+			try {
+				const student: any = await dispatch(getCurrentUser(paths[3])).unwrap();
+				// if not then redirect back to the register page
+				if (!student?.email || !student?.matricNumber) {
+					navigate("/register");
+				}
+			} catch (error) {
+				console.error("Failed to load user:", error);
+			}
+		};
 
-	// 	handleLoad();
-	// }, []);
+		handleLoad();
+	}, []);
 	return (
 		<main className="flex justify-center items-center h-screen w-[100vw] overflow-hidden">
 			<div className="flex w-full h-full mx-auto justify-between gap-4 overflow-y-hidden">
