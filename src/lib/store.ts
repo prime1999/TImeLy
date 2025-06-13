@@ -3,6 +3,7 @@ import authReducer from "./slice/AuthSlice";
 import studentReducer from "./slice/StudentSlice";
 import courseReducer from "./slice/CourseSlice";
 import NotificationReducer from "./slice/NotificationSlice";
+import TimeTableReducer from "./slice/TimeTableSlice";
 // ...
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
 		student: studentReducer,
 		course: courseReducer,
 		notification: NotificationReducer,
+		timeTable: TimeTableReducer,
 	},
 });
 

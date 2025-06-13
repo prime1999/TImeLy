@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
 	Tabs,
 	TabsContent,
@@ -14,8 +15,11 @@ import FacultyTable from "@/components/tables/faculty/facultyTable";
 import { CountDown, Courses } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
+import UploadTimeTable from "@/components/modals/UploadTimeTable";
 
 const Dashboard = () => {
+	const [open, setOpen] = useState<boolean>(false);
+
 	return (
 		<main className="my-2">
 			<div
@@ -89,18 +93,22 @@ const Dashboard = () => {
 				</div>
 				<div className="col-span-1">afs</div>
 			</div>
-			<div className="sticky bottom-10 left-10 z-[100]">
+			<div className="sticky bottom-10 left-10 z-[100] lg:ml-4">
 				<Tooltip>
 					<TooltipTrigger>
-						<button className="bg-green-400 p-4 rounded-full">
+						<button
+							onClick={() => setOpen(true)}
+							className="bg-green-400 p-4 rounded-full cursor-pointer duration-700 hover:mb-2"
+						>
 							<FaFileUpload className="text-2xl text-black" />
 						</button>
 					</TooltipTrigger>
 					<TooltipContent>
-						<p>Add to library</p>
+						<p>Upload time table</p>
 					</TooltipContent>
 				</Tooltip>
 			</div>
+			<UploadTimeTable open={open} setOpen={setOpen} />
 		</main>
 	);
 };

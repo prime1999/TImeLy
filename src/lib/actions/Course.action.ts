@@ -32,7 +32,6 @@ export const addCourse = async (courseData: any) => {
 			Query.equal("CourseTitle", course.CourseTitle),
 			Query.equal("CourseCode", course.CourseCode),
 		]);
-
 		// if it does
 		if (checkCourse.total > 0) {
 			// check if the user already registered for the course
@@ -85,7 +84,6 @@ export const addCourse = async (courseData: any) => {
 			ID.unique(),
 			{ userId: courseData.userId, courseId: courseRes.$id }
 		);
-
 		return userCourseRes;
 	} catch (error) {
 		console.log(error);
