@@ -76,7 +76,7 @@ export const updateAppwriteTimeTable = async (data: any) => {
 			TIME_TABLE_ID,
 			timetable.documents[0].$id,
 			{
-				table: data.payload,
+				table: JSON.stringify(data.payload),
 			}
 		);
 		if (res) return res;

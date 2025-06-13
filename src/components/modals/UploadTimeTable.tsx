@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useDropzone } from "react-dropzone";
 import * as XLSX from "xlsx";
 import { AppDispatch } from "@/lib/store";
+import { Toaster } from "../ui/sonner";
+import { toast } from "sonner";
 import {
 	Dialog,
 	DialogContent,
@@ -11,7 +13,11 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { RiFileExcel2Fill } from "react-icons/ri";
-import { checkTimeTable, createTimetable } from "@/lib/slice/TimeTableSlice";
+import {
+	checkTimeTable,
+	createTimetable,
+	updateTimeTable,
+} from "@/lib/slice/TimeTableSlice";
 import ConfirmationModal from "./ConfirmationModal";
 import Button from "@/lib/utils/Button";
 
@@ -62,11 +68,11 @@ const UploadTimeTable = ({ open, setOpen }: any) => {
 	// function to dispatch the upload time table function
 	const handleUpload = async () => {
 		try {
-			if (parsedData.length < 1)
-				// TODO
-				//show msg
+			if (parsedData.length < 1) {
+				toast("No Document to upload");
 				return;
-			// check if th etime table for the department is already in the DB
+			}
+			// check if the time table for the department is already in the DB
 			const timeTable = await dispatch(checkTimeTable("faculty")).unwrap();
 			if (timeTable && timeTable.exist === true) {
 				setOpen(false);
@@ -75,14 +81,26 @@ const UploadTimeTable = ({ open, setOpen }: any) => {
 			}
 			// if the parsedData is ready, then
 			await dispatch(createTimetable(JSON.stringify(parsedData))).unwrap();
-			// TODO
-			// show success msg
+			toast("Time table uploadd");
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const handleUpdate = () => {};
+	const handleUpdate = async () => {
+		try {
+			const data = { type: "faculty", payload: parsedData };
+			// dispatch the redux function to update the timetable
+			const res: any = await dispatch(updateTimeTable(data));
+			if (res && res.$id) {
+				toast("Time table updated");
+				return;
+			}
+		} catch (error) {
+			toast("Time table not updated");
+			console.log(error);
+		}
+	};
 
 	return (
 		<>
@@ -182,6 +200,7 @@ const UploadTimeTable = ({ open, setOpen }: any) => {
 					</h6>
 				</div>
 			</ConfirmationModal>
+			<Toaster />
 		</>
 	);
 };

@@ -54,7 +54,7 @@ export const createTimetable = createAsyncThunk(
 // function to update a time table in the DB
 export const updateTimeTable = createAsyncThunk(
 	"timeTable/updateTimeTable",
-	async (data) => {
+	async (data: any) => {
 		try {
 			// call the Appwrite fucntion to update a time tbale in the DB
 			const update: any = await updateAppwriteTimeTable(data);
