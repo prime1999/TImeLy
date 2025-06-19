@@ -5,6 +5,7 @@ import {
 	submitCourseUpdateRequest,
 	unRegisterCourse,
 } from "../actions/Course.action";
+import { findUnRegisteredCouresInDB } from "../actions/TimeTable.action";
 
 type initialType = {
 	isLoading: boolean;
@@ -22,7 +23,7 @@ const initialState: initialType = {
 	data: null,
 };
 
-// function to reister a course
+// function to register a course
 export const registerCourse = createAsyncThunk(
 	"course/registerCourse",
 	async (dataSent: any) => {
@@ -52,7 +53,7 @@ export const submitUpdateRequest = createAsyncThunk(
 	}
 );
 
-// export fundton to handle the get courses function int the redux slice
+// export function to handle the get courses function int the redux slice
 export const getCourses = createAsyncThunk("course/getCourse", async () => {
 	try {
 		// call the function to carry out the appwrite function
@@ -71,6 +72,23 @@ export const removeCourse = createAsyncThunk(
 			// call the function to un-register a course in the DB
 			const res: any = await unRegisterCourse(courseId);
 			if (res && res.done) {
+				return res;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// export function to handle the find related un-registered courses in the redux store
+export const findUnRegisteredCourses = createAsyncThunk(
+	"course/findCourses",
+	async () => {
+		try {
+			// call the function to find the courses in the DB
+			const res: any = await findUnRegisteredCouresInDB();
+			if (res) {
+				console.log(res);
 				return res;
 			}
 		} catch (error) {

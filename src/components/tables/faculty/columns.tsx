@@ -1,19 +1,28 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-export function generateDynamicColumns<T extends Record<string, any>>(
-	headers: string[]
-): ColumnDef<T>[] {
-	return headers?.map((header) => {
+export const generateDynamicColumns = (headers: string[]) => {
+	return headers.map((header) => {
 		if (header.toLowerCase() === "time") {
 			return {
-				accessorKey: header,
+				accessorKey: header.toLowerCase(),
 				header: header.charAt(0).toUpperCase() + header.slice(1),
-			} as ColumnDef<T>;
+			} as ColumnDef<any>;
 		}
 
 		return {
-			accessorKey: header,
+			accessorKey: header.toLowerCase(),
 			header: header.charAt(0).toUpperCase() + header.slice(1),
-		} as ColumnDef<T>;
+			cell: ({ row }) => (
+				<ul className="pl-4 space-y-1 list-none">
+					{row.original[header.toLowerCase()]?.map(
+						(course: string, idx: number) => (
+							<li key={idx} className="text-sm leading-tight">
+								{course}
+							</li>
+						)
+					)}
+				</ul>
+			),
+		} as ColumnDef<any>;
 	});
-}
+};

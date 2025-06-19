@@ -2,35 +2,69 @@ export const normalizeString = (value: any) => {
 	return value.toLowerCase().replace(/\s+/g, "").trim();
 };
 
-export const reStructureTableData = (data: any) => {
-	console.log(data);
-	// Assume rawData is your provided dataset
+export const reStructureUniversalTimetable = (data: any[]) => {
+	if (!Array.isArray(data)) return [];
 
-	// Step 1: Find the first non-empty row as header
-	const headerRow = data.find(
-		(row: any) =>
-			Array.isArray(row) && row.some((cell) => cell !== null && cell !== "")
-	);
-	console.log(headerRow);
+	const structuredData: any[] = [];
+	let currentDay = "";
+	let headerRow: any[] = [];
+	let timeSlots: string[] = [];
 
-	// Step 2: Filter out the header row and any row that repeats the header
-	const cleanedData = data.filter((row: any) => {
-		// Skip the header and any duplicate of the header
-		if (!Array.isArray(row) || row.length === 0) return false; // skip empty arrays
-		if (JSON.stringify(row) === JSON.stringify(headerRow)) return false; // skip header duplicates
-		return row.some((cell) => cell !== null && cell !== ""); // keep non-empty rows
+	data.forEach((row: any) => {
+		if (
+			!Array.isArray(row) ||
+			row.every((cell) => cell === null || cell === "")
+		) {
+			return; // Skip empty rows
+		}
+
+		// Detect header row (contains 'DAY' and 'VENUE')
+		if (
+			row.some(
+				(cell) => typeof cell === "string" && cell.toLowerCase().includes("day")
+			)
+		) {
+			headerRow = row;
+			timeSlots = row.slice(2).map((slot: string) => slot?.trim()); // times start from index 2
+			return;
+		}
+
+		// Detect new day row
+		if (row[0] && row[0].toString().trim() !== "") {
+			currentDay = row[0].trim();
+
+			structuredData.push({
+				day: currentDay,
+				slots: [],
+			});
+		}
+
+		// Add venue and courses to current day
+		if (currentDay && structuredData.length) {
+			const venue = row[1]?.trim();
+			const dayEntry = structuredData.find((entry) => entry.day === currentDay);
+
+			if (venue && dayEntry) {
+				const courses = [];
+
+				for (let i = 2; i < row.length; i++) {
+					const courseName = row[i]?.trim();
+					if (courseName) {
+						courses.push({
+							time: timeSlots[i - 2], // Times start from index 2
+							course: courseName,
+						});
+					}
+				}
+
+				dayEntry.slots.push({
+					venue,
+					courses,
+				});
+			}
+		}
 	});
-	console.log(cleanedData);
 
-	// Step 3: Structure the data
-	const structuredData = cleanedData.map((row: any) => {
-		const rowData: any = {};
-		headerRow.forEach((header: any, index: number) => {
-			rowData[header?.toString().toLowerCase() || `column${index}`] =
-				row[index] ?? "";
-		});
-		return rowData;
-	});
 	console.log(structuredData);
 	return structuredData;
 };

@@ -17,20 +17,26 @@ const databases = new Databases(client);
 // function to register a course on appwrite
 export const addCourse = async (courseData: any) => {
 	try {
+		// Get the current user
+		const user: any = await checkCurrentSession();
+		// If somehow the user is not authenticated, then
+		if (!user || !user.$id) return "User not Authorized";
+		console.log(courseData);
 		// create the cousre data from the data sent (courseData)
-		const course = {
-			CourseCode: courseData.courseCode,
-			CourseTitle: courseData.courseTitle,
-			unit: courseData.unit.toString(),
-			venue: courseData.venue,
-			lecturer: courseData.lecturer,
-			schedule: JSON.stringify(courseData.schedule),
-		};
+		// const course = {
+		// 	CourseCode: courseData.courseCode,
+		// 	CourseTitle: courseData.courseTitle,
+		// 	unit: courseData.unit.toString(),
+		// 	venue: courseData.venue,
+		// 	lecturer: courseData.lecturer,
+		// 	schedule: JSON.stringify(courseData.schedule),
+		// };
+		// console.log(course);
 
 		// check if the course already exist in the database
 		const checkCourse = await databases.listDocuments(DBID, COURSES_ID, [
-			Query.equal("CourseTitle", course.CourseTitle),
-			Query.equal("CourseCode", course.CourseCode),
+			Query.equal("CourseTitle", courseData.CourseTitle),
+			Query.equal("CourseCode", courseData.CourseCode),
 		]);
 		// if it does
 		if (checkCourse.total > 0) {
@@ -39,7 +45,7 @@ export const addCourse = async (courseData: any) => {
 				DBID,
 				USER_COURSE_ID,
 				[
-					Query.equal("userId", courseData.userId),
+					Query.equal("userId", user.$id),
 					Query.equal("courseId", checkCourse.documents[0].$id),
 				]
 			);
@@ -47,7 +53,7 @@ export const addCourse = async (courseData: any) => {
 			if (checkUserCourse.total < 1) {
 				// then register the user
 				await databases.createDocument(DBID, USER_COURSE_ID, ID.unique(), {
-					userId: courseData.userId,
+					userId: user.$id,
 					courseId: checkCourse.documents[0].$id,
 				});
 			}
@@ -56,6 +62,8 @@ export const addCourse = async (courseData: any) => {
 				checkCourse.documents[0].$id,
 				courseData
 			);
+			// TODO
+			// check if the user is an admin so has to update the course directly
 			// if a course with the same info exists
 			if (compared.exists) {
 				return {
@@ -75,14 +83,14 @@ export const addCourse = async (courseData: any) => {
 			DBID,
 			COURSES_ID,
 			ID.unique(),
-			course
+			courseData
 		);
 		// register the user for the course
 		const userCourseRes = await databases.createDocument(
 			DBID,
 			USER_COURSE_ID,
 			ID.unique(),
-			{ userId: courseData.userId, courseId: courseRes.$id }
+			{ userId: user.$id, courseId: courseRes.$id }
 		);
 		return userCourseRes;
 	} catch (error) {

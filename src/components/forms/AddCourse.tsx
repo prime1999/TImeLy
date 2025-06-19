@@ -15,7 +15,6 @@ import DayAndTime from "../DayAndTime";
 import SubmitButton from "@/lib/utils/SubmitButton";
 import { registerCourse, submitUpdateRequest } from "@/lib/slice/CourseSlice";
 import { formatScheduleTime } from "@/lib/utils/helperFunctions/TimeFormater";
-
 import { checkCurrentSession } from "@/lib/actions/Student.actions";
 import SubmitCourseUpdateRequest from "../modals/SubmitCourseUpdateRequest";
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import {
 	ColumnDef,
@@ -39,7 +37,6 @@ export function DataTable<TData, TValue>({
 	columns,
 	data,
 }: DataTableProps<TData, TValue>) {
-	console.log(columns);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
@@ -56,57 +53,58 @@ export function DataTable<TData, TValue>({
 		},
 	});
 
+	const filterColumnId = table.getAllLeafColumns()[0]?.id ?? "";
+
 	return (
 		<div className="w-full">
+			{/* Search Input */}
 			<div className="w-full flex items-center py-4">
-				{/* <Input
-					placeholder="Filter time..."
-					value={(table.getColumn("time")?.getFilterValue?.() as string) ?? ""}
-					onChange={(event) => {
-						const column = table.getColumn("time");
-						if (column) {
-							column.setFilterValue(event.target.value);
-						}
-					}}
+				<Input
+					placeholder={`Filter by ${filterColumnId || "column"}...`}
+					value={
+						(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""
+					}
+					onChange={(event) =>
+						table.getColumn(filterColumnId)?.setFilterValue(event.target.value)
+					}
 					className="w-[200px] font-inter text-sm font-semibold lg:w-[300px]"
-				/> */}
+				/>
 
+				{/* Filter Dropdown */}
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild className="border-none">
 						<button className="text-xs ml-auto py-2 px-4 rounded-lg border border-gray-500 font-inter font-semibold duration-500 cursor-pointer focus:border-green-500 focus:text-green-500 hover:border-green-500 hover:text-green-500 lg:text-lg">
 							Filter days
 						</button>
 					</DropdownMenuTrigger>
-					{/* <DropdownMenuContent align="end">
+					<DropdownMenuContent align="end">
 						{table
 							.getAllColumns()
 							.filter((column) => column.getCanHide())
-							.map((column) => {
-								return (
-									<DropdownMenuCheckboxItem
-										key={column.id}
-										className="capitalize"
-										checked={column.getIsVisible()}
-										onCheckedChange={(value) =>
-											column.toggleVisibility(!!value)
-										}
-									>
-										{column.id}
-									</DropdownMenuCheckboxItem>
-								);
-							})}
-					</DropdownMenuContent> */}
+							.map((column) => (
+								<DropdownMenuCheckboxItem
+									key={column.id}
+									className="capitalize"
+									checked={column.getIsVisible()}
+									onCheckedChange={(value) => column.toggleVisibility(!!value)}
+								>
+									{column.id}
+								</DropdownMenuCheckboxItem>
+							))}
+					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
+
+			{/* Table Section */}
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
+							<TableRow key={headerGroup.id} className="w-6">
 								{headerGroup.headers.map((header) => (
 									<TableHead
 										key={header.id}
-										className="border border-gray-500 text-center"
+										className="w-6 border border-gray-500"
 									>
 										{header.isPlaceholder
 											? null
@@ -126,15 +124,25 @@ export function DataTable<TData, TValue>({
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
 								>
-									{row.getVisibleCells().map((cell: any) => (
+									{row.getVisibleCells().map((cell) => (
 										<TableCell
 											key={cell.id}
-											className="border border-gray-800 p-2 text-sm leading-snug"
+											className="border border-gray-800 text-xs leading-snug"
+											style={{ width: cell.column.getSize() }}
 										>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
+											{Array.isArray(cell.getValue())
+												? (cell.getValue() as string[]).map((item, index) => (
+														<div
+															key={index}
+															className="border-b border-gray-500 p-2 flex flex-col items-start"
+														>
+															{item}
+														</div>
+												  ))
+												: flexRender(
+														cell.column.columnDef.cell,
+														cell.getContext()
+												  )}
 										</TableCell>
 									))}
 								</TableRow>

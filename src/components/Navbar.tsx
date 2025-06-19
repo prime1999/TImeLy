@@ -46,6 +46,14 @@ const Navbar = () => {
 				<div>
 					<ul className="flex items-center gap-8 text-md font-inter font-normal text-sm">
 						<li>
+							<Link
+								to="/dashboard"
+								className="duration-700 hover:text-green-400"
+							>
+								Dashboard
+							</Link>
+						</li>
+						<li>
 							<Link to="/" className="duration-700 hover:text-green-400">
 								Classes
 							</Link>
@@ -53,11 +61,6 @@ const Navbar = () => {
 						<li>
 							<Link to="/" className="duration-700 hover:text-green-400">
 								Exams
-							</Link>
-						</li>
-						<li>
-							<Link to="/" className="duration-700 hover:text-green-400">
-								Notes
 							</Link>
 						</li>
 						<li>

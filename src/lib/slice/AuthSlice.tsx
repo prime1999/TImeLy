@@ -35,7 +35,7 @@ const initialState: initType = {
 // store function for creating a user
 export const createUser = createAsyncThunk(
 	"auth/createStudent",
-	async (userData: any, thunkAPI) => {
+	async (userData: any) => {
 		try {
 			// paa the user data to the function that will send it to appwrite
 			const studentRes: any = await createAppwriteUser(userData);
@@ -73,7 +73,7 @@ export const createUser = createAsyncThunk(
 // store function to authenticate a user
 export const authUser = createAsyncThunk(
 	"auth/authStudent",
-	async (userData: any, thunkAPI) => {
+	async (userData: any) => {
 		try {
 			// send the user data to the function that will send it to appwrite
 			const studentRes: any = await createuserAppwriteSession(userData);

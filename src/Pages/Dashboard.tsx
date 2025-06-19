@@ -16,6 +16,7 @@ import { CountDown, Courses } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
 import UploadTimeTable from "@/components/modals/UploadTimeTable";
+import TimeTable from "@/components/TimeTable";
 
 const Dashboard = () => {
 	const [open, setOpen] = useState<boolean>(false);
@@ -78,7 +79,7 @@ const Dashboard = () => {
 						<Courses />
 						<CountDown />
 					</div>{" "}
-					<Tabs defaultValue="faculty">
+					{/* <Tabs defaultValue="faculty">
 						<TabsList>
 							<TabsTrigger value="faculty">Faculty</TabsTrigger>
 							<TabsTrigger value="department">Department</TabsTrigger>
@@ -89,7 +90,10 @@ const Dashboard = () => {
 						<TabsContent value="department">
 							Make changes to your account here.
 						</TabsContent>
-					</Tabs>
+					</Tabs> */}
+					<div>
+						<TimeTable />
+					</div>
 				</div>
 				<div className="col-span-1">afs</div>
 			</div>

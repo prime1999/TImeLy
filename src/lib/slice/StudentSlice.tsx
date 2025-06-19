@@ -25,7 +25,7 @@ const initialState: initialType = {
 // store function to get the current user
 export const getCurrentUser = createAsyncThunk(
 	"student/currentUser",
-	async (userID: string, thunkAPI: any) => {
+	async (userID: string) => {
 		try {
 			const user: any = await getCurrentStudent(userID);
 			if (user && user.$id) {
@@ -48,7 +48,7 @@ export const getCurrentUser = createAsyncThunk(
 // store function to get the current user
 export const UpdateUser = createAsyncThunk(
 	"student/updateUser",
-	async (DataToUpdate: any, thunkAPI: any) => {
+	async (DataToUpdate: any) => {
 		try {
 			const data: any = await UpdateStudentInfo(DataToUpdate);
 			if (data) {
@@ -64,7 +64,7 @@ export const UpdateUser = createAsyncThunk(
 // function to get documents based on a query (matricNumber)
 export const getDocuments = createAsyncThunk(
 	"student/listDocument",
-	async (matricNumber: string, thunkAPI: any) => {
+	async (matricNumber: string) => {
 		try {
 			console.log(matricNumber);
 			const res = await listDocuments(matricNumber);

@@ -1,6 +1,12 @@
 import { Databases, ID, Query } from "appwrite";
 import client from "../appwrite.config";
-import { DBID, STUDENTID, TIME_TABLE_ID } from "@/contants/env.file";
+import {
+	COURSES_ID,
+	DBID,
+	STUDENTID,
+	TIME_TABLE_ID,
+	USER_COURSE_ID,
+} from "@/contants/env.file";
 import { checkCurrentSession } from "./Student.actions";
 
 const databases = new Databases(client);
@@ -83,6 +89,93 @@ export const updateAppwriteTimeTable = async (data: any) => {
 			}
 		);
 		if (res) return res;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// Appwrite function to finc te related unregistered courses for the user
+export const findUnRegisteredCouresInDB = async () => {
+	try {
+		// get the current user
+		const user: any = await checkCurrentSession();
+		if (!user) return "User not Authorized";
+		// get the user document details
+		const student = await databases.getDocument(DBID, STUDENTID, user.$id);
+		// if the student does not have a document details
+		if (!student || !student.$id) return "User not Authenticated";
+		// if the student details wa gotten
+		// find the students that shar the same department and level has the current user
+		const mates = await databases.listDocuments(DBID, STUDENTID, [
+			Query.equal("department", student.department),
+			Query.equal("level", student.level),
+		]);
+		console.log(mates);
+		const courseMates: any = await mates.documents.filter(
+			(mate) => mate.$id !== user.$id
+		);
+
+		console.log(courseMates);
+		//  if the student does not have any course mates
+		if (courseMates.length < 1) {
+			console.log("none");
+			return "No courses mates for this user has regustered yet";
+		}
+
+		// but if the courses mates have registered
+		// now loop through them to get the course they registerd for
+		const matesRegisteredCourses = await Promise.all(
+			courseMates.map(async (user: any) => {
+				const userCourses = await databases.listDocuments(
+					DBID,
+					USER_COURSE_ID,
+					[Query.equal("userId", user.$id)]
+				);
+
+				// Return only if the user has courses
+				if (userCourses.total > 0) {
+					return userCourses;
+				} else {
+					// Return null for users with no courses
+					return null;
+				}
+			})
+		);
+
+		// Filter out the null values (users with no courses)
+		const matesCourses: any = matesRegisteredCourses.filter(
+			(course) => course !== null
+		);
+		if (matesCourses.length < 1)
+			return "Course mates are yet to register for any course on the app";
+		console.log(matesCourses);
+		// now get the courses details of the ones that are registered
+		const registeredCourseDetails = await Promise.all(
+			matesCourses[0].documents.map(async (list: any) => {
+				console.log(list);
+				const coursesDetail = await databases.getDocument(
+					DBID,
+					COURSES_ID,
+					list.courseId
+				);
+
+				// Return only if the user has courses
+				if (coursesDetail && coursesDetail.$id) {
+					return coursesDetail;
+				} else {
+					// Return null for users with no courses
+					return null;
+				}
+			})
+		);
+		console.log(registeredCourseDetails);
+		// Filter out the null values (non-existing courses)
+		const existingCourses: any = registeredCourseDetails.filter(
+			(course) => course !== null
+		);
+		if (existingCourses.length < 1) return "Course does not exist";
+		console.log(existingCourses);
+		return existingCourses;
 	} catch (error) {
 		console.log(error);
 	}
