@@ -30,12 +30,14 @@ import ShowUnregisteredCourses from "./modals/ShowUnregisteredCourses";
 const TimeTable = () => {
 	// state for the found courses
 	const [courses, setCourses] = useState<any>([]);
+	// state for the selected course
+	const [selectedCourse, setSelectedCourse] = useState<any>(null);
 	// state for the modals
 	const [openRemoveModal, setOpenRemoveModal] = useState<boolean>(false);
 	const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
 	const [showCourseDetails, setShowCourseDetails] = useState<boolean>(false);
 	// modal state to show unreistered related courses
-	const [open, setOpen] = useState<boolean>(true);
+	const [open, setOpen] = useState<boolean>(false);
 	// init the dispatch
 	const dispatch = useDispatch<AppDispatch>();
 	// state for the course state selection from the store
@@ -121,7 +123,10 @@ const TimeTable = () => {
 										Full Schedule
 									</h6>
 									<button
-										onClick={() => setShowCourseDetails(true)}
+										onClick={() => {
+											setSelectedCourse(course);
+											setShowCourseDetails(true);
+										}}
 										className="text-sm bg-green-400 rounded-full p-2 cursor-pointer duration-500 hover:bg-green-500"
 									>
 										<MdAdsClick className="tetx-sm" />
@@ -178,7 +183,7 @@ const TimeTable = () => {
 							</div>
 							{showCourseDetails && (
 								<CourseDetail
-									course={course}
+									selectedCourse={selectedCourse}
 									showCourseDetails={showCourseDetails}
 									setShowCourseDetails={setShowCourseDetails}
 								/>

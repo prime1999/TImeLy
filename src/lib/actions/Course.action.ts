@@ -21,7 +21,7 @@ export const addCourse = async (courseData: any) => {
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
 		if (!user || !user.$id) return "User not Authorized";
-		console.log(courseData);
+
 		// create the cousre data from the data sent (courseData)
 		// const course = {
 		// 	CourseCode: courseData.courseCode,
