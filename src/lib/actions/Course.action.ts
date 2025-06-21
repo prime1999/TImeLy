@@ -21,7 +21,6 @@ export const addCourse = async (courseData: any) => {
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
 		if (!user || !user.$id) return "User not Authorized";
-
 		// create the cousre data from the data sent (courseData)
 		// const course = {
 		// 	CourseCode: courseData.courseCode,
@@ -241,7 +240,6 @@ export const submitCourseUpdateRequest = async (data: any) => {
 					// get the current user's info
 					const user = await databases.getDocument(DBID, STUDENTID, userId);
 					// get the list of admins
-
 					const admins = await databases.listDocuments(DBID, STUDENTID, [
 						Query.equal("school", user.school),
 						Query.equal("faculty", user.faculty),

@@ -12,7 +12,6 @@ const CourseDetail = ({
 	setShowCourseDetails,
 	selectedCourse,
 }: any) => {
-	console.log(selectedCourse);
 	return (
 		<>
 			<Dialog open={showCourseDetails}>

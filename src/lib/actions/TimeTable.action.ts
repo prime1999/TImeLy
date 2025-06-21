@@ -65,7 +65,6 @@ export const createAppwritTimeTable = async (data: string) => {
 // Appwrite function to update a time table doc in the DB
 export const updateAppwriteTimeTable = async (data: any) => {
 	try {
-		console.log(data);
 		// get the current user
 		const user: any = await checkCurrentSession();
 		if (!user) return "User not Authorized";
@@ -79,7 +78,6 @@ export const updateAppwriteTimeTable = async (data: any) => {
 		]);
 		if (timetable && timetable.total < 1) return "No document found";
 		// create the timetable for the faculty
-		console.log(timetable);
 		const res = await databases.updateDocument(
 			DBID,
 			TIME_TABLE_ID,
@@ -104,24 +102,22 @@ export const findUnRegisteredCouresInDB = async () => {
 		const student = await databases.getDocument(DBID, STUDENTID, user.$id);
 		// if the student does not have a document details
 		if (!student || !student.$id) return "User not Authenticated";
-		// if the student details wa gotten
-		// find the students that shar the same department and level has the current user
+		// if the student details was gotten
+		// find the students that share the same department and level has the current student
 		const mates = await databases.listDocuments(DBID, STUDENTID, [
 			Query.equal("department", student.department),
 			Query.equal("level", student.level),
 		]);
-		console.log(mates);
 		const courseMates: any = await mates.documents.filter(
 			(mate) => mate.$id !== user.$id
 		);
-
-		console.log(courseMates);
 		//  if the student does not have any course mates
 		if (courseMates.length < 1) {
-			console.log("none");
-			return "No courses mates for this user has regustered yet";
+			return {
+				msg: "Course mates are yet to register for any course on the app",
+				courses: [],
+			};
 		}
-
 		// but if the courses mates have registered
 		// now loop through them to get the course they registerd for
 		const matesRegisteredCourses = await Promise.all(
@@ -131,7 +127,6 @@ export const findUnRegisteredCouresInDB = async () => {
 					USER_COURSE_ID,
 					[Query.equal("userId", user.$id)]
 				);
-
 				// Return only if the user has courses
 				if (userCourses.total > 0) {
 					return userCourses;
@@ -141,41 +136,67 @@ export const findUnRegisteredCouresInDB = async () => {
 				}
 			})
 		);
-
 		// Filter out the null values (users with no courses)
 		const matesCourses: any = matesRegisteredCourses.filter(
 			(course) => course !== null
 		);
 		if (matesCourses.length < 1)
-			return "Course mates are yet to register for any course on the app";
-		console.log(matesCourses);
+			return {
+				msg: "Course mates are yet to register for any course on the app",
+				courses: [],
+			};
+		// loop through them again to get the one the user also is not registered for
+		const currentStudentRegisteredCourses = await Promise.all(
+			matesCourses[0].documents.map(async (course: any) => {
+				const userCourses = await databases.listDocuments(
+					DBID,
+					USER_COURSE_ID,
+					[
+						Query.equal("courseId", course.courseId),
+						Query.equal("userId", user.$id),
+					]
+				);
+				// Return only if the user has courses
+				if (userCourses.total > 0) {
+					return null;
+				} else {
+					// Return this object for users with no courses
+					return course;
+				}
+			})
+		);
+
+		// Filter out the null values (non-existing courses)
+		const filterCurrentStudentRegisteredCourses: any =
+			currentStudentRegisteredCourses.filter((course) => course !== null);
 		// now get the courses details of the ones that are registered
 		const registeredCourseDetails = await Promise.all(
-			matesCourses[0].documents.map(async (list: any) => {
-				console.log(list);
+			filterCurrentStudentRegisteredCourses.map(async (list: any) => {
 				const coursesDetail = await databases.getDocument(
 					DBID,
 					COURSES_ID,
 					list.courseId
 				);
-
-				// Return only if the user has courses
+				// Return only if the courses actually exist in the DB
 				if (coursesDetail && coursesDetail.$id) {
 					return coursesDetail;
 				} else {
-					// Return null for users with no courses
+					// Return null if not
 					return null;
 				}
 			})
 		);
-		console.log(registeredCourseDetails);
+
 		// Filter out the null values (non-existing courses)
 		const existingCourses: any = registeredCourseDetails.filter(
 			(course) => course !== null
 		);
-		if (existingCourses.length < 1) return "Course does not exist";
-		console.log(existingCourses);
-		return existingCourses;
+		if (existingCourses.length < 1)
+			return {
+				msg: "Course mates are yet to register for any other courses on the app",
+				courses: [],
+			};
+		return { msg: "Register", existingCourses, courses: existingCourses };
 	} catch (error) {
 		console.log(error);
 	}

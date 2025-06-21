@@ -12,7 +12,9 @@ type initialType = {
 	message: string;
 	isSuccess: boolean;
 	reload: boolean;
+	loadingCourses: boolean;
 	data: any;
+	unRegisteredCourses: any;
 };
 
 const initialState: initialType = {
@@ -20,7 +22,9 @@ const initialState: initialType = {
 	message: "",
 	isSuccess: false,
 	reload: false,
+	loadingCourses: false,
 	data: null,
+	unRegisteredCourses: null,
 };
 
 // function to register a course
@@ -93,6 +97,7 @@ export const findUnRegisteredCourses = createAsyncThunk(
 			}
 		} catch (error) {
 			console.log(error);
+			return error;
 		}
 	}
 );
@@ -145,6 +150,16 @@ export const CourseSlice = createSlice({
 			.addCase(getCourses.pending, (state) => {
 				state.isLoading = true;
 				state.isSuccess = false;
+			})
+			.addCase(findUnRegisteredCourses.pending, (state) => {
+				state.loadingCourses = true;
+			})
+			.addCase(findUnRegisteredCourses.fulfilled, (state, action) => {
+				state.loadingCourses = false;
+				state.unRegisteredCourses = action.payload;
+			})
+			.addCase(findUnRegisteredCourses.rejected, (state) => {
+				state.loadingCourses = false;
 			})
 			.addCase(removeCourse.pending, (state) => {
 				state.reload = true;

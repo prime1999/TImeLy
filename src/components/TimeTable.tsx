@@ -1,7 +1,7 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Toaster } from "./ui/sonner";
+import { toast } from "sonner";
 import { MdAdsClick, MdRemoveCircle, MdModeEdit } from "react-icons/md";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { FaBookOpen } from "react-icons/fa";
@@ -11,11 +11,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { AppDispatch } from "@/lib/store";
-import {
-	findUnRegisteredCourses,
-	getCourses,
-	registerCourse,
-} from "@/lib/slice/CourseSlice";
+import { findUnRegisteredCourses, getCourses } from "@/lib/slice/CourseSlice";
 import CourseDetail from "./modals/CourseDetail";
 import UpdateCourseModal from "./modals/UpdateCourseModal";
 import TableLoader from "@/lib/utils/tableLoader";
@@ -28,8 +24,6 @@ import FindCourses from "./FindCourses";
 import ShowUnregisteredCourses from "./modals/ShowUnregisteredCourses";
 
 const TimeTable = () => {
-	// state for the found courses
-	const [courses, setCourses] = useState<any>([]);
 	// state for the selected course
 	const [selectedCourse, setSelectedCourse] = useState<any>(null);
 	// state for the modals
@@ -41,22 +35,25 @@ const TimeTable = () => {
 	// init the dispatch
 	const dispatch = useDispatch<AppDispatch>();
 	// state for the course state selection from the store
-	const { isLoading, reload, data } = useSelector((state: any) => state.course);
+	const { isLoading, reload, data, unRegisteredCourses } = useSelector(
+		(state: any) => state.course
+	);
 
 	useEffect(() => {
 		dispatch(getCourses());
-	}, [reload]);
+	}, [reload, dispatch]);
 
 	// function to find unregistered courses related to the current student
 	const handleFindCourse = async () => {
 		try {
+			// dispatch the function to find the current student's unregistered related course
 			const courses = await dispatch(findUnRegisteredCourses()).unwrap();
 			console.log(courses);
-			if (courses.length > 0) {
-				console.log(courses);
+			if (courses && courses.courses.length > 0) {
 				setOpen(true);
-				setCourses(courses);
 			}
+			// show msg
+			toast(courses.msg);
 		} catch (error) {
 			console.log(error);
 		}
@@ -226,10 +223,11 @@ const TimeTable = () => {
 				<FindCourses handleFindCourse={handleFindCourse} />
 			)}
 			<ShowUnregisteredCourses
-				courses={courses}
+				courses={unRegisteredCourses}
 				open={open}
 				setOpen={setOpen}
 			/>
+			<Toaster />
 		</main>
 	);
 };

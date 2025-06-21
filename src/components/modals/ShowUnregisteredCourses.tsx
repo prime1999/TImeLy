@@ -35,16 +35,19 @@ const ShowUnregisteredCourses = ({ open, setOpen, courses }: Props) => {
 		<>
 			<Dialog open={open}>
 				<DialogContent className="sm:max-w-[425px]">
-					<DialogTitle>
-						These are what your mates are registered for.
+					<DialogTitle className="font-inter font-normal text-sm text-center">
+						Check the courses your mates are registered for.
 					</DialogTitle>
 
 					<div className="p-2 flex flex-col gap-3">
-						{courses.length > 0 ? (
-							courses.map((course: any, index: number) => (
+						{courses &&
+						courses.courses &&
+						Array.isArray(courses.courses) &&
+						courses.courses.length > 0 ? (
+							courses.courses.map((course: any, index: number) => (
 								<div
 									key={index}
-									className="flex gap-2 item-center w-full bg-gray-200 font-inter text-xs rounded-md p-2"
+									className="flex gap-2 item-center w-full bg-gray-200 font-inter text-xs rounded-md p-2 dark:bg-gray-700"
 								>
 									<span
 										className={`h-[36px] flex justify-center items-center p-2 ${
@@ -63,7 +66,7 @@ const ShowUnregisteredCourses = ({ open, setOpen, courses }: Props) => {
 										<p className="text-[13px] truncate dark:text-slate-200">
 											{course.CourseTitle}
 										</p>
-										<span className="flex gap-2 items-center text-xs text-gray-500 pt-1 dark:text-gray-600">
+										<span className="flex gap-2 items-center text-xs text-gray-500 pt-1 dark:text-gray-400">
 											<p>
 												{course.unit} {course.unit === "1" ? "unit" : "units"}
 											</p>
