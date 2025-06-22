@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { Toaster } from "@/components/ui/sonner";
@@ -28,9 +27,7 @@ const days = [
 
 const AddCourse = () => {
 	const dispatch = useDispatch<AppDispatch>();
-	const location = useLocation();
-	// get the pathname from the current url
-	const paths = location.pathname.split("/");
+
 	const [startDate, setStartDate] = useState<any>(new Date());
 	const [endDate, setEndDate] = useState<any>(new Date());
 	const [day, setDay] = useState<string>("");
@@ -97,13 +94,17 @@ const AddCourse = () => {
 				schedule,
 			};
 			// dispatch the function to register course
-			const res = await dispatch(registerCourse(data)).unwrap();
+			const res: any = await dispatch(registerCourse(data)).unwrap();
 			// check if the course info exist and if the user info corresponds
 			if (res && res.exist) {
 				// if it exists and does not correspond,
 				// open the submit request modal
 				console.log(res);
 				setOpen(true);
+			}
+			if (res && res.description) {
+				// sow sent success msg
+				toast(res.description);
 			}
 		} catch (error) {
 			console.log(error);
@@ -118,7 +119,31 @@ const AddCourse = () => {
 				// TODO
 				// update directly
 			} else {
+				// create the actions array
+				let actions = [
+					{
+						label: "approve and merge",
+						function: "mergeUpdate()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
+					{
+						label: "approve key",
+						function: "approveUpdate()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
+					{
+						label: "decline key",
+						function: "declineUpdate()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
+					{
+						label: "show details",
+						function: "showDetails()",
+						payload: { courseId: data.courseId, data: data.updateData },
+					},
+				];
 				const updateData = {
+					actions,
 					updateData: data.data,
 					courseId: data.courseId,
 				};

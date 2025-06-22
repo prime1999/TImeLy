@@ -1,26 +1,9 @@
-import { useState } from "react";
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "../components/ui/tabs";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { FaFileUpload } from "react-icons/fa";
-import FacultyTable from "@/components/tables/faculty/facultyTable";
 import { CountDown, Courses } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
-import UploadTimeTable from "@/components/modals/UploadTimeTable";
 import TimeTable from "@/components/TimeTable";
 
 const Dashboard = () => {
-	const [open, setOpen] = useState<boolean>(false);
-
 	return (
 		<main className="my-2">
 			<div
@@ -60,44 +43,23 @@ const Dashboard = () => {
 			</div>
 			<HomeSlider />
 			<div className="w-11/12 mx-auto lg:hidden">
-				<Tabs defaultValue="faculty" className="">
-					<TabsList>
-						<TabsTrigger value="faculty">Faculty</TabsTrigger>
-						<TabsTrigger value="department">Department</TabsTrigger>
-					</TabsList>
-					<TabsContent value="faculty">
-						<FacultyTable />
-					</TabsContent>
-					<TabsContent value="department">
-						Make changes to your account here.
-					</TabsContent>
-				</Tabs>
+				<div>
+					<TimeTable />
+				</div>
 			</div>
 			<div className="hidden w-11/12 mx-auto mt-12 grid-cols-4 lg:grid">
 				<div className="col-span-3">
 					<div className="flex items-center gap-4 mb-8">
 						<Courses />
 						<CountDown />
-					</div>{" "}
-					{/* <Tabs defaultValue="faculty">
-						<TabsList>
-							<TabsTrigger value="faculty">Faculty</TabsTrigger>
-							<TabsTrigger value="department">Department</TabsTrigger>
-						</TabsList>
-						<TabsContent value="faculty">
-							<FacultyTable />
-						</TabsContent>
-						<TabsContent value="department">
-							Make changes to your account here.
-						</TabsContent>
-					</Tabs> */}
+					</div>
 					<div>
 						<TimeTable />
 					</div>
 				</div>
 				<div className="col-span-1">afs</div>
 			</div>
-			<div className="sticky bottom-10 left-10 z-[100] lg:ml-4">
+			{/* <div className="sticky bottom-10 left-10 z-[100] lg:ml-4">
 				<Tooltip>
 					<TooltipTrigger>
 						<button
@@ -112,7 +74,7 @@ const Dashboard = () => {
 					</TooltipContent>
 				</Tooltip>
 			</div>
-			<UploadTimeTable open={open} setOpen={setOpen} />
+			<UploadTimeTable open={open} setOpen={setOpen} /> */}
 		</main>
 	);
 };

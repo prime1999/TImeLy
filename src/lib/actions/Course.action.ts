@@ -32,10 +32,11 @@ export const addCourse = async (courseData: any) => {
 		// };
 		// console.log(course);
 
+		console.log(courseData);
 		// check if the course already exist in the database
 		const checkCourse = await databases.listDocuments(DBID, COURSES_ID, [
-			Query.equal("CourseTitle", courseData.CourseTitle),
-			Query.equal("CourseCode", courseData.CourseCode),
+			Query.equal("CourseTitle", courseData.courseTitle),
+			Query.equal("CourseCode", courseData.courseCode),
 		]);
 		// if it does
 		if (checkCourse.total > 0) {
@@ -63,6 +64,11 @@ export const addCourse = async (courseData: any) => {
 			);
 			// TODO
 			// check if the user is an admin so has to update the course directly
+			if (user.admin === true) {
+				// TODO
+				// update the course without createing the course update ticket
+				// send the notification to confirm the course update
+			}
 			// if a course with the same info exists
 			if (compared.exists) {
 				return {
@@ -76,22 +82,77 @@ export const addCourse = async (courseData: any) => {
 				exist: false,
 			};
 		}
+		console.log(1);
 		// but if the user hasn't registered for the course and the course doesn't exist in the DB
-		// create one
-		const courseRes = await databases.createDocument(
-			DBID,
-			COURSES_ID,
-			ID.unique(),
-			courseData
-		);
-		// register the user for the course
-		const userCourseRes = await databases.createDocument(
-			DBID,
-			USER_COURSE_ID,
-			ID.unique(),
-			{ userId: user.$id, courseId: courseRes.$id }
-		);
-		return userCourseRes;
+		// check if the user is an admin
+		// if yes, then create the course directly and register the user
+		if (user.admin === true) {
+			//TODO
+			// create the course and the register the user
+			const courseRes = await databases.createDocument(
+				DBID,
+				COURSES_ID,
+				ID.unique(),
+				courseData
+			);
+			// register the user for the course
+			const userCourseRes = await databases.createDocument(
+				DBID,
+				USER_COURSE_ID,
+				ID.unique(),
+				{ userId: user.$id, courseId: courseRes.$id }
+			);
+			return userCourseRes;
+		} else {
+			console.log("here");
+			// if the user is not an admin
+			// send notification to add the course and register the user to the admins of the course
+			const notificationData = {
+				title: "Request to add a course",
+				message: `There is a request to add a course, Please do review.`,
+				type: "request",
+				actions: JSON.stringify(courseData),
+				isRead: false,
+				createdAt: new Date().toISOString(),
+				student: [user.$id],
+			};
+			// create the notification
+			const notification = await databases.createDocument(
+				DBID,
+				NOTIFICATION_ID,
+				ID.unique(),
+				notificationData
+			);
+			// if the cotification was created
+			if (notification) {
+				// get the current user's info
+				const student = await databases.getDocument(DBID, STUDENTID, user.$id);
+				// get the list of admins
+				const admins = await databases.listDocuments(DBID, STUDENTID, [
+					Query.equal("school", student.school),
+					Query.equal("faculty", student.faculty),
+					Query.equal("department", student.department),
+					Query.equal("level", student.level),
+					Query.equal("admin", true),
+				]);
+
+				// send the notification to each admin
+				await Promise.all(
+					admins.documents.map((user) =>
+						databases.createDocument(DBID, USER_REALTION_ID, ID.unique(), {
+							student: [user.$id],
+							notifications: [notification.$id],
+						})
+					)
+				);
+
+				return {
+					exist: false,
+					description:
+						"Request submitted to admin, Course will be registered soon",
+				};
+			}
+		}
 	} catch (error) {
 		console.log(error);
 	}
@@ -165,7 +226,7 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 	}
 };
 
-// function to update a course
+// function to submit update a course
 export const submitCourseUpdateRequest = async (data: any) => {
 	try {
 		// Get the current user
@@ -195,35 +256,35 @@ export const submitCourseUpdateRequest = async (data: any) => {
 			);
 			// if the course exists
 			if (course) {
-				// create the actions array
-				let actions = [
-					{
-						label: "approve and merge",
-						function: "mergeUpdate()",
-						payload: { courseId: data.courseId, data: data.updateData },
-					},
-					{
-						label: "approve key",
-						function: "approveUpdate()",
-						payload: { courseId: data.courseId, data: data.updateData },
-					},
-					{
-						label: "decline key",
-						function: "declineUpdate()",
-						payload: { courseId: data.courseId, data: data.updateData },
-					},
-					{
-						label: "show details",
-						function: "showDetails()",
-						payload: { courseId: data.courseId, data: data.updateData },
-					},
-				];
+				// // create the actions array
+				// let actions = [
+				// 	{
+				// 		label: "approve and merge",
+				// 		function: "mergeUpdate()",
+				// 		payload: { courseId: data.courseId, data: data.updateData },
+				// 	},
+				// 	{
+				// 		label: "approve key",
+				// 		function: "approveUpdate()",
+				// 		payload: { courseId: data.courseId, data: data.updateData },
+				// 	},
+				// 	{
+				// 		label: "decline key",
+				// 		function: "declineUpdate()",
+				// 		payload: { courseId: data.courseId, data: data.updateData },
+				// 	},
+				// 	{
+				// 		label: "show details",
+				// 		function: "showDetails()",
+				// 		payload: { courseId: data.courseId, data: data.updateData },
+				// 	},
+				// ];
 				// create the notification data to be sent
 				const notificationData = {
 					title: "Request to update course details",
 					message: `There is a request to correct course info, Please do review.`,
 					type: "request",
-					actions: JSON.stringify(actions),
+					actions: JSON.stringify(data.actions),
 					isRead: false,
 					createdAt: new Date().toISOString(),
 					student: [userId],

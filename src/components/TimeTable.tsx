@@ -48,7 +48,6 @@ const TimeTable = () => {
 		try {
 			// dispatch the function to find the current student's unregistered related course
 			const courses = await dispatch(findUnRegisteredCourses()).unwrap();
-			console.log(courses);
 			if (courses && courses.courses.length > 0) {
 				setOpen(true);
 			}
@@ -94,7 +93,7 @@ const TimeTable = () => {
 										<p className="text-[15px] truncate dark:text-slate-200">
 											{course.CourseTitle}
 										</p>
-										<span className="flex gap-2 items-center text-xs text-gray-500 pt-1 dark:text-gray-600">
+										<span className="w-30 flex gap-2 items-center text-xs text-gray-500 pt-1 dark:text-gray-400 lg:w-68">
 											{course.CourseCode && (
 												<>
 													<p>{course.CourseCode}</p>
@@ -103,13 +102,15 @@ const TimeTable = () => {
 											)}
 											<p>
 												{course.unit} {course.unit === "1" ? "unit" : "units"}
-											</p>{" "}
-											<span className="bg-gray-500 w-1 h-1 rounded-full dark:bg-gray-600"></span>
-											<p>{course.venue ? course.venue : "unknown venue"}</p>
+											</p>
+											<span className="hidden bg-gray-500 w-1 h-1 rounded-full dark:bg-gray-600 lg:block"></span>
+											<p className="hidden lg:block">
+												{course.venue ? course.venue : "unknown venue"}
+											</p>
 											{course.lecturer && (
 												<>
-													<span className="bg-gray-500 w-1 h-1 rounded-full dark:bg-gray-600"></span>
-													<p>{course.lecturer}</p>
+													<span className="hidden bg-gray-500 w-1 h-1 rounded-full dark:bg-gray-600 lg:block"></span>
+													<p className="hidden lg:block">{course.lecturer}</p>
 												</>
 											)}
 										</span>
@@ -136,11 +137,11 @@ const TimeTable = () => {
 									{JSON.parse(course.schedule).map((time: any, i: number) => (
 										<span key={i} className="flex mb-2">
 											{time.day.toLowerCase() === getToday().toLowerCase() ? (
-												<p className="text-gray-500 dark:text-gray-600">
+												<p className="text-gray-500 dark:text-gray-400">
 													{getDuration(time.startDate, time.endDate)}
 												</p>
 											) : (
-												<p className="text-gray-500 dark:text-gray-600">Free</p>
+												<p className="text-gray-500 dark:text-gray-400">Free</p>
 											)}
 										</span>
 									))}

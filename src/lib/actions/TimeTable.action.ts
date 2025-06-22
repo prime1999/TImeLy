@@ -36,7 +36,6 @@ export const checkAppriteTimeTable = async (type: string) => {
 // Appwrite function to create a new faculty timeTable in the DB
 export const createAppwritTimeTable = async (data: string) => {
 	try {
-		console.log(JSON.stringify(data));
 		// get the current user
 		const user: any = await checkCurrentSession();
 		if (!user) return "User not Authorized";
