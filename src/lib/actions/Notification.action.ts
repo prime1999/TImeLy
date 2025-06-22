@@ -1,4 +1,4 @@
-import { Databases, ID, Query } from "appwrite";
+import { Account, Databases, ID, Query } from "appwrite";
 import client from "../appwrite.config";
 import {
 	DBID,
@@ -7,8 +7,11 @@ import {
 	USER_COURSE_ID,
 	COURSE_UPDATE_REQUEST_ID,
 	NOTIFICATION_ID,
+	USER_REALTION_ID,
 } from "@/contants/env.file";
-import { getCurrentStudent } from "./Student.actions";
+import { checkCurrentSession, getCurrentStudent } from "./Student.actions";
+
+const account = new Account(client);
 
 const databases = new Databases(client);
 
@@ -38,5 +41,25 @@ export const getUsersToBeNotified = async (curentUserId: string) => {
 		]);
 	} catch (error) {
 		console.log(error);
+	}
+};
+
+// function to get the notifications for the current student
+export const getAppwriteNotifications = async () => {
+	try {
+		// get the current user
+		const user: any = await checkCurrentSession();
+		if (!user) return "User not Authorized";
+
+		// if the user is authorized
+		// get the user relations (collection that hold the link to other collection except the course collection)
+		const userRelations = await databases.listDocuments(
+			DBID,
+			USER_REALTION_ID,
+			[Query.equal("student", user.$id)]
+		);
+	} catch (error) {
+		console.log(error);
+		return error;
 	}
 };

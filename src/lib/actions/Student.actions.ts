@@ -51,6 +51,7 @@ export const createuserAppwriteSession = async (userdata: any) => {
 			userdata.email,
 			userdata.password
 		);
+		console.log(res);
 		return res;
 	} catch (error) {
 		console.log(error);

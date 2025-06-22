@@ -23,6 +23,7 @@ const ShowUnregisteredCourses = ({ open, setOpen, courses }: Props) => {
 	// function to register the course for the user
 	const handleRegisterCourse = async (data: any) => {
 		try {
+			console.log("here");
 			await dispatch(registerCourse(data));
 			// TODO
 			// show success msg

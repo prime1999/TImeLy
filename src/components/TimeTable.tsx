@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
@@ -44,19 +44,17 @@ const TimeTable = () => {
 	}, [reload, dispatch]);
 
 	// function to find unregistered courses related to the current student
-	const handleFindCourse = async () => {
+	const handleFindCourse = useCallback(async () => {
 		try {
-			// dispatch the function to find the current student's unregistered related course
 			const courses = await dispatch(findUnRegisteredCourses()).unwrap();
 			if (courses && courses.courses.length > 0) {
 				setOpen(true);
 			}
-			// show msg
 			toast(courses.msg);
 		} catch (error) {
 			console.log(error);
 		}
-	};
+	}, [isLoading]); // This dependency could be user, selectedCourse, etc.
 
 	return (
 		<main className="w-full bg-gray-100 rounded-md p-2 mt-4 dark:bg-gray-700">

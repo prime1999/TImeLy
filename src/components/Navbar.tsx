@@ -1,9 +1,7 @@
-"use client";
-
-import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 import { BsPersonCircle } from "react-icons/bs";
+import { BiLogOutCircle } from "react-icons/bi";
 import Logo from "./Logo";
 import ThemeToggler from "./ThemeToggler";
 import {
@@ -11,31 +9,11 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { BiLogOutCircle } from "react-icons/bi";
-import { checkCurrentSession } from "@/lib/actions/Student.actions";
 
 const Navbar = () => {
-	const navigate = useNavigate();
-
-	// useEffect(() => {
-	// 	const handleLoad = async () => {
-	// 		try {
-	// 			const student = await checkCurrentSession();
-	// 			// if not then redirect back to the register page
-	// 			console.log(student);
-	// 			if (!student) {
-	// 				navigate("/logIn");
-	// 			}
-	// 		} catch (error) {
-	// 			console.error("Failed to load user:", error);
-	// 		}
-	// 	};
-	// 	handleLoad();
-	// }, []);
 	return (
 		<nav className="">
 			<div className="flex items-center justify-between p-4 lg:hidden">
-				{" "}
 				<Logo />
 				<div>
 					<FaBell className="text-green-400 text-2xl w-12 cursor-pointer" />

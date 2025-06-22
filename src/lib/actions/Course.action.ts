@@ -21,23 +21,16 @@ export const addCourse = async (courseData: any) => {
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
 		if (!user || !user.$id) return "User not Authorized";
-		// create the cousre data from the data sent (courseData)
-		// const course = {
-		// 	CourseCode: courseData.courseCode,
-		// 	CourseTitle: courseData.courseTitle,
-		// 	unit: courseData.unit.toString(),
-		// 	venue: courseData.venue,
-		// 	lecturer: courseData.lecturer,
-		// 	schedule: JSON.stringify(courseData.schedule),
-		// };
-		// console.log(course);
-
-		console.log(courseData);
 		// check if the course already exist in the database
+		console.log(courseData);
 		const checkCourse = await databases.listDocuments(DBID, COURSES_ID, [
-			Query.equal("CourseTitle", courseData.courseTitle),
-			Query.equal("CourseCode", courseData.courseCode),
+			Query.equal(
+				"CourseTitle",
+				courseData.courseTitle || courseData.CourseTitle
+			),
+			Query.equal("CourseCode", courseData.courseCode || courseData.CourseCode),
 		]);
+		console.log(123);
 		// if it does
 		if (checkCourse.total > 0) {
 			// check if the user already registered for the course
@@ -66,7 +59,7 @@ export const addCourse = async (courseData: any) => {
 			// check if the user is an admin so has to update the course directly
 			if (user.admin === true) {
 				// TODO
-				// update the course without createing the course update ticket
+				// update the course without creating the course update ticket
 				// send the notification to confirm the course update
 			}
 			// if a course with the same info exists
@@ -95,23 +88,51 @@ export const addCourse = async (courseData: any) => {
 				ID.unique(),
 				courseData
 			);
-			// register the user for the course
-			const userCourseRes = await databases.createDocument(
-				DBID,
-				USER_COURSE_ID,
-				ID.unique(),
-				{ userId: user.$id, courseId: courseRes.$id }
-			);
-			return userCourseRes;
+			// check if the course was created, and register the student that initialized the course to be added
+			if (courseRes) {
+				// register the user for the course
+				const userCourseRes = await databases.createDocument(
+					DBID,
+					USER_COURSE_ID,
+					ID.unique(),
+					{ userId: user.$id, courseId: courseRes.$id }
+				);
+				return userCourseRes;
+			}
 		} else {
 			console.log("here");
 			// if the user is not an admin
 			// send notification to add the course and register the user to the admins of the course
+
+			// create the actions array
+			let actions = [
+				{
+					// to update the course title and course code if they change
+					label: "approve and Update",
+					function: "addAndUpdate()",
+					payload: { data: courseData },
+				},
+				{
+					label: "approve key",
+					function: "approveAddCourse()",
+					payload: { data: courseData },
+				},
+				{
+					label: "decline key",
+					function: "declineAddCourse()",
+					payload: { data: courseData },
+				},
+				{
+					label: "show details",
+					function: "showDetails()",
+					payload: { data: courseData },
+				},
+			];
 			const notificationData = {
 				title: "Request to add a course",
 				message: `There is a request to add a course, Please do review.`,
 				type: "request",
-				actions: JSON.stringify(courseData),
+				actions: JSON.stringify(actions),
 				isRead: false,
 				createdAt: new Date().toISOString(),
 				student: [user.$id],
@@ -123,7 +144,7 @@ export const addCourse = async (courseData: any) => {
 				ID.unique(),
 				notificationData
 			);
-			// if the cotification was created
+			// if the notification was created
 			if (notification) {
 				// get the current user's info
 				const student = await databases.getDocument(DBID, STUDENTID, user.$id);

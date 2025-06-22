@@ -107,6 +107,7 @@ export const findUnRegisteredCouresInDB = async () => {
 			Query.equal("department", student.department),
 			Query.equal("level", student.level),
 		]);
+		// filter out the current user
 		const courseMates: any = await mates.documents.filter(
 			(mate) => mate.$id !== user.$id
 		);
@@ -144,9 +145,24 @@ export const findUnRegisteredCouresInDB = async () => {
 				msg: "Course mates are yet to register for any course on the app",
 				courses: [],
 			};
-		// loop through them again to get the one the user also is not registered for
+		// loop through course mates array, for each one that the documents is not empty
+		// the code will get there documents and add to general array (loopedMatesCourses)
+		const loopedMatesCourses: any[] = [];
+		matesCourses.forEach((course: any) => {
+			if (course.total > 0) {
+				course.documents.forEach((list: any) => {
+					// make sure the cousre doesn't repeat themselves
+					if (!loopedMatesCourses.some((c) => c.courseId === list.courseId)) {
+						loopedMatesCourses.push(list);
+					}
+				});
+			}
+		});
+		// if the looped array is empty
+		if (loopedMatesCourses.length < 1) return;
+		// loop through them again to get the one the user is not registered for
 		const currentStudentRegisteredCourses = await Promise.all(
-			matesCourses[0].documents.map(async (course: any) => {
+			loopedMatesCourses.map(async (course: any) => {
 				const userCourses = await databases.listDocuments(
 					DBID,
 					USER_COURSE_ID,
@@ -155,6 +171,7 @@ export const findUnRegisteredCouresInDB = async () => {
 						Query.equal("userId", user.$id),
 					]
 				);
+				console.log(userCourses);
 				// Return only if the user has courses
 				if (userCourses.total > 0) {
 					return null;
@@ -195,7 +212,7 @@ export const findUnRegisteredCouresInDB = async () => {
 				msg: "Course mates are yet to register for any other courses on the app",
 				courses: [],
 			};
-		return { msg: "Register", existingCourses, courses: existingCourses };
+		return { msg: "Register", courses: existingCourses };
 	} catch (error) {
 		console.log(error);
 	}

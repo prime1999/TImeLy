@@ -92,7 +92,6 @@ export const findUnRegisteredCourses = createAsyncThunk(
 			// call the function to find the courses in the DB
 			const res: any = await findUnRegisteredCouresInDB();
 			if (res) {
-				console.log(res);
 				return res;
 			}
 		} catch (error) {
