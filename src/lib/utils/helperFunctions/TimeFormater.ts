@@ -1,4 +1,5 @@
 import { parse, differenceInMinutes } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 export const formatScheduleTime = (date: Date) => {
 	console.log(date);
@@ -46,4 +47,9 @@ export const getToday = () => {
 	const dayName = today.toLocaleDateString("en-US", options);
 
 	return dayName;
+};
+
+export const timeAgo = (date: string) => {
+	const duration = formatDistanceToNow(new Date(date), { addSuffix: true });
+	return duration;
 };

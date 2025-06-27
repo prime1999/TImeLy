@@ -50,7 +50,7 @@ export const getAppwriteNotifications = async () => {
 		// get the current user
 		const user: any = await checkCurrentSession();
 		if (!user) return "User not Authorized";
-
+		console.log(user);
 		// if the user is authorized
 		// get the user relations (collection that hold the link to other collection except the course collection)
 		const userRelations = await databases.listDocuments(
@@ -58,6 +58,17 @@ export const getAppwriteNotifications = async () => {
 			USER_REALTION_ID,
 			[Query.equal("student", user.$id)]
 		);
+		console.log(userRelations);
+		// if the user relations is empty
+		if (userRelations.total < 1) return "Notifications box empty";
+
+		// get the notifications
+		const notifications: any[] = [];
+		userRelations.documents.forEach((relation) => {
+			relation.notifications.forEach((doc: any) => notifications.push(doc));
+		});
+		console.log(notifications);
+		return notifications;
 	} catch (error) {
 		console.log(error);
 		return error;

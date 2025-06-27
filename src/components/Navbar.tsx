@@ -9,8 +9,21 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
+import { getNotifications } from "@/lib/slice/NotificationSlice";
+import Notifications from "./Notifications";
 
 const Navbar = () => {
+	const dispatch = useDispatch<AppDispatch>();
+	// state for the notification modal
+	const [open, setOpen] = useState<boolean>(true);
+
+	const { isLoading, data } = useSelector((state: any) => state.notification);
+	useEffect(() => {
+		dispatch(getNotifications()).unwrap();
+	}, [dispatch]);
 	return (
 		<nav className="">
 			<div className="flex items-center justify-between p-4 lg:hidden">
@@ -50,7 +63,15 @@ const Navbar = () => {
 				</div>
 				<div className="flex items-center gap-8">
 					<div className="flex items-center gap-4">
-						<FaBell className="text-green-400 text-xl w-12 cursor-pointer" />
+						<Popover>
+							<PopoverTrigger>
+								<FaBell className="text-green-400 text-xl w-12 cursor-pointer" />
+							</PopoverTrigger>
+							<PopoverContent className="w-[400px] mt-4">
+								<Notifications isLoading={isLoading} notifications={data} />
+							</PopoverContent>
+						</Popover>
+						{/* for the profile */}
 						<Popover>
 							<PopoverTrigger>
 								<BsPersonCircle className="text-green-400 text-xl w-12 cursor-pointer" />

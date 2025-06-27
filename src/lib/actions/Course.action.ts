@@ -22,7 +22,6 @@ export const addCourse = async (courseData: any) => {
 		// If somehow the user is not authenticated, then
 		if (!user || !user.$id) return "User not Authorized";
 		// check if the course already exist in the database
-		console.log(courseData);
 		const checkCourse = await databases.listDocuments(DBID, COURSES_ID, [
 			Query.equal(
 				"CourseTitle",
@@ -30,7 +29,6 @@ export const addCourse = async (courseData: any) => {
 			),
 			Query.equal("CourseCode", courseData.courseCode || courseData.CourseCode),
 		]);
-		console.log(123);
 		// if it does
 		if (checkCourse.total > 0) {
 			// check if the user already registered for the course
@@ -75,7 +73,6 @@ export const addCourse = async (courseData: any) => {
 				exist: false,
 			};
 		}
-		console.log(1);
 		// but if the user hasn't registered for the course and the course doesn't exist in the DB
 		// check if the user is an admin
 		// if yes, then create the course directly and register the user
@@ -100,7 +97,6 @@ export const addCourse = async (courseData: any) => {
 				return userCourseRes;
 			}
 		} else {
-			console.log("here");
 			// if the user is not an admin
 			// send notification to add the course and register the user to the admins of the course
 
@@ -161,7 +157,7 @@ export const addCourse = async (courseData: any) => {
 				await Promise.all(
 					admins.documents.map((user) =>
 						databases.createDocument(DBID, USER_REALTION_ID, ID.unique(), {
-							student: [user.$id],
+							student: user.$id,
 							notifications: [notification.$id],
 						})
 					)
@@ -334,7 +330,7 @@ export const submitCourseUpdateRequest = async (data: any) => {
 					await Promise.all(
 						admins.documents.map((user) =>
 							databases.createDocument(DBID, USER_REALTION_ID, ID.unique(), {
-								student: [user.$id],
+								student: user.$id,
 								notifications: [notification.$id],
 							})
 						)

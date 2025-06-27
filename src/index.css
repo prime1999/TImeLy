@@ -199,23 +199,30 @@
 	color: white;
 }
 
+.scrollable-div {
+	/* Firefox scrollbar support */
+	scrollbar-width: thin; /* options: auto, thin, none */
+	scrollbar-color: #7ff58b #000000; /* thumb color and track color */
+}
+
+/* Chrome, Edge, Safari */
 .scrollable-div::-webkit-scrollbar {
-	width: 8px; /* width of the vertical scrollbar */
-	height: 8px; /* height of the horizontal scrollbar */
+	width: 8px;
+	height: 8px;
 }
 
 .scrollable-div::-webkit-scrollbar-track {
-	background: #000000; /* track color */
+	background: #000000;
 	border-radius: 4px;
 }
 
 .scrollable-div::-webkit-scrollbar-thumb {
-	background: #7ff58b; /* scrollbar handle */
+	background: #7ff58b;
 	border-radius: 4px;
 }
 
 .scrollable-div::-webkit-scrollbar-thumb:hover {
-	background: #02a312; /* on hover */
+	background: #02a312;
 }
 
 .table-loader {
