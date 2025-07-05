@@ -1,14 +1,12 @@
-"use client";
-
 import { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { MdTextFields } from "react-icons/md";
 import CustomFormField, { FormFieldType } from "./CustomFormField";
 import { TimePickerInput } from "@/lib/utils/TimePickerInput";
 import { Period } from "@/lib/utils/TimePicker";
 import { TimePeriodSelect } from "@/lib/utils/PeriodInput";
 
 const DayAndTime = ({ ...props }: any) => {
-	console.log(props.schedule);
 	const [period, setPeriod] = useState<Period>("AM");
 	const minuteRef = useRef<HTMLInputElement>(null);
 	const hourRef = useRef<HTMLInputElement>(null);
@@ -24,8 +22,18 @@ const DayAndTime = ({ ...props }: any) => {
 					name="days"
 					array={props.array}
 					label="Lecture Days"
-					handleSelect={props.handleSelect}
+					handleSelect={(value: string) => props.setDay(value)}
 					placeholder="day of lecture"
+					className="w-[300px]"
+				/>
+				<CustomFormField
+					fieldType={FormFieldType.input}
+					control={props.form.control}
+					name="venue"
+					label="Lecture Venue"
+					// onChange={(value: string) => props.setVenue(value)}
+					placeholder="Venue of Lecture"
+					iconSrc={<MdTextFields />}
 					className="w-[300px]"
 				/>
 				<div className="flex flex-col gap-2">
@@ -115,6 +123,9 @@ const DayAndTime = ({ ...props }: any) => {
 							key={i}
 							className="flex items-center gap-2 font-semibold mt-2 p-2 bg-green-400 rounded-md font-inter text-xs text-black"
 						>
+							<div>
+								<h6>{list.venue}</h6>
+							</div>
 							<div>
 								<h6>{list.day}</h6>
 							</div>

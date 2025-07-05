@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
+	appwriteMarkAsRead,
 	getAppwriteNotifications,
 	sendAppwriteNotification,
 } from "../actions/Notification.action";
 
 type initialType = {
 	isLoading: boolean;
+	reload: boolean;
 	message: string;
 	isSuccess: boolean;
 	data: any;
@@ -13,6 +15,7 @@ type initialType = {
 
 const initialState: initialType = {
 	isLoading: false,
+	reload: false,
 	message: "",
 	isSuccess: false,
 	data: null,
@@ -32,13 +35,26 @@ export const sendNotification = createAsyncThunk(
 
 // export function to get the notification of the current student
 export const getNotifications = createAsyncThunk(
-	"mnotification/notification",
+	"notification/notification",
 	async () => {
 		try {
 			// call the function to get the notifications
 			const notifications = await getAppwriteNotifications();
-			console.log(notifications);
 			return notifications;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// function to the get the APPwrite markAsRead function
+export const markAsRead = createAsyncThunk(
+	"notification/markAsRead",
+	async (notificationId: string) => {
+		try {
+			// call the appwriteMarkAsread function
+			const res = await appwriteMarkAsRead(notificationId);
+			return res;
 		} catch (error) {
 			console.log(error);
 		}
@@ -66,6 +82,12 @@ export const NotificationSlice = createSlice({
 			})
 			.addCase(getNotifications.rejected, (state) => {
 				state.isLoading = false;
+			})
+			.addCase(markAsRead.fulfilled, (state) => {
+				state.reload = true;
+			})
+			.addCase(markAsRead.rejected, (state) => {
+				state.reload = false;
 			});
 	},
 });

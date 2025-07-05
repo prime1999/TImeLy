@@ -207,12 +207,12 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 			if (updateData.unit && updateData.unit.toString() !== existingCourse.unit)
 				updatePayload.unit = updateData.unit;
 
-			if (
-				updateData.venue &&
-				normalizeString(updateData.venue) !==
-					normalizeString(existingCourse.venue)
-			)
-				updatePayload.venue = updateData.venue;
+			// if (
+			// 	updateData.venue &&
+			// 	normalizeString(updateData.venue) !==
+			// 		normalizeString(existingCourse.venue)
+			// )
+			//updatePayload.venue = updateData.venue;
 
 			if (
 				updateData.lecturer &&

@@ -59,6 +59,7 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 			venue: course.venue,
 		},
 	});
+	const { getValues } = form;
 
 	// function to select the day
 	const handleSelect = (value: string) => {
@@ -70,13 +71,18 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 		e.preventDefault();
 		// put the schedule data together
 		const newSchedule = {
+			venue: getValues().venue === undefined ? "" : getValues().venue,
 			day,
 			startDate: formatScheduleTime(startDate),
 			endDate: formatScheduleTime(endDate),
 		};
+		console.log(newSchedule);
 		// ceck if any of the data is available before adding the schedule to the array
-		if (day !== "" && startDate !== "" && endDate !== "")
+		if (day !== "" && startDate !== "" && endDate !== "") {
 			setSchedule((prev: any) => [...prev, newSchedule]);
+		} else if (day === "" || startDate === "" || endDate === "") {
+			toast("Course Schedule date not set");
+		}
 	};
 
 	// function to remove a schedule when filling the add course form
@@ -186,15 +192,6 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 									</div>
 
 									<div className="flex flex-col gap-4 mt-4">
-										<CustomFormField
-											fieldType={FormFieldType.input}
-											control={form.control}
-											name="venue"
-											label="Venue"
-											placeholder={course.venue}
-											type="text"
-											iconSrc={<MdOutlineLocationOn />}
-										/>
 										<DayAndTime
 											startDate={startDate}
 											endDate={endDate}

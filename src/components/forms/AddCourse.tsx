@@ -9,7 +9,7 @@ import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import { courseSchema } from "@/lib/Validation";
-import { MdNumbers, MdTextFields, MdOutlineLocationOn } from "react-icons/md";
+import { MdNumbers, MdTextFields } from "react-icons/md";
 import DayAndTime from "../DayAndTime";
 import SubmitButton from "@/lib/utils/SubmitButton";
 import { registerCourse, submitUpdateRequest } from "@/lib/slice/CourseSlice";
@@ -31,6 +31,7 @@ const AddCourse = () => {
 	const [startDate, setStartDate] = useState<any>(new Date());
 	const [endDate, setEndDate] = useState<any>(new Date());
 	const [day, setDay] = useState<string>("");
+	const [venue, setVenue] = useState("");
 	const [schedule, setSchedule] = useState<any>([]);
 	const form = useForm<z.infer<typeof courseSchema>>({
 		resolver: zodResolver(courseSchema),
@@ -44,6 +45,7 @@ const AddCourse = () => {
 	});
 	// state for opening or closing the modal
 	const [open, setOpen] = useState<boolean>(false);
+	const { getValues } = form;
 	// get the course and student states from the redux state
 	const { isLoading, data } = useSelector((state: any) => state.course);
 	const { student } = useSelector((state: any) => state.student);
@@ -58,13 +60,14 @@ const AddCourse = () => {
 		e.preventDefault();
 		// put the schedule data together
 		const newSchedule = {
+			venue: getValues("venue"),
 			day,
 			startDate: formatScheduleTime(startDate),
 			endDate: formatScheduleTime(endDate),
 		};
-		// ceck if any of the data is available before adding the schedule to the array
-		if (day !== "" && startDate !== "" && endDate !== "")
-			setSchedule((prev: any) => [...prev, newSchedule]);
+		// check if any of the data is available before adding the schedule to the array
+		if (day !== "" && startDate !== "" && endDate !== "") {
+		}
 	};
 
 	// function to remove a schedule when filling the add course form
@@ -89,7 +92,6 @@ const AddCourse = () => {
 				courseCode: values.courseCode,
 				courseTitle: values.courseTitle,
 				unit: values.courseUnit,
-				venue: values.venue,
 				lecturer: values.lecturer,
 				schedule,
 			};
@@ -121,11 +123,6 @@ const AddCourse = () => {
 			} else {
 				// create the actions array
 				let actions = [
-					{
-						label: "approve and merge",
-						function: "mergeUpdate()",
-						payload: { courseId: data.courseId, data: data.updateData },
-					},
 					{
 						label: "approve key",
 						function: "approveUpdate()",
@@ -216,7 +213,7 @@ const AddCourse = () => {
 							</div>
 						</div>
 						<div className="flex flex-col gap-4 mt-4">
-							<CustomFormField
+							{/* <CustomFormField
 								fieldType={FormFieldType.input}
 								control={form.control}
 								name="venue"
@@ -224,7 +221,7 @@ const AddCourse = () => {
 								placeholder="venue"
 								type="text"
 								iconSrc={<MdOutlineLocationOn />}
-							/>
+							/> */}
 							<DayAndTime
 								startDate={startDate}
 								endDate={endDate}
@@ -232,6 +229,7 @@ const AddCourse = () => {
 								setStartDate={setStartDate}
 								setEndDate={setEndDate}
 								setDay={setDay}
+								setVenue={setVenue}
 								handleSelect={handleSelect}
 								form={form}
 								array={days}
