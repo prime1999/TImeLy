@@ -175,6 +175,54 @@ export const addCourse = async (courseData: any) => {
 	}
 };
 
+//  function to just add a course
+export const addCourseToAppwrite = async (sentData: any) => {
+	try {
+		const { data } = sentData.payload;
+		// check if the user is an admin and if already authorized
+		const user: any = await checkCurrentSession();
+		// If somehow the user is not authenticated, then
+		if (!user || !user.$id) return "User not Authorized";
+
+		const student = await databases.getDocument(DBID, STUDENTID, user.$id);
+		//if the user is not an admin
+		if (student.admin !== true) return "User not Authorized";
+		// the user is an admin and if the user is authorized
+		// check if the course exist in appwrite
+		const checkCourse = await databases.listDocuments(DBID, COURSES_ID, [
+			Query.equal("CourseCode", data.courseCode),
+			Query.equal("CourseTitle", data.courseTitle),
+		]);
+
+		if (checkCourse.total > 0) return { msg: "Course not created" };
+		// create the course data
+		const courseData = {
+			CourseTitle: data.courseTitle,
+			CourseCode: data.courseCode,
+			lecturer: data.lecturer,
+			schedule: JSON.stringify(data.schedule),
+			unit: `${data.unit}`,
+		};
+		// add the course to the DB
+		const course = await databases.createDocument(
+			DBID,
+			COURSES_ID,
+			ID.unique(),
+			courseData
+		);
+		//  check if the course was created then send it to the course slice
+		if (course.$id) {
+			return {
+				msg: "Course created",
+				data: course,
+			};
+		}
+	} catch (error) {
+		console.log({ msg: "Course not created", data: error });
+		return { msg: "Course not created", data: error };
+	}
+};
+
 // check if the existing and submitted course info are same
 export const compareCourseInfo = async (courseId: string, updateData: any) => {
 	try {
@@ -410,5 +458,44 @@ export const unRegisterCourse = async (courseId: string) => {
 	} catch (error) {
 		console.log(error);
 		return { done: false };
+	}
+};
+
+// function to update a course in the DB
+export const updateCourseInDB = async (dataToBeSent: any) => {
+	try {
+		const { payload } = dataToBeSent;
+		const { data } = dataToBeSent.payload;
+		console.log(data);
+		// check if the user is an admin and if already authorized
+		const user: any = await checkCurrentSession();
+		// If somehow the user is not authenticated, then
+		if (!user || !user.$id) return "User not Authorized";
+		// get the current user document
+		const student = await databases.getDocument(DBID, STUDENTID, user.$id);
+		//if the user is not an admin
+		if (student.admin !== true) return "User not Authorized";
+		// the user is an admin and if the user is authorized
+		// check if the course exist in appwrite
+		const checkCourse = await databases.getDocument(
+			DBID,
+			COURSES_ID,
+			payload.courseId
+		);
+		if (!checkCourse) {
+			console.log({ msg: "Course does not exist" });
+			return { msg: "Course does not exist" };
+		}
+		// if the course exists, then update the course
+		const course = await databases.updateDocument(
+			DBID,
+			COURSES_ID,
+			payload.courseId,
+			data
+		);
+		if (!course) return { msg: "Course does not exist" };
+		return { msg: "Course update done", data: course };
+	} catch (error) {
+		console.log(error);
 	}
 };

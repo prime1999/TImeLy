@@ -6,10 +6,11 @@ import { SiTicktick } from "react-icons/si";
 import { PiStudentFill } from "react-icons/pi";
 import { toast } from "sonner";
 import { Toaster } from "./ui/sonner";
-import { markAsRead } from "@/lib/slice/NotificationSlice";
+import { markAsRead, setNotification } from "@/lib/slice/NotificationSlice";
 import { timeAgo } from "@/lib/utils/helperFunctions/TimeFormater";
 import TableLoader from "@/lib/utils/tableLoader";
 import ShowNotificationDetailsModal from "./modals/ShowNotificationDetailsModal";
+import { addStudentCourse, updateCourse } from "@/lib/slice/CourseSlice";
 
 type Props = {
 	isLoading: boolean;
@@ -32,6 +33,46 @@ const Notifications = ({
 			if (res && res.$id) {
 				// show success msg
 				toast("marked");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleDispatch = async (notification: any) => {
+		try {
+			// dispatch function to mark a notification as read
+			await dispatch(setNotification(notification));
+			// close the notification modal
+			setOpen(true);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const approveAddCourse = async (notification: any) => {
+		try {
+			// init the res variable
+			let res;
+			if (notification.title === "Request to add a course") {
+				// dispatch the function to approve the course and add it to the DB
+				res = await dispatch(
+					addStudentCourse(JSON.parse(notification.actions)[0])
+				).unwrap();
+			} else if (notification.title === "Request to update course details") {
+				// dispatch the function to approve the course and update it in the DB
+				res = await dispatch(
+					updateCourse(JSON.parse(notification.actions)[0])
+				).unwrap();
+			}
+			if (res && res.msg === "Course created") {
+				// if the course was approved successfully
+				toast(res.msg);
+				// then mark the notification as read
+				if (notification.isRead === false) {
+					await markNotification(notification.$id);
+				}
+			} else {
+				toast(res.msg);
 			}
 		} catch (error) {
 			console.log(error);
@@ -120,10 +161,16 @@ const Notifications = ({
 														{JSON.parse(notification.actions).map(
 															(action: any) => (
 																<button
-																	onClick={() => {
-																		action.label === "show details" &&
-																			setOpen(true);
-																	}}
+																	disabled={
+																		action.label !== "show details" &&
+																		notification.isRead
+																	}
+																	onClick={() =>
+																		action.label === "show details"
+																			? handleDispatch(notification)
+																			: action.label === "approve key" &&
+																			  approveAddCourse(notification)
+																	}
 																	className={`text-[10px] capitalize py-1 px-2 font-semibold cursor-pointer rounded-lg duration-500 ${
 																		action.label === "approve key"
 																			? "bg-green-500 hover:bg-green-600"
@@ -143,11 +190,6 @@ const Notifications = ({
 											)}
 										</div>
 										<hr />
-										<ShowNotificationDetailsModal
-											open={open}
-											setOpen={setOpen}
-											notification={notification}
-										/>
 									</>
 								))}
 						</div>
@@ -164,6 +206,7 @@ const Notifications = ({
 				)}
 			</div>
 			<Toaster />
+			<ShowNotificationDetailsModal open={open} setOpen={setOpen} />
 		</main>
 	);
 };

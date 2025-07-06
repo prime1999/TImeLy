@@ -66,8 +66,8 @@ const AddCourse = () => {
 			endDate: formatScheduleTime(endDate),
 		};
 		// check if any of the data is available before adding the schedule to the array
-		if (day !== "" && startDate !== "" && endDate !== "") {
-		}
+		if (day !== "" && startDate !== "" && endDate !== "")
+			setSchedule((prev: any) => [...prev, newSchedule]);
 	};
 
 	// function to remove a schedule when filling the add course form
@@ -101,11 +101,10 @@ const AddCourse = () => {
 			if (res && res.exist) {
 				// if it exists and does not correspond,
 				// open the submit request modal
-				console.log(res);
 				setOpen(true);
 			}
 			if (res && res.description) {
-				// sow sent success msg
+				// show sent success msg
 				toast(res.description);
 			}
 		} catch (error) {

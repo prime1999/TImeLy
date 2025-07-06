@@ -101,10 +101,7 @@ const TimeTable = () => {
 											<p>
 												{course.unit} {course.unit === "1" ? "unit" : "units"}
 											</p>
-											<span className="hidden bg-gray-500 w-1 h-1 rounded-full dark:bg-gray-600 lg:block"></span>
-											<p className="hidden lg:block">
-												{course.venue ? course.venue : "unknown venue"}
-											</p>
+
 											{course.lecturer && (
 												<>
 													<span className="hidden bg-gray-500 w-1 h-1 rounded-full dark:bg-gray-600 lg:block"></span>

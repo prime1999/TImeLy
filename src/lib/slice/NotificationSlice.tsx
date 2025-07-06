@@ -11,6 +11,7 @@ type initialType = {
 	message: string;
 	isSuccess: boolean;
 	data: any;
+	currentNotification: any;
 };
 
 const initialState: initialType = {
@@ -19,6 +20,7 @@ const initialState: initialType = {
 	message: "",
 	isSuccess: false,
 	data: null,
+	currentNotification: null,
 };
 
 // export function to send notification
@@ -61,6 +63,19 @@ export const markAsRead = createAsyncThunk(
 	}
 );
 
+// function to set the current notification to show its details
+export const setNotification = createAsyncThunk(
+	"notification/setNotification",
+	async (notification: any) => {
+		try {
+			console.log(notification);
+			return notification;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
 export const NotificationSlice = createSlice({
 	name: "notification",
 	initialState,
@@ -88,6 +103,13 @@ export const NotificationSlice = createSlice({
 			})
 			.addCase(markAsRead.rejected, (state) => {
 				state.reload = false;
+			})
+			.addCase(setNotification.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(setNotification.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.currentNotification = action.payload;
 			});
 	},
 });

@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import {
 	Dialog,
 	DialogClose,
@@ -11,24 +12,24 @@ import CourseRequestDetails from "../CourseRequestDetails";
 type Props = {
 	open: boolean;
 	setOpen: any;
-	notification: any;
 };
 
-const ShowNotificationDetailsModal = ({
-	open,
-	setOpen,
-	notification,
-}: Props) => {
-	console.log(notification);
+const ShowNotificationDetailsModal = ({ open, setOpen }: Props) => {
+	const { currentNotification, isLoading } = useSelector(
+		(state: any) => state.notification
+	);
+	console.log(currentNotification);
 	return (
 		<>
 			<Dialog open={open}>
 				<DialogContent className="sm:max-w-[425px]">
 					<DialogTitle>Details</DialogTitle>
 					<DialogHeader>
-						{notification.type === "request" && (
-							<CourseRequestDetails notification={notification} />
-						)}
+						{!isLoading &&
+							currentNotification !== null &&
+							currentNotification?.type === "request" && (
+								<CourseRequestDetails notification={currentNotification} />
+							)}
 					</DialogHeader>
 					<DialogFooter>
 						<DialogClose asChild>

@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
 	addCourse,
+	addCourseToAppwrite,
 	getCoursesFromAppwrite,
 	submitCourseUpdateRequest,
 	unRegisterCourse,
+	updateCourseInDB,
 } from "../actions/Course.action";
 import { findUnRegisteredCouresInDB } from "../actions/TimeTable.action";
 
@@ -26,6 +28,38 @@ const initialState: initialType = {
 	data: null,
 	unRegisteredCourses: null,
 };
+
+// function to just add a course without registering for the course
+export const addStudentCourse = createAsyncThunk(
+	"course/addCourse",
+	async (data) => {
+		try {
+			// call the appwrite function to ad the course to the DB
+			const res: any = await addCourseToAppwrite(data);
+			if (res && res.msg === "Course created") {
+				return res;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// function to update a course
+export const updateCourse = createAsyncThunk(
+	"course/updateCourse",
+	async (dataToUpdate: any) => {
+		try {
+			//call the appwrite function to update the course
+			const res: any = await updateCourseInDB(dataToUpdate);
+			if (res.msg === "Course update done") {
+				return res;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
 
 // function to register a course
 export const registerCourse = createAsyncThunk(

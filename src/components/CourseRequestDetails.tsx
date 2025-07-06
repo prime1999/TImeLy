@@ -6,7 +6,7 @@ type Props = {
 };
 
 const CourseRequestDetails = ({ notification }: Props) => {
-	// Safely parse actions from the stringified JSON
+	console.log(notification);
 	const actions = JSON.parse(notification.actions);
 
 	return (
@@ -16,20 +16,58 @@ const CourseRequestDetails = ({ notification }: Props) => {
 				{actions
 					.filter((action: any) => action.label === "show details")
 					.map((action: any, i: number) => (
-						<div key={i} className="mt-2">
-							{action.payload?.data?.courseTitle && (
-								<div className="flex gap-2 items-center text-sm">
-									<h6 className="font-semibold text-gray-600">Course Title:</h6>
-									<p className="text-gray-800">
-										{action.payload.data.courseTitle}
-									</p>
-								</div>
-							)}
+						<div key={i} className="mt-4">
+							{/* If payload.data exists, loop over its entries */}
+							{action.payload?.data && (
+								<div className="text-sm">
+									{Object.entries(action.payload.data).map(
+										([key, value]: any) => {
+											if (key === "schedule" && Array.isArray(value)) {
+												// Render schedule separately
+												return (
+													<div key={key}>
+														<h4 className="text-md font-semibold my-2 capitalize">
+															{key}
+														</h4>
+														{value.map((scheduleItem: any, index: number) => (
+															<div key={index} className="mb-2 ml-4 text-xs">
+																{Object.entries(scheduleItem).map(
+																	([sKey, sValue]: any) => (
+																		<p
+																			key={sKey}
+																			className="capitalize text-green-500 mb-2"
+																		>
+																			<span className="font-medium text-gray-800">
+																				{sKey}:
+																			</span>{" "}
+																			{sValue}
+																		</p>
+																	)
+																)}
+															</div>
+														))}
+													</div>
+												);
+											}
 
-							{action.payload?.data?.venue && (
-								<div className="flex gap-2 items-center text-sm">
-									<h6 className="font-semibold text-gray-600">Venue:</h6>
-									<p className="text-gray-800">{action.payload.data.venue}</p>
+											// For all other keys
+											return (
+												<>
+													{key !== "userId" && (
+														<p
+															key={key}
+															className="my-2 capitalize text-green-500"
+														>
+															<span className="font-medium text-gray-800">
+																{key}:
+															</span>{" "}
+															{value}
+														</p>
+													)}
+												</>
+											);
+										}
+									)}
 								</div>
 							)}
 						</div>
@@ -38,5 +76,4 @@ const CourseRequestDetails = ({ notification }: Props) => {
 		</main>
 	);
 };
-
 export default CourseRequestDetails;

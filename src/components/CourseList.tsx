@@ -69,14 +69,6 @@ const CourseList = () => {
 									{course.unit}
 								</p>
 							</div>
-							<div className="w-3/12 flex flex-col lg:w-1/12">
-								<h6 className="text-xs mb-2 text-gray-500 dark:text-gray-400">
-									Venue
-								</h6>
-								<p className="px-2 py-1 border border-gray-300 rounded-sm bg-gray-100 dark:border-gray-700 dark:bg-gray-700">
-									{course.venue}
-								</p>
-							</div>
 							<div className="hidden flex-col w-2/12 lg:flex">
 								<h6 className="text-xs mb-2 text-gray-500 dark:text-gray-400">
 									Lecturer
