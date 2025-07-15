@@ -47,7 +47,7 @@
 :root {
 	--radius: 0.625rem;
 	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
+	--foreground: rgb(12, 18, 30);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
@@ -82,7 +82,7 @@
 }
 
 .dark {
-	--background: oklch(0.145 0 0);
+	--background: rgb(12, 18, 30);
 	--foreground: oklch(0.985 0 0);
 	--card: oklch(0.205 0 0);
 	--card-foreground: oklch(0.985 0 0);
@@ -238,7 +238,21 @@
 	animation: rotation 1s linear infinite;
 }
 
-/* HTML: <div class="loader"></div> */
+.glassmorphism {
+	border-radius: 16px;
+	backdrop-filter: blur(10.1px);
+	-webkit-backdrop-filter: blur(10.1px);
+}
+
+.darkGlassmorphism {
+	background: rgba(4, 1, 71, 0.3);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(155, 155, 155, 0.1);
+	backdrop-filter: blur(2.5px);
+	-webkit-backdrop-filter: blur(2.5px);
+	border: 1px solid rgb(16, 2, 109);
+}
+
 .full-loader {
 	width: 32px;
 	aspect-ratio: 1;

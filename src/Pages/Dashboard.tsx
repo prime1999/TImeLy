@@ -2,6 +2,7 @@ import { CountDown, Courses } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
 import TimeTable from "@/components/TimeTable";
+import CalendarWithNotes from "@/components/CalendarWithNotes";
 
 const Dashboard = () => {
 	return (
@@ -47,7 +48,7 @@ const Dashboard = () => {
 					<TimeTable />
 				</div>
 			</div>
-			<div className="hidden w-11/12 mx-auto mt-12 grid-cols-4 lg:grid">
+			<div className="hidden w-11/12 mx-auto mt-12 grid-cols-4 lg:grid gap-4">
 				<div className="col-span-3">
 					<div className="flex items-center gap-4 mb-8">
 						<Courses />
@@ -57,7 +58,9 @@ const Dashboard = () => {
 						<TimeTable />
 					</div>
 				</div>
-				<div className="col-span-1">afs</div>
+				<div className="col-span-1">
+					<CalendarWithNotes />
+				</div>
 			</div>
 			{/* <div className="sticky bottom-10 left-10 z-[100] lg:ml-4">
 				<Tooltip>
