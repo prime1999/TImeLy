@@ -4,6 +4,7 @@ const STUDENTID = import.meta.env.VITE_STUDENT_COLLECTION_ID as string;
 const DBID = import.meta.env.VITE_APPWRITE_DATABASE_ID as string;
 const PROJECTID = import.meta.env.VITE_APPWRITE_PROJECT_ID as string;
 const TIME_TABLE_ID = import.meta.env.VITE_TIME_TABLE_COLLECTION_ID as string;
+const TASKID = import.meta.env.VITE_TASK_COLLECTION_ID as string;
 const NOTEID = import.meta.env.VITE_NOTE_COLLECTION_ID as string;
 const EXAM_SCHEDULE_ID = import.meta.env
 	.VITE_EXAM_SCHEDULE_COLLECTION_ID as string;
@@ -21,6 +22,7 @@ export {
 	DBID,
 	PROJECTID,
 	TIME_TABLE_ID,
+	TASKID,
 	NOTEID,
 	EXAM_SCHEDULE_ID,
 	USER_COURSE_ID,

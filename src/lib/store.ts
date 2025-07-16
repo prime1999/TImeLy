@@ -4,7 +4,7 @@ import studentReducer from "./slice/StudentSlice";
 import courseReducer from "./slice/CourseSlice";
 import NotificationReducer from "./slice/NotificationSlice";
 import TimeTableReducer from "./slice/TimeTableSlice";
-// ...
+import TaskReducer from "./slice/TasksSlice";
 
 export const store = configureStore({
 	reducer: {
@@ -13,6 +13,7 @@ export const store = configureStore({
 		course: courseReducer,
 		notification: NotificationReducer,
 		timeTable: TimeTableReducer,
+		tasks: TaskReducer,
 	},
 });
 

@@ -2,7 +2,7 @@ import { CountDown, Courses } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
 import TimeTable from "@/components/TimeTable";
-import CalendarWithNotes from "@/components/CalendarWithNotes";
+import CalendarWithNotes from "@/components/CalendarWithTasks";
 
 const Dashboard = () => {
 	return (

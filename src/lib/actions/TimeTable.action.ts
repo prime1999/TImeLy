@@ -94,6 +94,7 @@ export const updateAppwriteTimeTable = async (data: any) => {
 // Appwrite function to finc te related unregistered courses for the user
 export const findUnRegisteredCouresInDB = async () => {
 	try {
+		console.log(123);
 		// get the current user
 		const user: any = await checkCurrentSession();
 		if (!user) return "User not Authorized";

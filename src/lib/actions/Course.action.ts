@@ -398,14 +398,19 @@ export const submitCourseUpdateRequest = async (data: any) => {
 // function to get the list of the user's courses
 export const getCoursesFromAppwrite = async () => {
 	try {
+		console.log(123);
 		// get the user's id
 		const session = await checkCurrentSession();
 		//if the user is not authorized
 		if (!session || !session.$id) return "User not Authorized";
+		console.log(session);
+
 		// if the user is authorised ten get the courses id the user registered for
 		const courses = await databases.listDocuments(DBID, USER_COURSE_ID, [
 			Query.equal("userId", session.$id),
 		]);
+		console.log(courses);
+		console.log(789);
 		// if the user has not registered for any course
 		if (courses.total < 1) return "User not registered to any course";
 		// if the user has registered, then get the use the ids to get the courses

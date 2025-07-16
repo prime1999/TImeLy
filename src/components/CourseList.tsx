@@ -30,6 +30,8 @@ const CourseList = () => {
 		dispatch(getCourses());
 	}, [reload]);
 
+	console.log(data);
+
 	return (
 		<main className="w-full bg-gray-100 rounded-md p-2 mt-4 dark:bg-gray-700">
 			{isLoading ? (
@@ -37,9 +39,9 @@ const CourseList = () => {
 					<TableLoader />
 				</div>
 			) : (
-				data &&
+				Array.isArray(data) &&
 				!isLoading &&
-				data.map((course: any, i: number) => (
+				data?.map((course: any, i: number) => (
 					<div
 						key={i}
 						className="relative w-full font-inter text-xs capitalize mt-4 bg-white shadow-md p-4 rounded-md dark:bg-gray-900 dark:shadow-gray-600"
