@@ -53,3 +53,12 @@ export const courseSchema = z.object({
 	lecturer: z.string(),
 	venue: z.string(),
 });
+export const createTaskSchema = z.object({
+	title: z.string({ required_error: "Task should have a specific identifier" }),
+	body: z.string(),
+	status: z.string({ required_error: "Specify the task status" }),
+	startDate: z.string({
+		required_error: "Give your task a specific Start date",
+	}),
+	endDate: z.string(),
+});
