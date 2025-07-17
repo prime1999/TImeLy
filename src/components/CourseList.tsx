@@ -30,8 +30,6 @@ const CourseList = () => {
 		dispatch(getCourses());
 	}, [reload]);
 
-	console.log(data);
-
 	return (
 		<main className="w-full bg-gray-100 rounded-md p-2 mt-4 dark:bg-gray-700">
 			{isLoading ? (
@@ -124,7 +122,7 @@ const CourseList = () => {
 						</div>
 						{showCourseDetails && (
 							<CourseDetail
-								course={course}
+								selectedCourse={course}
 								showCourseDetails={showCourseDetails}
 								setShowCourseDetails={setShowCourseDetails}
 							/>

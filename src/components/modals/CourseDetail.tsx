@@ -25,42 +25,43 @@ const CourseDetail = ({
 									<h6 className="text-sm text-gray-500 font-semibold">
 										Course-Title:
 									</h6>
-									<p className="">{selectedCourse.CourseTitle}</p>
+									<p className="">{selectedCourse?.CourseTitle}</p>
 								</div>
 								<div className="flex gap-2 mb-2">
 									<h6 className="text-sm text-gray-500 font-semibold">
 										Course-Code:
 									</h6>
-									<p className="capitalize">{selectedCourse.CourseCode}</p>
+									<p className="capitalize">{selectedCourse?.CourseCode}</p>
 								</div>
 								<div className="flex gap-2 mb-2">
 									<h6 className="text-sm text-gray-500 font-semibold">Unit:</h6>
-									<p className="">{selectedCourse.unit}</p>
-								</div>
-								<div className="flex gap-2 mb-2">
-									<h6 className="text-sm text-gray-500 font-semibold">
-										Venue:
-									</h6>
-									<p className="">{selectedCourse.venue}</p>
+									<p className="">{selectedCourse?.unit}</p>
 								</div>
 								<div className="flex gap-2 mb-2">
 									<h6 className="text-sm text-gray-500 font-semibold">
 										Lecturer:
 									</h6>
-									<p className="">{selectedCourse.lecturer}</p>
+									<p className="">{selectedCourse?.lecturer}</p>
 								</div>
 								<div className="flex flex-col">
-									<h6 className="text-sm text-gray-500 font-semibold">
-										Schedule:
-									</h6>
 									<ul className="text-xs">
-										{JSON.parse(selectedCourse.schedule).map(
+										{JSON.parse(selectedCourse?.schedule).map(
 											(time: any, i: number) => (
-												<li key={i} className="flex mb-2">
-													<p className="capitalize">{time.day}: </p>
-													<p className="ml-2">
-														{time.startDate} - {time.endDate}
-													</p>
+												<li key={i} className="flex flex-col w-full mb-2">
+													<span className="flex gap-2 mb-2">
+														<h6 className="text-sm text-gray-500 font-semibold">
+															Venue:
+														</h6>
+														<p className="capitalize">{time.day}: </p>
+													</span>
+													<span className="flex gap-2">
+														<h6 className="text-sm text-gray-500 font-semibold">
+															Schedule:
+														</h6>{" "}
+														<p className="ml-2">
+															{time.startDate} - {time.endDate}
+														</p>
+													</span>
 												</li>
 											)
 										)}

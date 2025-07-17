@@ -57,7 +57,7 @@ const TimeTable = () => {
 	}, [isLoading]); // This dependency could be user, selectedCourse, etc.
 
 	return (
-		<main className="w-full bg-gray-100 rounded-md p-2 mt-4 dark:bg-gray-700">
+		<main className="w-full glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 rounded-md p-4 mt-4 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400">
 			<h3 className="font-inter font-bold p-2 text-gray-600 uppercase dark:text-slate-400">
 				Your Time-Table
 			</h3>
