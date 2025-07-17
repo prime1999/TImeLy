@@ -57,8 +57,8 @@ export const createTaskSchema = z.object({
 	title: z.string({ required_error: "Task should have a specific identifier" }),
 	body: z.string(),
 	status: z.string({ required_error: "Specify the task status" }),
-	startDate: z.string({
+	startDate: z.date({
 		required_error: "Give your task a specific Start date",
 	}),
-	endDate: z.string(),
+	endDate: z.date(),
 });

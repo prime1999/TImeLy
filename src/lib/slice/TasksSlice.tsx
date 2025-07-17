@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getTasksFromDB } from "../actions/Tasks.action";
+import { addTaskToAppwrite, getTasksFromDB } from "../actions/Tasks.action";
 
 type initType = {
 	tasks: any | null;
@@ -29,6 +29,19 @@ export const getTasks = createAsyncThunk("task/getTasks", async () => {
 	}
 });
 
+// function to call the function to add a task in the DB
+export const addTask = createAsyncThunk("task/addTask", async (taskData) => {
+	try {
+		console.log(taskData);
+		// callthe apwrite fucntion
+		const res: any = await addTaskToAppwrite(taskData);
+		console.log(res);
+		return res?.data;
+	} catch (error) {
+		console.log(error);
+	}
+});
+
 export const TaskSlice = createSlice({
 	name: "tasks",
 	initialState,
@@ -50,6 +63,18 @@ export const TaskSlice = createSlice({
 			})
 			.addCase(getTasks.rejected, (state) => {
 				state.isLoading = true;
+				state.isSucess = false;
+			})
+			.addCase(addTask.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(addTask.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.tasks = action.payload;
+				state.isSucess = true;
+			})
+			.addCase(addTask.rejected, (state) => {
+				state.isLoading = false;
 				state.isSucess = false;
 			});
 	},

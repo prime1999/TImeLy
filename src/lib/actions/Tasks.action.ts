@@ -54,3 +54,83 @@ export const getTasksFromDB = async () => {
 		console.log(error);
 	}
 };
+
+// function to add the task to the apwrite DB
+export const addTaskToAppwrite = async (taskData: any) => {
+	try {
+		console.log(taskData);
+		// Get the current user
+		const user: any = await checkCurrentSession();
+		// If somehow the user is not authenticated, then
+		if (!user || !user.$id) return { msg: "User not Authorized" };
+		// get the user relation
+		const userRelation = await databases.listDocuments(DBID, USER_REALTION_ID, [
+			Query.equal("student", user.$id),
+		]);
+		console.log(userRelation);
+		// if the user relation was not found
+		if (userRelation.total < 1) {
+			console.log(here);
+			// create one for the user
+			const relation = await databases.createDocument(
+				DBID,
+				USER_REALTION_ID,
+				ID.unique(),
+				{
+					student: user.$id,
+				}
+			);
+			// once the relation is created, then
+			// add the task to the DB
+			const res = await addTaskToDB(taskData, relation.$id);
+			return res;
+		}
+		// if the user relation was found, then
+		// add the task to th relation directly
+		const res = await addTaskToDB(taskData, userRelation.documents[0].$id);
+		return res;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// function to handle the adding of th task tto the DB
+export const addTaskToDB = async (data: any, relationId: any) => {
+	try {
+		console.log(relationId);
+		// create the task in the DB
+		const task = await databases.createDocument(DBID, TASKID, ID.unique(), {
+			...data,
+			userRelations: relationId,
+			createdAt: new Date(),
+		});
+		console.log(task);
+		// if th task was created, then update the user relation
+		// Get the current relation document
+		const relation = await databases.getDocument(
+			DBID,
+			USER_REALTION_ID,
+			relationId
+		);
+
+		// Merge existing task IDs with the new one
+		const existingTasks = relation.tasks ?? [];
+		const updatedTasks = [...existingTasks, task.$id];
+
+		// Update user relation document
+		const updatedRelation = await databases.updateDocument(
+			DBID,
+			USER_REALTION_ID,
+			relationId,
+			{
+				tasks: updatedTasks,
+			}
+		);
+
+		console.log(updatedRelation);
+		// if the relation was update, then
+		return { msg: "done", data: task };
+	} catch (error) {
+		console.log(error);
+	}
+};

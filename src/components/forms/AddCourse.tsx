@@ -163,7 +163,7 @@ const AddCourse = () => {
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className="space-y-6 w-full mx-auto"
+						className="space-y-6 mx-auto"
 					>
 						<div>
 							<div className="col-span-2 mb-4 lg:mb-0">

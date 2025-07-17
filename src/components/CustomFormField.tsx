@@ -1,4 +1,5 @@
 import type { E164Number } from "libphonenumber-js/core";
+import { format } from "date-fns";
 import {
 	FormControl,
 	FormField,
@@ -13,11 +14,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import type { Control } from "react-hook-form";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { FaCalendar } from "react-icons/fa";
 
 export enum FormFieldType {
 	input = "input",
@@ -25,6 +33,8 @@ export enum FormFieldType {
 	checkbox = "checkbox",
 	select = "select",
 	skeleton = "skeleton",
+	textArea = "textarea",
+	date = "date",
 }
 interface CustomProps {
 	control: Control<any>;
@@ -79,6 +89,39 @@ const RenderInput = ({ props, field }: { props: CustomProps; field: any }) => {
 					</FormControl>
 				</div>
 			);
+		case FormFieldType.date:
+			return (
+				<FormControl className="w-full">
+					<Popover>
+						<PopoverTrigger asChild>
+							<FormControl>
+								<button
+									className={`w-[240px] border border-gray-200 flex items-center p-2 rounded-md text-left font-inter text-xs dark:border-gray-400 ${
+										!field.value && "text-muted-foreground"
+									}`}
+								>
+									{field.value ? (
+										format(field.value, "PPP")
+									) : (
+										<span>Pick a date</span>
+									)}
+									<FaCalendar className="ml-auto h-4 w-4 opacity-50" />
+								</button>
+							</FormControl>
+						</PopoverTrigger>
+						<PopoverContent className="w-auto p-0" align="start">
+							<Calendar
+								mode="single"
+								selected={field.value}
+								onSelect={field.onChange}
+								captionLayout="dropdown"
+							/>
+						</PopoverContent>
+					</Popover>
+				</FormControl>
+			);
+		case FormFieldType.textArea:
+			return <Textarea placeholder={props.placeholder} {...field} />;
 		case FormFieldType.phone_input:
 			return (
 				<FormControl className="w-full">
@@ -93,6 +136,7 @@ const RenderInput = ({ props, field }: { props: CustomProps; field: any }) => {
 					/>
 				</FormControl>
 			);
+
 		case FormFieldType.select:
 			return (
 				<Select
