@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { date, z } from "zod";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { Form } from "@/components/ui/form";
@@ -12,7 +12,7 @@ import { createTaskSchema } from "@/lib/Validation";
 import { MdTextFields } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import SubmitButton from "@/lib/utils/SubmitButton";
-import { addTask } from "@/lib/slice/TasksSlice";
+import { addTask, updateTask } from "@/lib/slice/TasksSlice";
 
 const status = [
 	{ name: "In-Progress", value: "inProgress" },
@@ -21,30 +21,32 @@ const status = [
 ];
 
 type Props = {
+	task: any;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CreateTaskForm = ({ setOpen }: Props) => {
+const UpdateTaskForm = ({ setOpen, task }: Props) => {
 	const dispatch = useDispatch<AppDispatch>();
 	// state to store the status value
-	const [selectedStatus, setSelectedStatus] = useState<String>("");
-	// gt the state on the task store from the redux store
-	const { tasks, isLoading } = useSelector((state: any) => state.tasks);
+	const [selectedStatus, setSelectedStatus] = useState<String>(task.status);
+	// state to get the task redux state from the rdux store
+	const { isLoading, isSuccess } = useSelector((state: any) => state.tasks);
 	const form = useForm<z.infer<typeof createTaskSchema>>({
 		resolver: zodResolver(createTaskSchema),
 		defaultValues: {
-			title: "",
-			body: "",
-			status: "",
-			startDate: new Date(),
-			endDate: new Date(),
+			title: task.title,
+			body: task.body,
+			status: task.status,
+			startDate: task.startDate ? new Date(task.startDate) : undefined,
+			endDate: task.endDate ? new Date(task.endDate) : undefined,
 		},
 	});
 
 	const onSubmit = async (values: z.infer<any>) => {
 		try {
-			// dispatch the function to send the task data to redux add task function
+			// dispatch the function to send the task data to redux update task function
 			const taskData: any = {
+				$id: task.$id,
 				title: values.title,
 				body: values.body,
 				status: selectedStatus,
@@ -52,15 +54,16 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 				endDate: values.endDate,
 			};
 			console.log(taskData);
-			const res = await dispatch(addTask(taskData)).unwrap();
+			const res = await dispatch(updateTask(taskData)).unwrap();
 			console.log(res);
 			// send the msg gotten from the appwrite add task functionality
-			toast(res.msg);
-			if (res.msg === "Task added") setOpen(false);
+			toast(res?.msg);
+			if (res && res?.msg === "Document updated Successfully") setOpen(false);
 		} catch (error) {
 			console.log(error);
 		}
 	};
+	console.log(task);
 	return (
 		<div className="">
 			<Form {...form}>
@@ -85,7 +88,7 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 							<CustomFormField
 								fieldType={FormFieldType.textArea}
 								control={form.control}
-								name="description"
+								name="body"
 								label="Description"
 								placeholder="Task description"
 								type="text"
@@ -135,7 +138,7 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 						isLoading={isLoading}
 						className="w-full mx-auto flex justify-center mt-4 bg-green-400 text-black rounded-lg font-inter font-bold"
 					>
-						Add Task
+						Update Task
 					</SubmitButton>
 				</form>
 			</Form>
@@ -144,4 +147,4 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 	);
 };
 
-export default CreateTaskForm;
+export default UpdateTaskForm;

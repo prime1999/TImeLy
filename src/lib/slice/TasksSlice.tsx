@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addTaskToAppwrite, getTasksFromDB } from "../actions/Tasks.action";
+import {
+	addTaskToAppwrite,
+	deleteTaskInDB,
+	getTasksFromDB,
+	updateTaskInDB,
+} from "../actions/Tasks.action";
 
 type initType = {
 	tasks: any | null;
@@ -22,7 +27,7 @@ export const getTasks = createAsyncThunk("task/getTasks", async () => {
 		const res = await getTasksFromDB();
 		if (res && res.tasks) {
 			console.log(res.tasks);
-			return res;
+			return res.tasks;
 		}
 	} catch (error) {
 		console.log(error);
@@ -33,7 +38,7 @@ export const getTasks = createAsyncThunk("task/getTasks", async () => {
 export const addTask = createAsyncThunk("task/addTask", async (taskData) => {
 	try {
 		console.log(taskData);
-		// callthe apwrite fucntion
+		// call the apwrite function
 		const res: any = await addTaskToAppwrite(taskData);
 		console.log(res);
 		return res?.data;
@@ -41,6 +46,35 @@ export const addTask = createAsyncThunk("task/addTask", async (taskData) => {
 		console.log(error);
 	}
 });
+
+// function to call the function to update a task in the DB
+export const updateTask = createAsyncThunk(
+	"tasks/updateTask",
+	async (updateData) => {
+		try {
+			console.log(updateData);
+			// call the appwrite function
+			const res = await updateTaskInDB(updateData);
+			return res;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// function to call the function to delete a task in the DB
+export const deleteTask = createAsyncThunk(
+	"tasks/deleteTask",
+	async (taskId: string) => {
+		try {
+			// call the appwrite function
+			const res = await deleteTaskInDB(taskId);
+			return res;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
 
 export const TaskSlice = createSlice({
 	name: "tasks",

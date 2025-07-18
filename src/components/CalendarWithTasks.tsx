@@ -1,41 +1,71 @@
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useState } from "react";
+import { MdAdsClick } from "react-icons/md";
 import { formatDateRange } from "little-date";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import CreatetaskModal from "./modals/CreatetaskModal";
+import TaskDetailsModal from "./modals/TaskDetailsModal";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
+import { getTasks } from "@/lib/slice/TasksSlice";
 const events = [
 	{
-		title: "Team Sync Meeting",
-		status: "pending",
-		createdAt: "2025-06-12T09:00:00",
-		from: "2025-07-12T09:00:00",
-		to: "2025-07-14T10:00:00",
-	},
-	{
 		title: "Design Review",
+		body: "Testing 2",
 		status: "done",
 		createdAt: "2025-06-12T09:00:00",
-		from: "2025-07-12T09:00:00",
-		to: "2025-07-14T10:00:00",
+		startDate: "2025-07-12T09:00:00",
+		endDate: "2025-07-14T10:00:00",
 	},
 	{
 		title: "Client Presentation",
-		notes: "",
+		body: "Testing 3",
 		status: "inProgress",
 		createdAt: "2025-06-12T09:00:00",
-		from: "2025-07-12T09:00:00",
-		to: "2025-07-14T10:00:00",
+		startDate: "2025-07-12T09:00:00",
+		endDate: "2025-07-14T10:00:00",
+	},
+	{
+		title: "Team Sync Meeting",
+		body: "Testing 1",
+		status: "pending",
+		createdAt: "2025-06-12T09:00:00",
+		startDate: "2025-07-12T09:00:00",
+		endDate: "2025-07-14T10:00:00",
 	},
 ];
 
 const CalendarWithNotes = () => {
+	const dispatch = useDispatch<AppDispatch>();
+	// state to handle the tsk selected
+	const [selectedTask, setSelectedTask] = useState<any>(null);
 	// state to handle the create task modal
-	const [open, setOpen] = useState<boolean>(true);
+	const [open, setOpen] = useState<boolean>(false);
+	// state to handle the show full task details modal
+	const [openModal, setOpenModal] = useState<boolean>(false);
+	// state to handle the current choose date value
 	const [date, setDate] = useState<Date | undefined>(new Date(2025, 5, 12));
+	// get the tasks gotten from the DB with other states from the redux store
+	const { tasks, isLoading, isSuccess } = useSelector(
+		(state: any) => state.tasks
+	);
+
+	useEffect(() => {
+		// dispatch the fuction to get the users tasks
+		const getUsersTasks = async () => {
+			try {
+				// call the function to get the tasks
+				const res = await dispatch(getTasks()).unwrap();
+				console.log(res);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		getUsersTasks();
+	}, [dispatch]);
 	return (
 		<>
-			{" "}
 			<Card className="w-fit py-4">
 				<CardContent className="px-4">
 					<Calendar
@@ -57,31 +87,51 @@ const CalendarWithNotes = () => {
 						</div>
 						<button onClick={() => setOpen(true)}>
 							<FaPlus className="cursor-pointer" />
-							<span className="sr-only">Add Event</span>
+							<span className="sr-only">Add Task</span>
 						</button>
 					</div>
 					<div className="flex w-full flex-col gap-2">
-						{events.map((event) => (
-							<div
-								key={event.title}
-								className={`bg-muted ${
-									event.status === "done"
-										? "after:bg-green-500"
-										: event.status === "inProgress"
-										? "after:bg-yellow-500"
-										: "after:bg-red-500"
-								} relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full dark: dark:bg-[rgb(255,255,255,0.05)]`}
-							>
-								<div className="font-medium">{event.title}</div>
-								<div className="text-muted-foreground text-xs">
-									{formatDateRange(new Date(event.from), new Date(event.to))}
+						{tasks &&
+							tasks?.map((task: any) => (
+								<div
+									key={task.title}
+									className={`flex items-center justify-between bg-muted ${
+										task.status === "done"
+											? "after:bg-green-500"
+											: task.status === "inProgress"
+											? "after:bg-yellow-500"
+											: "after:bg-red-500"
+									} relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full dark: dark:bg-[rgb(255,255,255,0.05)]`}
+								>
+									<div>
+										{" "}
+										<div className="font-medium">{task.title}</div>
+										<div className="text-muted-foreground text-xs">
+											{formatDateRange(
+												new Date(task.startDate),
+												new Date(task.endDate)
+											)}
+										</div>
+									</div>
+									<button
+										onClick={() => {
+											setSelectedTask(task);
+											setOpenModal(true);
+										}}
+									>
+										<MdAdsClick />
+									</button>
 								</div>
-							</div>
-						))}
+							))}
 					</div>
 				</CardFooter>
 			</Card>
 			<CreatetaskModal open={open} setOpen={setOpen} />
+			<TaskDetailsModal
+				task={selectedTask}
+				open={openModal}
+				setOpen={setOpenModal}
+			/>
 		</>
 	);
 };

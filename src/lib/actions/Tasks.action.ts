@@ -11,6 +11,7 @@ import {
 	TASKID,
 } from "@/contants/env.file";
 import { checkCurrentSession } from "./Student.actions";
+import { normalizeString } from "../utils/helperFunctions/helper";
 
 const databases = new Databases(client);
 
@@ -21,11 +22,11 @@ export const getTasksFromDB = async () => {
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
 		if (!user || !user.$id) return { msg: "User not Authorized" };
-		// get te relations that belongs to the current user
+		// get the relations that belongs to the current user
 		const userRelations = await databases.listDocuments(
 			DBID,
 			USER_REALTION_ID,
-			[Query.equal("userId", user.$id)]
+			[Query.equal("student", user.$id)]
 		);
 		// if user is yet to have a relation
 		if (userRelations.total < 1) return { msg: "Tasks empty" };
@@ -36,19 +37,38 @@ export const getTasksFromDB = async () => {
 		// if the tasks relation does not exist
 		if (relationWithTasks.length === 0) return { msg: "Tasks empty" };
 		// if the tasks relation exists, then
-		let tasks = await Promise.all(
+		let tasks: any = await Promise.all(
 			relationWithTasks.map(async (relation) => {
 				try {
-					let list = await databases.getDocument(DBID, TASKID, relation.tasks);
-					return list?.$id ? list : null;
+					if (!Array.isArray(relation.tasks)) return [];
+
+					const taskDocs = await Promise.all(
+						relation.tasks.map(async (task) => {
+							try {
+								const gottenTask = await databases.getDocument(
+									DBID,
+									TASKID,
+									task.$id
+								);
+								return gottenTask?.$id ? gottenTask : null;
+							} catch (error) {
+								console.error("Error fetching task:", error);
+								return null;
+							}
+						})
+					);
+
+					return taskDocs.filter(Boolean); // Remove nulls
 				} catch (error) {
-					console.error("Error fetching course:", error);
-					return null;
+					console.error("Error in relation:", error);
+					return [];
 				}
 			})
 		);
+		// Flatten the nested array (array of arrays) to a single array of task objects
+		tasks = tasks.flat();
 		// Remove any nulls (failed fetches)
-		tasks = tasks.filter((task) => task !== null);
+		tasks = tasks.filter((task: any) => task !== null);
 		return { tasks };
 	} catch (error) {
 		console.log(error);
@@ -70,7 +90,7 @@ export const addTaskToAppwrite = async (taskData: any) => {
 		console.log(userRelation);
 		// if the user relation was not found
 		if (userRelation.total < 1) {
-			console.log(here);
+			console.log("here");
 			// create one for the user
 			const relation = await databases.createDocument(
 				DBID,
@@ -129,7 +149,92 @@ export const addTaskToDB = async (data: any, relationId: any) => {
 
 		console.log(updatedRelation);
 		// if the relation was update, then
-		return { msg: "done", data: task };
+		return { msg: "Task added", data: task };
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// function to update a task in the DB
+export const updateTaskInDB = async (updateData: any) => {
+	try {
+		// compare the task with the one in the DB
+		const compareResult = await compareTask(updateData);
+		// if the task data was not updated
+		if (compareResult?.exists !== true) return { msg: "No update Required" };
+		// if the task data was updated, then proceed to update the task in the DB
+		// update the task in appwrite
+		const updatedTask = await databases.updateDocument(
+			DBID,
+			TASKID,
+			updateData.$id,
+			compareResult?.payload
+		);
+		if (!updatedTask.$id) return { msg: "Document not updated" };
+		// if the document was updated
+		return { msg: "Document updated Successfully" };
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// function to compare tasks
+export const compareTask = async (taskData: any) => {
+	try {
+		// get the exiting document from the DB
+		const existingTask = await databases.getDocument(
+			DBID,
+			TASKID,
+			taskData.$id
+		);
+		console.log({ existingTask, taskData });
+		// if the document exists
+		if (existingTask && existingTask.$id) {
+			// create an empty object where the user will store the data to update
+			const updatePayload: { [key: string]: any } = {};
+			// start checking each field for the data to update and add the data to the empty object created
+			if (
+				taskData.CourseTitle &&
+				normalizeString(taskData.title) !== normalizeString(existingTask.title)
+			)
+				updatePayload.title = taskData.title;
+
+			if (
+				taskData.body &&
+				normalizeString(taskData.body) !== normalizeString(existingTask.body)
+			)
+				updatePayload.body = taskData.body;
+
+			if (taskData.status && taskData.status.toString() !== existingTask.status)
+				updatePayload.status = taskData.status;
+
+			if (taskData.startDate && taskData.startDate !== existingTask.startDate)
+				updatePayload.startDate = taskData.startDate;
+
+			if (taskData.endDate && taskData.endDate !== existingTask.endDate)
+				updatePayload.endDate = taskData.endDate;
+
+			if (Object.keys(updatePayload).length > 0) {
+				return {
+					exists: true,
+					payload: updatePayload,
+				};
+			}
+		}
+		return {
+			exists: false,
+		};
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// function to delete a task in the DB
+export const deleteTaskInDB = async (taskId: string) => {
+	try {
+		// delete the task from appwrite
+		const res = await databases.deleteDocument(DBID, TASKID, taskId);
+		return res;
 	} catch (error) {
 		console.log(error);
 	}

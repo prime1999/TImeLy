@@ -7,14 +7,15 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import CreateTaskForm from "../forms/CreateTaskForm";
+import UpdateTaskForm from "../forms/UpdateTaskForn";
 
 type Props = {
+	task: any;
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CreatetaskModal = ({ open, setOpen }: Props) => {
+const TaskDetailsModal = ({ open, setOpen, task }: Props) => {
 	return (
 		<>
 			<Dialog open={open}>
@@ -23,11 +24,14 @@ const CreatetaskModal = ({ open, setOpen }: Props) => {
 						<DialogTitle>Create a Task</DialogTitle>
 						<hr />
 						<DialogDescription>
-							<CreateTaskForm setOpen={setOpen} />
+							<UpdateTaskForm setOpen={setOpen} task={task} />
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter className="w-full">
 						<DialogClose className="w-full">
+							<button className="w-full h-10 mb-2 py-2 text-red-500 rounded-md border-2 border-red-400 font-semibold cursor-pointer duration-700 hover:bg-red-500 hover:text-white hover:border-none">
+								Delete Task
+							</button>
 							<DialogClose asChild>
 								<button
 									onClick={() => setOpen(false)}
@@ -44,4 +48,4 @@ const CreatetaskModal = ({ open, setOpen }: Props) => {
 	);
 };
 
-export default CreatetaskModal;
+export default TaskDetailsModal;
