@@ -98,7 +98,7 @@ const UpdateTaskForm = ({ setOpen, task }: Props) => {
 						</div>
 						<div className="w-full flex gap-2 items-center mt-4">
 							{status.map((stat) => (
-								<button
+								<span
 									onClick={() => setSelectedStatus(stat.value)}
 									className={`rounded-md text-center text-black font-semibold cursor-pointer duration-700 font-inter text-xs w-1/3 p-2 flex gap-2 items-center justify-center ${
 										stat.value === "done"
@@ -112,7 +112,7 @@ const UpdateTaskForm = ({ setOpen, task }: Props) => {
 									{selectedStatus === stat.value && (
 										<IoCheckmarkDoneCircle className="text-white text-md" />
 									)}
-								</button>
+								</span>
 							))}
 						</div>
 						<div className="flex items-center gap-2 justify-center flex-wrap my-4 lg:mb-0">

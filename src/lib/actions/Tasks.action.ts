@@ -233,8 +233,7 @@ export const compareTask = async (taskData: any) => {
 export const deleteTaskInDB = async (taskId: string) => {
 	try {
 		// delete the task from appwrite
-		const res = await databases.deleteDocument(DBID, TASKID, taskId);
-		return res;
+		await databases.deleteDocument(DBID, TASKID, taskId);
 	} catch (error) {
 		console.log(error);
 	}

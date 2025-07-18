@@ -68,8 +68,7 @@ export const deleteTask = createAsyncThunk(
 	async (taskId: string) => {
 		try {
 			// call the appwrite function
-			const res = await deleteTaskInDB(taskId);
-			return res;
+			await deleteTaskInDB(taskId);
 		} catch (error) {
 			console.log(error);
 		}
@@ -110,6 +109,24 @@ export const TaskSlice = createSlice({
 			.addCase(addTask.rejected, (state) => {
 				state.isLoading = false;
 				state.isSucess = false;
+			})
+			.addCase(updateTask.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateTask.fulfilled, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(updateTask.rejected, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(deleteTask.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteTask.fulfilled, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(deleteTask.rejected, (state) => {
+				state.isLoading = false;
 			});
 	},
 });

@@ -8,6 +8,10 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import UpdateTaskForm from "../forms/UpdateTaskForn";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
+import { deleteTask } from "@/lib/slice/TasksSlice";
+import Loader from "@/lib/utils/Loader";
 
 type Props = {
 	task: any;
@@ -16,6 +20,21 @@ type Props = {
 };
 
 const TaskDetailsModal = ({ open, setOpen, task }: Props) => {
+	// init dispatch
+	const dispatch = useDispatch<AppDispatch>();
+	// get the task loading state form the redux store
+	const { isLoading } = useSelector((state: any) => state.tasks);
+	// function to delete task
+	const handleDeleteTask = async () => {
+		try {
+			// dispatch te delete task function in the slice
+			await dispatch(deleteTask(task.$id)).unwrap();
+			// close the modal
+			setOpen(false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<>
 			<Dialog open={open}>
@@ -29,8 +48,17 @@ const TaskDetailsModal = ({ open, setOpen, task }: Props) => {
 					</DialogHeader>
 					<DialogFooter className="w-full">
 						<DialogClose className="w-full">
-							<button className="w-full h-10 mb-2 py-2 text-red-500 rounded-md border-2 border-red-400 font-semibold cursor-pointer duration-700 hover:bg-red-500 hover:text-white hover:border-none">
-								Delete Task
+							<button
+								onClick={() => handleDeleteTask()}
+								className="w-full h-10 mb-2 py-2 text-red-500 rounded-md border-2 border-red-400 font-semibold cursor-pointer duration-700 hover:bg-red-500 hover:text-white hover:border-none"
+							>
+								{isLoading ? (
+									<span className="flex gap-2 justify-center">
+										<Loader /> <p>Loading...</p>
+									</span>
+								) : (
+									<span>Delete Task</span>
+								)}
 							</button>
 							<DialogClose asChild>
 								<button
