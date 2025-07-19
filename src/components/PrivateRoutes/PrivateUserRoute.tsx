@@ -9,7 +9,7 @@ const PrivateUserRoutes = () => {
 	if (checkingStatus) {
 		return <FullPageLoader />;
 	}
-	return isLoggedIn ? <Outlet /> : <Navigate to="/" />;
+	return isLoggedIn ? <Outlet /> : <Navigate to="/signIn" />;
 };
 
 export default PrivateUserRoutes;

@@ -200,7 +200,7 @@ const HomeSlider = () => {
 					<div
 						id="slider"
 						key={i}
-						className={`w-[70vw] h-[20vh] mx-2 bg-black shrink-0 rounded-3xl overflow-hidden flex items-center relative`}
+						className={`w-[70vw] h-[20vh] mx-2 shrink-0 rounded-xl overflow-hidden flex items-center relative`}
 					>
 						{li === "schedule" ? (
 							<Schedule />

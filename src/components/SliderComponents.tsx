@@ -10,7 +10,7 @@ import { PiNotepadFill } from "react-icons/pi";
 // schedule slide
 export const Schedule = () => {
 	return (
-		<div className="w-full h-full p-4 bg-gray-900 rounded-md">
+		<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
 			<div className="flex justify-between items-center text-gray-200">
 				<h4 className="font-inter font-semibold text-md">Schedule</h4>
 				<PiNotepadFill className="text-md text-green-400 font-semibold" />
@@ -51,7 +51,7 @@ export const CountDown = () => {
 // notes slide
 export const Notes = () => {
 	return (
-		<div className="w-full h-full p-4 bg-gray-900 rounded-md">
+		<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
 			<div className="flex justify-between items-center text-gray-200">
 				<h4 className="font-inter font-semibold text-md">Notes</h4>
 				<MdNoteAlt className="text-md text-green-400 font-semibold" />

@@ -10,7 +10,9 @@ const ThemeToggler = () => {
 
 	return (
 		<main className="flex gap-2 items-center justify-center">
-			<p className="font-inter text-xs font-semibold">Change theme</p>
+			<p className="hidden font-inter text-xs font-semibold md:block">
+				Change theme
+			</p>
 			<Switch checked={theme === "light"} onCheckedChange={handleToggle} />
 		</main>
 	);
