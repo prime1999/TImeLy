@@ -5,6 +5,7 @@ import {
 	getTasksFromDB,
 	updateTaskInDB,
 } from "../actions/Tasks.action";
+import { compareDatesForTasks } from "../utils/helperFunctions/helper";
 
 type initType = {
 	tasks: any | null;
@@ -45,7 +46,7 @@ export const addTask = createAsyncThunk("task/addTask", async (taskData) => {
 		// call the apwrite function
 		const res: any = await addTaskToAppwrite(taskData);
 		console.log(res);
-		return res?.data;
+		return res;
 	} catch (error) {
 		console.log(error);
 	}
@@ -73,6 +74,22 @@ export const deleteTask = createAsyncThunk(
 		try {
 			// call the appwrite function
 			await deleteTaskInDB(taskId);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// function to handle the task filter based on the date
+export const filterTaskByDate = createAsyncThunk(
+	"tasks/filterTaskByDate",
+	async ({ tasks, date }: any) => {
+		try {
+			console.log({ tasks, date });
+			// filter the task based on the date selected
+			const res = await compareDatesForTasks(tasks, date);
+			console.log({ res, date: new Date(date) });
+			return res;
 		} catch (error) {
 			console.log(error);
 		}
@@ -108,7 +125,7 @@ export const TaskSlice = createSlice({
 			})
 			.addCase(addTask.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.tasks = action.payload;
+				state.tasks = action.payload.data;
 				state.isSucess = true;
 			})
 			.addCase(addTask.rejected, (state) => {
@@ -131,6 +148,16 @@ export const TaskSlice = createSlice({
 				state.isLoading = false;
 			})
 			.addCase(deleteTask.rejected, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(filterTaskByDate.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(filterTaskByDate.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.filteredTasks = action.payload;
+			})
+			.addCase(filterTaskByDate.rejected, (state) => {
 				state.isLoading = false;
 			});
 	},

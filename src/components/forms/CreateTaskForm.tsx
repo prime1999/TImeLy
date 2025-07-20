@@ -12,7 +12,7 @@ import { createTaskSchema } from "@/lib/Validation";
 import { MdTextFields } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import SubmitButton from "@/lib/utils/SubmitButton";
-import { addTask } from "@/lib/slice/TasksSlice";
+import { addTask, getTasks } from "@/lib/slice/TasksSlice";
 
 const status = [
 	{ name: "In-Progress", value: "inProgress" },
@@ -51,12 +51,14 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 				startDate: values.startDate,
 				endDate: values.endDate,
 			};
-			console.log(taskData);
 			const res = await dispatch(addTask(taskData)).unwrap();
-			console.log(res);
 			// send the msg gotten from the appwrite add task functionality
 			toast(res.msg);
-			if (res.msg === "Task added") setOpen(false);
+			if (res.msg === "Task added") {
+				// dispatch the function to get the tasks
+				dispatch(getTasks());
+				setOpen(false);
+			}
 		} catch (error) {
 			console.log(error);
 		}

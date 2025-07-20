@@ -68,3 +68,24 @@ export const reStructureUniversalTimetable = (data: any[]) => {
 	console.log(structuredData);
 	return structuredData;
 };
+
+export const compareDatesForTasks = (tasks: any, date: any) => {
+	console.log(new Date(date));
+	console.log(new Date(tasks[0].startDate));
+	const isSameDay = (d1: Date, d2: Date) => {
+		const date1 = new Date(d1);
+		const date2 = new Date(d2);
+
+		return (
+			date1.getFullYear() === date2.getFullYear() &&
+			date1.getMonth() === date2.getMonth() &&
+			date1.getDate() === date2.getDate()
+		);
+	};
+
+	const filteredTasks = tasks.filter((task: any) => {
+		return isSameDay(task.startDate, date); // both can be strings, no problem now
+	});
+
+	return filteredTasks;
+};

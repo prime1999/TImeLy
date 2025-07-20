@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import CreatetaskModal from "./modals/CreatetaskModal";
 import TaskDetailsModal from "./modals/TaskDetailsModal";
-import { getTasks } from "@/lib/slice/TasksSlice";
+import { filterTaskByDate, getTasks } from "@/lib/slice/TasksSlice";
 import TableLoader from "@/lib/utils/tableLoader";
 
 const CalendarWithNotes = () => {
@@ -26,8 +26,6 @@ const CalendarWithNotes = () => {
 		(state: any) => state.tasks
 	);
 
-	console.log({ filteredTasks });
-
 	useEffect(() => {
 		// dispatch the fuction to get the users tasks
 		const getUsersTasks = async () => {
@@ -41,6 +39,20 @@ const CalendarWithNotes = () => {
 		};
 		getUsersTasks();
 	}, [dispatch]);
+
+	const handleDate = async (value: any) => {
+		try {
+			// set the show date to th date selected
+			setDate(value);
+			// dispatch the filter of the task function
+			const resTasks = await dispatch(
+				filterTaskByDate({ tasks, date: value })
+			).unwrap();
+			return resTasks;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<>
 			<Card className="w-fit py-4">
@@ -48,7 +60,7 @@ const CalendarWithNotes = () => {
 					<Calendar
 						mode="single"
 						selected={date}
-						onSelect={setDate}
+						onSelect={handleDate}
 						className="bg-transparent p-0"
 						required
 					/>
@@ -102,6 +114,13 @@ const CalendarWithNotes = () => {
 							))}
 						<div className="w-full h-full flex items-center justify-center">
 							{isLoading && <TableLoader />}
+						</div>
+						<div className="">
+							{!isLoading && filteredTasks && filteredTasks.length < 1 && (
+								<h6 className="font-inter font-semibold text-xs">
+									No task set for this date
+								</h6>
+							)}
 						</div>
 					</div>
 				</CardFooter>

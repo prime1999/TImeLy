@@ -10,8 +10,10 @@ import {
 import UpdateTaskForm from "../forms/UpdateTaskForn";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
-import { deleteTask } from "@/lib/slice/TasksSlice";
+import { deleteTask, getTasks } from "@/lib/slice/TasksSlice";
 import Loader from "@/lib/utils/Loader";
+import { Toaster } from "../ui/sonner";
+import { toast } from "sonner";
 
 type Props = {
 	task: any;
@@ -29,6 +31,10 @@ const TaskDetailsModal = ({ open, setOpen, task }: Props) => {
 		try {
 			// dispatch te delete task function in the slice
 			await dispatch(deleteTask(task.$id)).unwrap();
+			// dispatch the function to get the tasks
+			dispatch(getTasks());
+			// show success message
+			toast("task deleted");
 			// close the modal
 			setOpen(false);
 		} catch (error) {
@@ -40,7 +46,7 @@ const TaskDetailsModal = ({ open, setOpen, task }: Props) => {
 			<Dialog open={open}>
 				<DialogContent className="sm:max-w-[550px] flex flex-col">
 					<DialogHeader>
-						<DialogTitle>Create a Task</DialogTitle>
+						<DialogTitle>Task details</DialogTitle>
 						<hr />
 						<DialogDescription>
 							<UpdateTaskForm setOpen={setOpen} task={task} />
@@ -72,6 +78,7 @@ const TaskDetailsModal = ({ open, setOpen, task }: Props) => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+			<Toaster />
 		</>
 	);
 };

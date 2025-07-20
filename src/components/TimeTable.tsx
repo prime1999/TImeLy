@@ -54,7 +54,7 @@ const TimeTable = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	}, [isLoading]); // This dependency could be user, selectedCourse, etc.
+	}, [isLoading]);
 
 	return (
 		<main className="w-full glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 rounded-md p-4 mt-4 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400">
@@ -122,7 +122,7 @@ const TimeTable = () => {
 										}}
 										className="text-sm bg-green-400 rounded-full p-2 cursor-pointer duration-500 hover:bg-green-500"
 									>
-										<MdAdsClick className="tetx-sm" />
+										<MdAdsClick className="tetx-sm dark:text-slate-200" />
 									</button>
 								</div>
 								<div className="flex flex-col items-center gap-2">
@@ -141,38 +141,6 @@ const TimeTable = () => {
 										</span>
 									))}
 								</div>
-
-								{/* <div className="absolute right-5 bottom-5 flex justify-end">
-								<Popover>
-									<PopoverTrigger>
-										<button>
-											<BiDotsVerticalRounded className="text-md cursor-pointer" />
-										</button>
-									</PopoverTrigger>
-									<PopoverContent className="w-[150px] py-2 px-2">
-										<ul className="font-inter">
-											<li className="text-sm mt-2">
-												<button
-													onClick={() => setOpenRemoveModal(true)}
-													className="flex items-center gap-2  cursor-pointer duration-700 hover:gap-4"
-												>
-													<MdRemoveCircle className="text-red-500" />{" "}
-													<p className="text-xs">Remove</p>
-												</button>
-											</li>
-											<li className="text-sm mt-2">
-												<button
-													onClick={() => setOpenUpdateModal(true)}
-													className="flex items-center gap-2  cursor-pointer duration-700 hover:gap-4"
-												>
-													<MdModeEdit className="text-green-500" />{" "}
-													<p className="text-xs">Edit</p>
-												</button>
-											</li>
-										</ul>
-									</PopoverContent>
-								</Popover>
-							</div> */}
 							</div>
 							{showCourseDetails && (
 								<CourseDetail
@@ -181,35 +149,12 @@ const TimeTable = () => {
 									setShowCourseDetails={setShowCourseDetails}
 								/>
 							)}
-							{/*
-						<UpdateCourseModal
-							course={course}
-							open={openUpdateModal}
-							setOpen={setOpenUpdateModal}
-						/>
-						<DeleteModal
-							open={openRemoveModal}
-							setOpen={setOpenRemoveModal}
-							//	handleRemove={handleRemove}
-							course={course}
-						>
-							<div>
-								<h4 className="font-inter text-md font-semibold text-black dark:text-gray-300">
-									Remove Course
-								</h4>
-								<hr className="my-2" />
-								<p className="text-xs font-inter">
-									You are about to un-register this course and won't get any
-									update about the course after this.
-								</p>
-							</div>
-						</DeleteModal> */}
 						</div>
 					))}
 					<div className="flex justify-end mt-4">
 						<button
 							onClick={() => handleFindCourse()}
-							className="w-24 text-sm font-semibold p-2 rounded-md bg-green-500 cursor-pointer duration-700 hover:bg-green-600"
+							className="w-24 text-sm font-semibold p-2 rounded-md bg-green-500 cursor-pointer duration-700 hover:bg-green-600 dark:text-slate-200"
 						>
 							Find
 						</button>
