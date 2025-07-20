@@ -39,18 +39,15 @@ export const createUser = createAsyncThunk(
 		try {
 			// paa the user data to the function that will send it to appwrite
 			const studentRes: any = await createAppwriteUser(userData);
-			console.log(studentRes);
+
 			// if positive res was gotten, then
-			if (studentRes.$id) {
+			if (studentRes && studentRes.$id) {
 				// const student = {
 				// 	id: studentRes.$id,
 				// 	email: studentRes.email,
 				// 	MatricNumber: studentRes.MatricNumber,
 				// };
-				console.log({
-					isAuthenticated: true,
-					student: { ...studentRes },
-				});
+
 				// return the response after formatting the the response
 				return {
 					isAuthenticated: true,
@@ -79,7 +76,7 @@ export const authUser = createAsyncThunk(
 			const studentRes: any = await createuserAppwriteSession(userData);
 			console.log(studentRes);
 			// if positive res was gotten, then
-			if (studentRes.$id) {
+			if (studentRes && studentRes.$id) {
 				const student = {
 					id: studentRes.userId,
 					email: studentRes.email,
@@ -90,9 +87,15 @@ export const authUser = createAsyncThunk(
 					isAuthenticated: true,
 					student,
 				};
+			} else {
+				console.log({
+					isAuthenticated: false,
+					student: null,
+					msg: studentRes.msg,
+				});
+				// else return a false response
+				return { isAuthenticated: false, student: null, msg: studentRes.msg };
 			}
-			// else return a false response
-			return { isAuthenticated: false, student: null };
 		} catch (error) {
 			console.log(error);
 			return error;

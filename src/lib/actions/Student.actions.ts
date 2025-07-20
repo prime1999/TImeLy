@@ -51,10 +51,11 @@ export const createuserAppwriteSession = async (userdata: any) => {
 			userdata.email,
 			userdata.password
 		);
+		if (!res.$id) return { msg: "Wrong User credentials" };
 		console.log(res);
-		return res;
+		return { msg: "User Authenticated", data: res };
 	} catch (error) {
-		console.log(error);
+		return { msg: "Wrong User credentials" };
 	}
 };
 
@@ -77,7 +78,7 @@ export const createAppwriteuserDocument = async (userDocData: any) => {
 		return userDoc;
 	} catch (error) {
 		console.log(error);
-		return error;
+		return { error: "Check credentials" };
 	}
 };
 

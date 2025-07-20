@@ -1,30 +1,68 @@
-import {
-	MdOutlineSchedule,
-	MdArrowCircleRight,
-	MdNoteAlt,
-} from "react-icons/md";
+import { useEffect } from "react";
+import { AppDispatch } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { MdOutlineSchedule, MdAdsClick, MdNoteAlt } from "react-icons/md";
 import { PiClockCountdownFill } from "react-icons/pi";
 import { FaCirclePlus } from "react-icons/fa6";
 import { PiNotepadFill } from "react-icons/pi";
+import { getTasks } from "@/lib/slice/TasksSlice";
+import { formatDateRange } from "little-date";
+import TableLoader from "@/lib/utils/tableLoader";
+
+type Props = {
+	setOpenModal: React.Dispatch<any>;
+	setSelectedTask: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 // schedule slide
-export const Schedule = () => {
+export const Tasks = ({ setSelectedTask, setOpenModal }: Props) => {
+	// get the tasks gotten from the DB with other states from the redux store
+	const { filteredTasks, tasks, isLoading, isSuccess } = useSelector(
+		(state: any) => state.tasks
+	);
+
 	return (
-		<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
-			<div className="flex justify-between items-center text-gray-200">
-				<h4 className="font-inter font-semibold text-md">Schedule</h4>
-				<PiNotepadFill className="text-md text-green-400 font-semibold" />
-			</div>
-			<p className="text-xs font-inter text-slate-300 mt-4">
-				{/* TODO  show next course on the time-table*/}Your next course will
-				show here
-			</p>
-			<span className="flex items-center gap-2 mt-6 cursor-pointer group">
-				<p className="text-xs font-inter text-slate-300 font-semibold cursor-pointer duration-500 group-hover:text-slate-400">
-					See all today's courses
-				</p>
-				<MdArrowCircleRight className="text-md text-green-400 mt-1 duration-1000 group-hover:ml-2" />
+		<div className="relative glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-start w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
+			{filteredTasks &&
+				filteredTasks?.map((task: any) => (
+					<div
+						key={task.title}
+						className={`flex items-center justify-between bg-muted ${
+							task.status === "done"
+								? "after:bg-green-500"
+								: task.status === "inProgress"
+								? "after:bg-yellow-500"
+								: "after:bg-red-500"
+						} relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full dark: dark:bg-[rgb(255,255,255,0.05)]`}
+					>
+						<div>
+							{" "}
+							<div className="font-medium">{task.title}</div>
+							<div className="text-muted-foreground text-xs">
+								{formatDateRange(
+									new Date(task.startDate),
+									new Date(task.endDate)
+								)}
+							</div>
+						</div>
+						<button
+							onClick={() => {
+								setSelectedTask(task);
+								setOpenModal(true);
+							}}
+						>
+							<MdAdsClick />
+						</button>
+					</div>
+				))}
+			<span className="absolute bottom-2 right-5">
+				<button className="text-xs font-inter duration-700 hover:text-slate-300">
+					See full tasks
+				</button>
 			</span>
+			<div className="h-full flex items-center justify-center">
+				{isLoading && <TableLoader />}
+			</div>
 		</div>
 	);
 };
@@ -74,7 +112,7 @@ export const Notes = () => {
 	);
 };
 // courses slide
-export const Courses = () => {
+export const Schedule = () => {
 	return (
 		<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
 			<div className="flex justify-between items-center">

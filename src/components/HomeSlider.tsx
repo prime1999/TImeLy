@@ -1,19 +1,25 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { CountDown, Courses, Notes, Schedule } from "./SliderComponents";
+import { CountDown, Tasks, Notes, Schedule } from "./SliderComponents";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
+import { getTasks } from "@/lib/slice/TasksSlice";
 
 const HomeSlider = () => {
+	const dispatch = useDispatch<AppDispatch>();
+	// state to handle the task selected
+	const [selectedTask, setSelectedTask] = useState<any>(null);
+	// state to handle the show full task details modal
+	const [openModal, setOpenModal] = useState<boolean>(false);
 	const imageSpanRef = useRef<(HTMLSpanElement | null)[]>([]);
 	const imageDivRef = useRef<(HTMLDivElement | null)[]>([]);
 	const animRef = useRef<any>(null);
 	const [array, setArray] = useState<string[]>([
-		"schedule",
+		"courses",
 		"countdown",
 		"notes",
-		"courses",
+		"schedule",
 	]);
 	// state for the slider playing progress (to keep track of the whole slider animation)
 	const [sliderAnimation, setSliderAnimation] = useState({
@@ -25,6 +31,19 @@ const HomeSlider = () => {
 		stopPlay: false,
 	});
 	const { isPlaying, startPlay, sliderId, isEnd, stopPlay } = sliderAnimation;
+	useEffect(() => {
+		// dispatch the fuction to get the users tasks
+		const getUsersTasks = async () => {
+			try {
+				// call the function to get the tasks
+				const res = await dispatch(getTasks()).unwrap();
+				console.log(res);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		getUsersTasks();
+	}, [dispatch]);
 	useGSAP(() => {
 		// slider animation to move the slide out of the screen and bring the next slide in
 		gsap.to("#slider", {
@@ -202,14 +221,17 @@ const HomeSlider = () => {
 						key={i}
 						className={`w-[70vw] h-[20vh] mx-2 shrink-0 rounded-xl overflow-hidden flex items-center relative`}
 					>
-						{li === "schedule" ? (
-							<Schedule />
+						{li === "courses" ? (
+							<Tasks
+								setSelectedTask={setSelectedTask}
+								setOpenModal={setOpenModal}
+							/>
 						) : li === "countdown" ? (
 							<CountDown />
 						) : li === "notes" ? (
 							<Notes />
 						) : (
-							li === "courses" && <Courses />
+							li === "schedule" && <Schedule />
 						)}
 					</div>
 				))}

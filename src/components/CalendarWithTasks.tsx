@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
 import { FaPlus } from "react-icons/fa6";
 import { MdAdsClick } from "react-icons/md";
 import { formatDateRange } from "little-date";
@@ -6,39 +8,12 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import CreatetaskModal from "./modals/CreatetaskModal";
 import TaskDetailsModal from "./modals/TaskDetailsModal";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "@/lib/store";
 import { getTasks } from "@/lib/slice/TasksSlice";
-const events = [
-	{
-		title: "Design Review",
-		body: "Testing 2",
-		status: "done",
-		createdAt: "2025-06-12T09:00:00",
-		startDate: "2025-07-12T09:00:00",
-		endDate: "2025-07-14T10:00:00",
-	},
-	{
-		title: "Client Presentation",
-		body: "Testing 3",
-		status: "inProgress",
-		createdAt: "2025-06-12T09:00:00",
-		startDate: "2025-07-12T09:00:00",
-		endDate: "2025-07-14T10:00:00",
-	},
-	{
-		title: "Team Sync Meeting",
-		body: "Testing 1",
-		status: "pending",
-		createdAt: "2025-06-12T09:00:00",
-		startDate: "2025-07-12T09:00:00",
-		endDate: "2025-07-14T10:00:00",
-	},
-];
+import TableLoader from "@/lib/utils/tableLoader";
 
 const CalendarWithNotes = () => {
 	const dispatch = useDispatch<AppDispatch>();
-	// state to handle the tsk selected
+	// state to handle the task selected
 	const [selectedTask, setSelectedTask] = useState<any>(null);
 	// state to handle the create task modal
 	const [open, setOpen] = useState<boolean>(false);
@@ -47,9 +22,11 @@ const CalendarWithNotes = () => {
 	// state to handle the current choose date value
 	const [date, setDate] = useState<Date | undefined>(new Date(2025, 5, 12));
 	// get the tasks gotten from the DB with other states from the redux store
-	const { tasks, isLoading, isSuccess } = useSelector(
+	const { filteredTasks, tasks, isLoading, isSuccess } = useSelector(
 		(state: any) => state.tasks
 	);
+
+	console.log({ filteredTasks });
 
 	useEffect(() => {
 		// dispatch the fuction to get the users tasks
@@ -91,8 +68,8 @@ const CalendarWithNotes = () => {
 						</button>
 					</div>
 					<div className="flex w-full flex-col gap-2">
-						{tasks &&
-							tasks?.map((task: any) => (
+						{filteredTasks &&
+							filteredTasks?.map((task: any) => (
 								<div
 									key={task.title}
 									className={`flex items-center justify-between bg-muted ${
@@ -123,6 +100,9 @@ const CalendarWithNotes = () => {
 									</button>
 								</div>
 							))}
+						<div className="w-full h-full flex items-center justify-center">
+							{isLoading && <TableLoader />}
+						</div>
 					</div>
 				</CardFooter>
 			</Card>

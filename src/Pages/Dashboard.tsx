@@ -1,4 +1,4 @@
-import { CountDown, Courses } from "@/components/SliderComponents";
+import { CountDown, Notes } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
 import TimeTable from "@/components/TimeTable";
@@ -51,7 +51,7 @@ const Dashboard = () => {
 			<div className="hidden w-11/12 mx-auto mt-12 grid-cols-4 lg:grid gap-4">
 				<div className="col-span-3">
 					<div className="flex items-center gap-4 mb-8">
-						<Courses />
+						<Notes />
 						<CountDown />
 					</div>
 					<div>

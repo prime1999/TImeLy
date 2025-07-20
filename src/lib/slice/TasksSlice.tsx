@@ -8,12 +8,14 @@ import {
 
 type initType = {
 	tasks: any | null;
+	filteredTasks: any | null;
 	isLoading: boolean;
 	isSucess: boolean;
 	message: string;
 };
 
 const initialState: initType = {
+	filteredTasks: null,
 	tasks: null,
 	isLoading: false,
 	isSucess: false,
@@ -27,7 +29,9 @@ export const getTasks = createAsyncThunk("task/getTasks", async () => {
 		const res = await getTasksFromDB();
 		if (res && res.tasks) {
 			console.log(res.tasks);
-			return res.tasks;
+			// get just 2 of the tasks
+			const filteredTasks = res.tasks.slice(0, 2);
+			return { filteredTasks, tasks: res.tasks };
 		}
 	} catch (error) {
 		console.log(error);
@@ -92,7 +96,8 @@ export const TaskSlice = createSlice({
 			.addCase(getTasks.fulfilled, (state, action) => {
 				state.isSucess = true;
 				state.isLoading = false;
-				state.tasks = action.payload;
+				state.tasks = action?.payload?.tasks;
+				state.filteredTasks = action?.payload?.filteredTasks;
 			})
 			.addCase(getTasks.rejected, (state) => {
 				state.isLoading = true;

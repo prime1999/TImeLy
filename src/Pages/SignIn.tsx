@@ -59,30 +59,29 @@ const SignIn = () => {
 	// function to handle the form submittion
 	const onSubmit = async (values: z.infer<any>) => {
 		try {
-			// function to check if the matric number has already created an account
-			// const res = await dispatch(getDocuments(values.MatricNumber)).unwrap();
-			// console.log(res);
-
 			// get the email from the document and also the password from the form values
 			const userData = {
 				email: values.email,
 				password: values.password,
 			};
 			// dispatch the function to authenticate the user
-			const logInRes = (await dispatch(authUser(userData))) as any;
-			console.log(logInRes && logInRes?.payload?.student?.id);
+			const logInRes = (await dispatch(authUser(userData)).unwrap()) as any;
+			console.log(logInRes);
 			// redirect the user if the authentication is successful
 			if (logInRes && logInRes.payload?.student?.id) {
+				console.log(logInRes);
+				toast(logInRes.msg);
 				navigate(`/dashboard`);
+			} else {
+				toast("Wrong User Credentials");
 			}
-			// TODO
 		} catch (error) {
-			toast.error("Wrong User Credentials");
+			toast("Wrong User Credentials");
 			console.log(error);
 		}
 	};
 	return (
-		<main className="w-full h-[100vh] flex items-center justify-center">
+		<main className="w-full h-[100vh] flex items-center justify-center glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-200">
 			<div className="relative w-[400px] border border-gray-800 rounded-lg px-6 pb-12 pt-24 overflow-hidden">
 				<img
 					src={note}
@@ -92,7 +91,7 @@ const SignIn = () => {
 				<Logo />
 				<div className="mb-12">
 					<h1 className="text-3xl font-inter font-semibold">Hi there 👋</h1>
-					<p className="text-gray-400 text-sm mt-2">
+					<p className="text-gray-300 text-sm mt-2">
 						Time to check your schedule.
 					</p>
 				</div>
