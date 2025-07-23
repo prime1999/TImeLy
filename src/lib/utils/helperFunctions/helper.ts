@@ -1,3 +1,6 @@
+import { format, parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+
 export const normalizeString = (value: any) => {
 	return value.toLowerCase().replace(/\s+/g, "").trim();
 };
@@ -70,22 +73,23 @@ export const reStructureUniversalTimetable = (data: any[]) => {
 };
 
 export const compareDatesForTasks = (tasks: any, date: any) => {
-	console.log(new Date(date));
-	console.log(new Date(tasks[0].startDate));
-	const isSameDay = (d1: Date, d2: Date) => {
-		const date1 = new Date(d1);
-		const date2 = new Date(d2);
+	const isSameDay = (d1: any, d2: Date) => {
+		const date1 = formatInTimeZone(d1, "UTC", "yyyy-MM-dd");
+		const date2 = format(d2, "yyyy-MM-dd");
 
-		return (
-			date1.getFullYear() === date2.getFullYear() &&
-			date1.getMonth() === date2.getMonth() &&
-			date1.getDate() === date2.getDate()
-		);
+		return date1 === date2;
 	};
 
 	const filteredTasks = tasks.filter((task: any) => {
-		return isSameDay(task.startDate, date); // both can be strings, no problem now
+		return isSameDay(task.startDate, date);
 	});
 
 	return filteredTasks;
+};
+
+// helper function to get the number of tasks for each status (Pending, InProress, done)
+export const getStatusTasksLength = (tasks: any, status: string) => {
+	const statusTasks =
+		tasks && tasks.filter((task: any) => task.status === status);
+	return statusTasks && statusTasks.length;
 };

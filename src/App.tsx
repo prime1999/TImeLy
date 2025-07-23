@@ -15,6 +15,7 @@ import Dashboard from "./Pages/Dashboard";
 import { ThemeProvider } from "./components/theme-provider";
 import Courses from "./Pages/Courses";
 import PrivateUserRoutes from "./components/PrivateRoutes/PrivateUserRoute";
+import Tasks from "./Pages/Tasks";
 function App() {
 	const router = createBrowserRouter(
 		createRoutesFromElements(
@@ -26,6 +27,9 @@ function App() {
 					</Route>
 					<Route path="/dashboard" element={<PrivateUserRoutes />}>
 						<Route path="/dashboard" element={<Dashboard />} />
+					</Route>
+					<Route path="/tasks" element={<Tasks />}>
+						<Route path="/tasks" element={<Tasks />} />
 					</Route>
 				</Route>
 				<Route path="/register" element={<SignUp />} />

@@ -83,13 +83,53 @@ export const deleteTask = createAsyncThunk(
 // function to handle the task filter based on the date
 export const filterTaskByDate = createAsyncThunk(
 	"tasks/filterTaskByDate",
-	async ({ tasks, date }: any) => {
+	async ({ date }: any) => {
 		try {
-			console.log({ tasks, date });
-			// filter the task based on the date selected
-			const res = await compareDatesForTasks(tasks, date);
-			console.log({ res, date: new Date(date) });
-			return res;
+			const tasks = await getTasksFromDB();
+			if (tasks && tasks.tasks) {
+				// filter the task based on the date selected
+				const res = await compareDatesForTasks(tasks.tasks, date);
+
+				// get just 2 of the tasks
+				if (res.length > 0) {
+					const filteredTasks = res.slice(0, 2);
+					return { filteredTasks, tasks: res };
+				}
+				return { filteredTasks: null, tasks: null };
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+// function to handle the task filter based on the status
+export const filterTaskByStatus = createAsyncThunk(
+	"tasks/filterTaskByStatus",
+	async ({ status }: any) => {
+		try {
+			const tasks = await getTasksFromDB();
+			if (tasks && tasks.tasks) {
+				// if the user is not requesting to get all the tasks available for him/her
+				if (status !== "all") {
+					// filter the task based on the status selected
+					const res =
+						tasks && tasks.tasks.filter((task: any) => task.status === status);
+
+					// get just 2 of the tasks
+					if (res.length > 0) {
+						const filteredTasks = res.slice(0, 2);
+						return { filteredTasks, tasks: res };
+					}
+					return { filteredTasks: null, tasks: null };
+				}
+
+				// get just 2 of the tasks
+				if (tasks.tasks.length > 0) {
+					const filteredTasks = tasks.tasks.slice(0, 2);
+					return { filteredTasks, tasks: tasks.tasks };
+				}
+				return { filteredTasks: null, tasks: null };
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -155,9 +195,21 @@ export const TaskSlice = createSlice({
 			})
 			.addCase(filterTaskByDate.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.filteredTasks = action.payload;
+				state.filteredTasks = action?.payload?.filteredTasks;
+				state.tasks = action?.payload?.tasks;
 			})
 			.addCase(filterTaskByDate.rejected, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(filterTaskByStatus.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(filterTaskByStatus.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.filteredTasks = action?.payload?.filteredTasks;
+				state.tasks = action?.payload?.tasks;
+			})
+			.addCase(filterTaskByStatus.rejected, (state) => {
 				state.isLoading = false;
 			});
 	},

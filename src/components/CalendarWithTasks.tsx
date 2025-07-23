@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { FaPlus } from "react-icons/fa6";
@@ -31,8 +32,7 @@ const CalendarWithNotes = () => {
 		const getUsersTasks = async () => {
 			try {
 				// call the function to get the tasks
-				const res = await dispatch(getTasks()).unwrap();
-				console.log(res);
+				await dispatch(getTasks()).unwrap();
 			} catch (error) {
 				console.log(error);
 			}
@@ -112,6 +112,16 @@ const CalendarWithNotes = () => {
 									</button>
 								</div>
 							))}
+						<span>
+							{tasks && tasks.length > 2 && (
+								<Link
+									to="/tasks"
+									className="absolute bottom-3 right-5 font-inter font-semibold text-sm cursor-pointer text-slate-300 duration-700 hover:text-slate-400"
+								>
+									See All
+								</Link>
+							)}
+						</span>
 						<div className="w-full h-full flex items-center justify-center">
 							{isLoading && <TableLoader />}
 						</div>

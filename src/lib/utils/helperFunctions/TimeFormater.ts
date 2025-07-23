@@ -1,4 +1,9 @@
-import { parse, differenceInMinutes } from "date-fns";
+import {
+	parse,
+	differenceInMinutes,
+	differenceInDays,
+	parseISO,
+} from "date-fns";
 import { formatDistanceToNow } from "date-fns";
 
 export const formatScheduleTime = (date: Date) => {
@@ -52,4 +57,22 @@ export const getToday = () => {
 export const timeAgo = (date: string) => {
 	const duration = formatDistanceToNow(new Date(date), { addSuffix: true });
 	return duration;
+};
+
+export const TaskCountdown = (taskDate: any) => {
+	const daysLeft = differenceInDays(parseISO(taskDate), new Date());
+	console.log(daysLeft);
+
+	let label = "";
+	if (daysLeft > 0) {
+		label = `${daysLeft} day${daysLeft !== 1 ? "s" : ""} left`;
+	} else if (daysLeft === 0) {
+		label = "Due today";
+	} else {
+		label = `Overdue by ${Math.abs(daysLeft)} day${
+			Math.abs(daysLeft) !== 1 ? "s" : ""
+		}`;
+	}
+
+	return label;
 };
