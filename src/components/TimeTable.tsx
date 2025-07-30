@@ -39,10 +39,6 @@ const TimeTable = () => {
 		(state: any) => state.course
 	);
 
-	useEffect(() => {
-		dispatch(getCourses());
-	}, [reload, dispatch]);
-
 	// function to find unregistered courses related to the current student
 	const handleFindCourse = useCallback(async () => {
 		try {

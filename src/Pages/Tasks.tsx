@@ -11,6 +11,8 @@ import { getStatusTasksLength } from "@/lib/utils/helperFunctions/helper";
 
 const Tasks = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	// state to determine if to show the status buttons
+	const [showStatus, setShowStatus] = useState<boolean>(true);
 	// state to hole the selected status
 	const [selectedStatus, setSelectedStatus] = useState<string>("");
 	// state to open/close the create task modal
@@ -22,6 +24,7 @@ const Tasks = () => {
 	const handleDate = async (value: any) => {
 		try {
 			setSelectedStatus("all");
+			setShowStatus(true);
 			// set the show date to th date selected
 			setDate(value);
 			// dispatch the filter of the task function
@@ -38,10 +41,12 @@ const Tasks = () => {
 		try {
 			if (status === "all") {
 				setSelectedStatus("");
+				setShowStatus(true);
 			} else {
 				setSelectedStatus(status);
+				setShowStatus(false);
 			}
-			const res = await dispatch(filterTaskByStatus({ status })).unwrap();
+			await dispatch(filterTaskByStatus({ status })).unwrap();
 		} catch (error) {
 			console.log(error);
 		}
@@ -67,31 +72,33 @@ const Tasks = () => {
 										<p>All</p>
 									</button>
 								) : (
-									<>
-										<button
-											onClick={() => handleStatusFilter("pending")}
-											className="flex items-center gap-2 rounded-md py-1 px-2 bg-[rgba(255,0,0,0.2)] duration-500 cursor-pointer hover:bg-[rgba(255,0,0,0.4)]"
-										>
-											<p>Pending</p>
-											<p className="">
-												{getStatusTasksLength(tasks, "pending")}
-											</p>
-										</button>
-										<button
-											onClick={() => handleStatusFilter("inProgress")}
-											className="flex items-center gap-2 rounded-md py-1 px-2 bg-[rgba(255,255,0,0.2)] cursor-pointer duration-500 hover:bg-[rgba(255,255,0,0.4)]"
-										>
-											<p>In-Progress</p>
-											<p>{getStatusTasksLength(tasks, "inProgress")}</p>
-										</button>
-										<button
-											onClick={() => handleStatusFilter("done")}
-											className="flex items-center gap-2 rounded-md py-1 px-2 bg-[rgba(144,238,144,0.3)] cursor-pointer duration-500 hover:bg-[rgba(144,238,144,0.5)]"
-										>
-											<p>Done</p>
-											<p>{getStatusTasksLength(tasks, "done")}</p>
-										</button>
-									</>
+									showStatus && (
+										<>
+											<button
+												onClick={() => handleStatusFilter("pending")}
+												className="flex items-center gap-2 rounded-md py-1 px-2 bg-[rgba(255,0,0,0.2)] duration-500 cursor-pointer hover:bg-[rgba(255,0,0,0.4)]"
+											>
+												<p>Pending</p>
+												<p className="">
+													{getStatusTasksLength(tasks, "pending")}
+												</p>
+											</button>
+											<button
+												onClick={() => handleStatusFilter("inProgress")}
+												className="flex items-center gap-2 rounded-md py-1 px-2 bg-[rgba(255,255,0,0.2)] cursor-pointer duration-500 hover:bg-[rgba(255,255,0,0.4)]"
+											>
+												<p>In-Progress</p>
+												<p>{getStatusTasksLength(tasks, "inProgress")}</p>
+											</button>
+											<button
+												onClick={() => handleStatusFilter("done")}
+												className="flex items-center gap-2 rounded-md py-1 px-2 bg-[rgba(144,238,144,0.3)] cursor-pointer duration-500 hover:bg-[rgba(144,238,144,0.5)]"
+											>
+												<p>Done</p>
+												<p>{getStatusTasksLength(tasks, "done")}</p>
+											</button>
+										</>
+									)
 								)}
 							</div>
 						</div>

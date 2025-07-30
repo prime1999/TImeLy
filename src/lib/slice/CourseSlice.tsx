@@ -8,6 +8,7 @@ import {
 	updateCourseInDB,
 } from "../actions/Course.action";
 import { findUnRegisteredCouresInDB } from "../actions/TimeTable.action";
+import { findTimeClashes } from "../utils/helperFunctions/helper";
 
 type initialType = {
 	isLoading: boolean;
@@ -17,6 +18,7 @@ type initialType = {
 	loadingCourses: boolean;
 	data: any;
 	unRegisteredCourses: any;
+	clashedCourses: any;
 };
 
 const initialState: initialType = {
@@ -27,6 +29,7 @@ const initialState: initialType = {
 	loadingCourses: false,
 	data: null,
 	unRegisteredCourses: null,
+	clashedCourses: null,
 };
 
 // function to just add a course without registering for the course
@@ -135,6 +138,29 @@ export const findUnRegisteredCourses = createAsyncThunk(
 	}
 );
 
+// function to get the courses in the timetable that clashes
+export const getClashedCourses = createAsyncThunk(
+	"course/clashedCourse",
+	async (courses: any) => {
+		try {
+			const parsedCourses = courses.map((entry: any) => ({
+				...entry,
+				schedule:
+					typeof entry.schedule === "string"
+						? JSON.parse(entry.schedule)
+						: entry.schedule,
+			}));
+			console.log(parsedCourses);
+			// send the courses to be checked
+			const result = findTimeClashes(parsedCourses);
+			console.log(result);
+			return result;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
 export const CourseSlice = createSlice({
 	name: "course",
 	initialState,
@@ -202,6 +228,16 @@ export const CourseSlice = createSlice({
 			})
 			.addCase(removeCourse.rejected, (state) => {
 				state.reload = false;
+			})
+			.addCase(getClashedCourses.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.clashedCourses = action.payload;
+			})
+			.addCase(getClashedCourses.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getClashedCourses.rejected, (state) => {
+				state.isLoading = false;
 			});
 	},
 });

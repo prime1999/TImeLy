@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { format, parseISO, parse, isBefore, isAfter } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
 export const normalizeString = (value: any) => {
@@ -68,10 +68,10 @@ export const reStructureUniversalTimetable = (data: any[]) => {
 		}
 	});
 
-	console.log(structuredData);
 	return structuredData;
 };
 
+// functio to compare tasks date for task filtering by date
 export const compareDatesForTasks = (tasks: any, date: any) => {
 	const isSameDay = (d1: any, d2: Date) => {
 		const date1 = formatInTimeZone(d1, "UTC", "yyyy-MM-dd");
@@ -92,4 +92,43 @@ export const getStatusTasksLength = (tasks: any, status: string) => {
 	const statusTasks =
 		tasks && tasks.filter((task: any) => task.status === status);
 	return statusTasks && statusTasks.length;
+};
+
+// function to get the classes which schedules clashes
+export const findTimeClashes = (courses: any) => {
+	const clashes = [];
+
+	for (let i = 0; i < courses.length; i++) {
+		const courseA = courses[i];
+
+		for (const schedA of courseA.schedule) {
+			const startA = parse(schedA.startDate, "hh:mm a", new Date());
+			const endA = parse(schedA.endDate, "hh:mm a", new Date());
+
+			for (let j = i + 1; j < courses.length; j++) {
+				const courseB = courses[j];
+
+				for (const schedB of courseB.schedule) {
+					if (schedA.day !== schedB.day) continue;
+
+					const startB = parse(schedB.startDate, "hh:mm a", new Date());
+					const endB = parse(schedB.endDate, "hh:mm a", new Date());
+
+					const overlap = isBefore(startB, endA) && isAfter(endB, startA);
+					console.log({ overlap, courseA, courseB });
+
+					if (overlap) {
+						clashes.push({
+							courses: [courseA, courseB],
+							day: schedA.day,
+							timeA: schedA,
+							timeB: schedB,
+						});
+					}
+				}
+			}
+		}
+	}
+
+	return clashes;
 };

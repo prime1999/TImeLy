@@ -1,10 +1,24 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
 import { CountDown, Notes } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
 import TimeTable from "@/components/TimeTable";
 import CalendarWithNotes from "@/components/CalendarWithTasks";
+import ClashedCourses from "@/components/ClashedCourses";
+import { getCourses } from "@/lib/slice/CourseSlice";
 
 const Dashboard = () => {
+	const dispatch = useDispatch<AppDispatch>();
+
+	// get the reload function from the store in order to get the lastes courses data
+	const { reload } = useSelector((state: any) => state.course);
+
+	useEffect(() => {
+		dispatch(getCourses());
+	}, [reload, dispatch]);
+
 	return (
 		<main className="my-2">
 			<div
@@ -59,6 +73,9 @@ const Dashboard = () => {
 					</div>
 				</div>
 				<div className="col-span-1">
+					<div>
+						<ClashedCourses />
+					</div>
 					<CalendarWithNotes />
 				</div>
 			</div>
