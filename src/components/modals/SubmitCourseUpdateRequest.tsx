@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import Loader from "@/lib/utils/Loader";
 import {
 	Dialog,
 	DialogContent,
@@ -6,7 +7,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "../../components/ui/dialog";
-import Loader from "@/lib/utils/Loader";
 
 type Props = {
 	open: boolean;
@@ -14,7 +14,8 @@ type Props = {
 	handleUpdate: () => any;
 };
 const SubmitCourseUpdateRequest = ({ setOpen, open, handleUpdate }: Props) => {
-	const { isLoading, student } = useSelector((state: any) => state.student);
+	const { student } = useSelector((state: any) => state.student);
+	const { isLoading } = useSelector((state: any) => state.course);
 	return (
 		<>
 			<Dialog open={open} onOpenChange={setOpen}>

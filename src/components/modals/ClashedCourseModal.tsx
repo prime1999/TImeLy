@@ -1,6 +1,8 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
 import { GrSchedules } from "react-icons/gr";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { submitUpdateRequest } from "@/lib/slice/CourseSlice";
 
 type Props = {
 	open: boolean;
@@ -8,10 +10,35 @@ type Props = {
 };
 
 const ClashedCourseModal = ({ open, setOpen }: Props) => {
+	const dispatch = useDispatch<AppDispatch>();
 	// state for the course state selection from the store
-	const { isLoading, reload, clashedCourses, data } = useSelector(
+	const { isLoading, clashedCourses } = useSelector(
 		(state: any) => state.course
 	);
+
+	// function to notify the admin of the changes
+	const notifyAdmin = async () => {
+		try {
+			// the notification payload info
+			let actions: any = [];
+			const updateData = {
+				actions,
+				updateData: clashedCourses.courses,
+			};
+			const notificationData = {
+				title: "Request to update course details",
+				message: `There is a request to correct course info, Please do review.`,
+				type: "request",
+				actions: JSON.stringify(actions),
+				isRead: false,
+				createdAt: new Date().toISOString(),
+			};
+			// call the function to dispatch the submit update request function in the redux store state
+			await dispatch(submitUpdateRequest(notificationData)).unwrap();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<main>
 			<Dialog open={open}>

@@ -47,7 +47,9 @@ const AddCourse = () => {
 	const [open, setOpen] = useState<boolean>(false);
 	const { getValues } = form;
 	// get the course and student states from the redux state
-	const { isLoading, data } = useSelector((state: any) => state.course);
+	const { isLoading, data, courseToUpdate } = useSelector(
+		(state: any) => state.course
+	);
 	const { student } = useSelector((state: any) => state.student);
 
 	// function to select the day
@@ -125,26 +127,44 @@ const AddCourse = () => {
 					{
 						label: "approve key",
 						function: "approveUpdate()",
-						payload: { courseId: data.courseId, data: data.updateData },
+						payload: {
+							courseId: courseToUpdate.courseId,
+							data: courseToUpdate.data,
+						},
 					},
 					{
 						label: "decline key",
 						function: "declineUpdate()",
-						payload: { courseId: data.courseId, data: data.updateData },
+						payload: {
+							courseId: courseToUpdate.courseId,
+							data: courseToUpdate.data,
+						},
 					},
 					{
 						label: "show details",
 						function: "showDetails()",
-						payload: { courseId: data.courseId, data: data.updateData },
+						payload: {
+							courseId: courseToUpdate.courseId,
+							data: courseToUpdate.data,
+						},
 					},
 				];
+				const notificationData = {
+					title: "Request to update course details",
+					message: `There is a request to correct course info, Please do review.`,
+					type: "request",
+					actions: JSON.stringify(actions),
+					isRead: false,
+					createdAt: new Date().toISOString(),
+				};
 				const updateData = {
-					actions,
-					updateData: data.data,
-					courseId: data.courseId,
+					updateData: courseToUpdate.data,
+					courseId: courseToUpdate.courseId,
 				};
 				// dispatch the function to submit the course request
-				const updateRes = await dispatch(submitUpdateRequest(updateData));
+				const updateRes = await dispatch(
+					submitUpdateRequest({ notificationData, updateData })
+				);
 				// check if the request was submitted
 				if (updateRes) {
 					// close the modal

@@ -19,6 +19,7 @@ type initialType = {
 	data: any;
 	unRegisteredCourses: any;
 	clashedCourses: any;
+	courseToUpdate: any;
 };
 
 const initialState: initialType = {
@@ -30,6 +31,7 @@ const initialState: initialType = {
 	data: null,
 	unRegisteredCourses: null,
 	clashedCourses: null,
+	courseToUpdate: null,
 };
 
 // function to just add a course without registering for the course
@@ -70,8 +72,8 @@ export const registerCourse = createAsyncThunk(
 	async (dataSent: any) => {
 		try {
 			// call the function to carry out the appwrite function
-			const response = await addCourse(dataSent);
-			if (response) {
+			const response: any = await addCourse(dataSent);
+			if (response && response.exist === true) {
 				return response;
 			}
 		} catch (error) {
@@ -161,6 +163,19 @@ export const getClashedCourses = createAsyncThunk(
 	}
 );
 
+// // function to andle the class Schedule correction request
+// export const requesToCorrectSchedule = createAsyncThunk(
+// 	"course/ScheduleCorrectionRequest",
+// 	async (data: any) => {
+// 		try {
+// 			// call the Appwrite function to send the request
+// 			const res = await
+// 		} catch (error) {
+// 			console.log(error);
+// 		}
+// 	}
+// );
+
 export const CourseSlice = createSlice({
 	name: "course",
 	initialState,
@@ -175,10 +190,11 @@ export const CourseSlice = createSlice({
 			.addCase(registerCourse.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(registerCourse.fulfilled, (state) => {
+			.addCase(registerCourse.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.reload = true;
+				state.courseToUpdate = action.payload;
 			})
 			.addCase(registerCourse.rejected, (state) => {
 				state.isLoading = false;

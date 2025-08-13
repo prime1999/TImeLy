@@ -294,6 +294,8 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 // function to submit update a course
 export const submitCourseUpdateRequest = async (data: any) => {
 	try {
+		console.log({ data });
+		const { updateData, notificationData } = data;
 		// Get the current user
 		const user = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
@@ -306,19 +308,21 @@ export const submitCourseUpdateRequest = async (data: any) => {
 			COURSE_UPDATE_REQUEST_ID,
 			ID.unique(),
 			{
-				proposedChange: JSON.stringify(data.updateData),
-				courses: [data.courseId],
+				proposedChange: JSON.stringify(updateData.updateData),
+				courses: [updateData.courseId],
 				student: [userId],
 				createdAt: new Date().toISOString(),
 			}
 		);
+		console.log(data);
 		// if the course update request was created
 		if (req && req.$id) {
 			const course = await databases.getDocument(
 				DBID,
 				COURSES_ID,
-				data.courseId
+				updateData.courseId
 			);
+			console.log({ ...notificationData, student: [userId] });
 			// if the course exists
 			if (course) {
 				// // create the actions array
@@ -345,21 +349,22 @@ export const submitCourseUpdateRequest = async (data: any) => {
 				// 	},
 				// ];
 				// create the notification data to be sent
-				const notificationData = {
-					title: "Request to update course details",
-					message: `There is a request to correct course info, Please do review.`,
-					type: "request",
-					actions: JSON.stringify(data.actions),
-					isRead: false,
-					createdAt: new Date().toISOString(),
-					student: [userId],
-				};
+				// const notificationData = {
+				// 	title: "Request to update course details",
+				// 	message: `There is a request to correct course info, Please do review.`,
+				// 	type: "request",
+				// 	actions: JSON.stringify(data.actions),
+				// 	isRead: false,
+				// 	createdAt: new Date().toISOString(),
+				// 	student: [userId],
+				// };
+				//const notificationData = { ...data, student: [userId] };
 				// create a notification on the course update request
 				const notification = await databases.createDocument(
 					DBID,
 					NOTIFICATION_ID,
 					ID.unique(),
-					notificationData
+					{ ...notificationData, student: [userId] }
 				);
 				// if the cotification was created
 				if (notification) {
@@ -388,10 +393,16 @@ export const submitCourseUpdateRequest = async (data: any) => {
 				}
 			}
 		}
-		return { submitted: false, description: "Request not sumitted, try again" };
+		return {
+			submitted: false,
+			description: "Request not submitted, try again",
+		};
 	} catch (error: any) {
 		console.log(error.message);
-		return { submitted: false, description: "Request not sumitted, try again" };
+		return {
+			submitted: false,
+			description: "Request not submitted, try again",
+		};
 	}
 };
 
@@ -504,3 +515,24 @@ export const updateCourseInDB = async (dataToBeSent: any) => {
 		console.log(error);
 	}
 };
+
+// // function to send the request to rquest class clashing
+// export const requestForScheduleCorrection = async (data: any) => {
+// 	try {
+// 		// check if the user is an admin and if already authorized
+// 		const user: any = await checkCurrentSession();
+// 		// If somehow the user is not authenticated, then
+// 		if (!user || !user.$id) return "User not Authorized";
+// 		const notificationData = {
+// 			title: "Request to update course details",
+// 			message: `There is a request to correct course info, Please do review.`,
+// 			type: "request",
+// 			actions: JSON.stringify(data.actions),
+// 			isRead: false,
+// 			createdAt: new Date().toISOString(),
+// 			student: [user.$id],
+// 		};
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// };

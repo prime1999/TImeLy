@@ -19,7 +19,7 @@ const databases = new Databases(client);
 export const sendAppwriteNotification = async (payload: any) => {
 	try {
 		const newPayload = { ...payload };
-		const notificationRes = await databases.createDocument(
+		await databases.createDocument(
 			DBID,
 			NOTIFICATION_ID,
 			ID.unique(),
@@ -65,6 +65,7 @@ export const getAppwriteNotifications = async () => {
 		userRelations.documents.forEach((relation) => {
 			relation.notifications.forEach((doc: any) => notifications.push(doc));
 		});
+		console.log(notifications);
 		return notifications;
 	} catch (error) {
 		console.log(error);
@@ -92,7 +93,7 @@ export const appwriteMarkAsRead = async (notificationId: string) => {
 			DBID,
 			NOTIFICATION_ID,
 			notificationId,
-			{ isRead: true }
+			{ isRead: true, updateAt: new Date() }
 		);
 		if (res) {
 			return res;
