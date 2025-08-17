@@ -303,62 +303,35 @@ export const submitCourseUpdateRequest = async (data: any) => {
 		// if the user authenticated
 		const userId = user.$id;
 		// submit the request
-		const req = await databases.createDocument(
-			DBID,
-			COURSE_UPDATE_REQUEST_ID,
-			ID.unique(),
-			{
-				proposedChange: JSON.stringify(updateData.updateData),
-				courses: [updateData.courseId],
-				student: [userId],
-				createdAt: new Date().toISOString(),
-			}
-		);
-		console.log(data);
-		// if the course update request was created
-		if (req && req.$id) {
-			const course = await databases.getDocument(
+		let req;
+		if (updateData !== null) {
+			req = await databases.createDocument(
 				DBID,
-				COURSES_ID,
-				updateData.courseId
+				COURSE_UPDATE_REQUEST_ID,
+				ID.unique(),
+				{
+					proposedChange: JSON.stringify(updateData.updateData),
+					courses: [updateData.courseId],
+					student: [userId],
+					createdAt: new Date().toISOString(),
+				}
 			);
+		}
+		console.log(data);
+		// if the course update request was created or the updateData was not sent
+		if ((req && req.$id) || updateData == null) {
+			// if the updateData is not empty
+			let course;
+			if (updateData !== null) {
+				course = await databases.getDocument(
+					DBID,
+					COURSES_ID,
+					updateData.courseId
+				);
+			}
 			console.log({ ...notificationData, student: [userId] });
 			// if the course exists
-			if (course) {
-				// // create the actions array
-				// let actions = [
-				// 	{
-				// 		label: "approve and merge",
-				// 		function: "mergeUpdate()",
-				// 		payload: { courseId: data.courseId, data: data.updateData },
-				// 	},
-				// 	{
-				// 		label: "approve key",
-				// 		function: "approveUpdate()",
-				// 		payload: { courseId: data.courseId, data: data.updateData },
-				// 	},
-				// 	{
-				// 		label: "decline key",
-				// 		function: "declineUpdate()",
-				// 		payload: { courseId: data.courseId, data: data.updateData },
-				// 	},
-				// 	{
-				// 		label: "show details",
-				// 		function: "showDetails()",
-				// 		payload: { courseId: data.courseId, data: data.updateData },
-				// 	},
-				// ];
-				// create the notification data to be sent
-				// const notificationData = {
-				// 	title: "Request to update course details",
-				// 	message: `There is a request to correct course info, Please do review.`,
-				// 	type: "request",
-				// 	actions: JSON.stringify(data.actions),
-				// 	isRead: false,
-				// 	createdAt: new Date().toISOString(),
-				// 	student: [userId],
-				// };
-				//const notificationData = { ...data, student: [userId] };
+			if (course || updateData === null) {
 				// create a notification on the course update request
 				const notification = await databases.createDocument(
 					DBID,
@@ -366,7 +339,7 @@ export const submitCourseUpdateRequest = async (data: any) => {
 					ID.unique(),
 					{ ...notificationData, student: [userId] }
 				);
-				// if the cotification was created
+				// if the notification was created
 				if (notification) {
 					// get the current user's info
 					const user = await databases.getDocument(DBID, STUDENTID, userId);

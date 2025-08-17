@@ -18,7 +18,8 @@ const CourseRequestDetails = ({ notification }: Props) => {
 					.map((action: any, i: number) => (
 						<div key={i} className="mt-4">
 							{/* If payload.data exists, loop over its entries */}
-							{(action.payload?.data || action?.payload?.schedule) && (
+							{((Array.isArray(action.payload?.data) && action.payload?.data) ||
+								action?.payload?.schedule) && (
 								<div className="text-sm">
 									{Object.entries(
 										action.payload.data || action.payload.schedule
@@ -31,7 +32,6 @@ const CourseRequestDetails = ({ notification }: Props) => {
 												scheduleArray = value;
 											} else if (typeof value === "string") {
 												try {
-													console.log("here");
 													const parsed = JSON.parse(value);
 													scheduleArray = Array.isArray(parsed) ? parsed : [];
 												} catch (e) {
@@ -89,6 +89,13 @@ const CourseRequestDetails = ({ notification }: Props) => {
 									})}
 								</div>
 							)}
+							<div>
+								{!Array.isArray(action.payload?.data) && (
+									<h6 className="font-inter text-sm font-semibold">
+										{action.payload?.data}
+									</h6>
+								)}
+							</div>
 						</div>
 					))}
 			</div>

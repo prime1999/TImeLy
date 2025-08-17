@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { GrSchedules } from "react-icons/gr";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Toaster } from "../ui/sonner";
 import { submitUpdateRequest } from "@/lib/slice/CourseSlice";
 
 type Props = {
@@ -20,21 +22,56 @@ const ClashedCourseModal = ({ open, setOpen }: Props) => {
 	const notifyAdmin = async () => {
 		try {
 			// the notification payload info
-			let actions: any = [];
-			const updateData = {
-				actions,
-				updateData: clashedCourses.courses,
-			};
+			const newClashedCourses = clashedCourses.map((title: any) =>
+				title.courses.map((t: any) => ({
+					title: t.CourseTitle,
+				}))
+			);
+			console.log({ clashedCourses, newClashedCourses });
+			console.log(
+				`The ${[
+					...new Set(
+						newClashedCourses.map((item: any) => item.map((t: any) => t.title))
+					),
+				].join(", ")} schedules are clashing, Please review`
+			);
+			// create the actions array
+			let actions = [
+				{
+					label: "show details",
+					function: "showDetails()",
+					payload: {
+						data: `The ${[
+							...new Set(
+								newClashedCourses.map((item: any) =>
+									item.map((t: any) => t.title)
+								)
+							),
+						].join(", ")} schedules are clashing, Please review`,
+					},
+				},
+			];
+
+			// create the actions array
 			const notificationData = {
 				title: "Request to update course details",
-				message: `There is a request to correct course info, Please do review.`,
+				message: "Some course schedules are clashing with each other",
 				type: "request",
 				actions: JSON.stringify(actions),
 				isRead: false,
 				createdAt: new Date().toISOString(),
 			};
 			// call the function to dispatch the submit update request function in the redux store state
-			await dispatch(submitUpdateRequest(notificationData)).unwrap();
+			const updateRes = await dispatch(
+				submitUpdateRequest({ notificationData, updateData: null })
+			).unwrap();
+			// check if the request was submitted
+			if (updateRes) {
+				// close the modal
+				setOpen(false);
+				// show success toast
+				toast("Your request has been sent.");
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -86,7 +123,10 @@ const ClashedCourseModal = ({ open, setOpen }: Props) => {
 					</div>
 					<DialogFooter className="flex flex-col">
 						<div className="w-full flex flex-col font-inter text-xs font-semibold">
-							<button className="bg-green-500 w-full rounded-md p-2 text-gray-200 cursor-pointer duration-700 hover:bg-green-600">
+							<button
+								onClick={() => notifyAdmin()}
+								className="bg-green-500 w-full rounded-md p-2 text-gray-200 cursor-pointer duration-700 hover:bg-green-600"
+							>
 								Notify Admin
 							</button>
 							<button
@@ -99,6 +139,7 @@ const ClashedCourseModal = ({ open, setOpen }: Props) => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+			<Toaster />
 		</main>
 	);
 };

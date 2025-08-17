@@ -84,7 +84,6 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 			toast("Course Schedule date not set");
 		}
 	};
-
 	// function to remove a schedule when filling the add course form
 	const removeSchedule = (day: string, startDate: string, endDate: string) => {
 		// filter the schedule the user wants to remove the schedule
