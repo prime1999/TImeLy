@@ -80,7 +80,7 @@ const Notifications = ({
 	};
 
 	return (
-		<main className="font-inter h-[400px] pb-4 overflow-auto scrollable-div">
+		<main className="glassmorphism border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1  text-gray-800 rounded-md dark:border-[rgb(68,68,68)] dark:text-slate-200 font-inter h-[400px] pb-4 overflow-auto scrollable-div">
 			<h4 className="p-4 font-semibold text-sm mt-2">Notifications</h4>
 			<hr className="my-2" />
 			<div className="text-sm">

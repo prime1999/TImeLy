@@ -77,7 +77,7 @@ const ClashedCourseModal = ({ open, setOpen }: Props) => {
 		}
 	};
 	return (
-		<main>
+		<main className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:gap-4">
 			<Dialog open={open}>
 				<DialogContent className="font-inter text-gray-600 sm:max-w-[425px] dark:text-gray-400">
 					<div>
