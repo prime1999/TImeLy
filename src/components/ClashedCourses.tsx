@@ -7,7 +7,7 @@ import ClashedCourseModal from "./modals/ClashedCourseModal";
 const ClashedCourses = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	// state to control the modal for showing the clashed courses
-	const [open, setOpen] = useState<boolean>(true);
+	const [open, setOpen] = useState<boolean>(false);
 	// state for the course state selection from the store
 	const { isLoading, reload, clashedCourses, data } = useSelector(
 		(state: any) => state.course

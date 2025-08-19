@@ -62,3 +62,7 @@ export const createTaskSchema = z.object({
 	}),
 	endDate: z.date(),
 });
+export const CourseFilterSchema = z.object({
+	select: z.string({ required_error: "Pls pick a key select" }),
+	value: z.string({ required_error: "Pls input filter value" }),
+});

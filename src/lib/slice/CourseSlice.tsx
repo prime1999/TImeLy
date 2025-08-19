@@ -20,6 +20,7 @@ type initialType = {
 	unRegisteredCourses: any;
 	clashedCourses: any;
 	courseToUpdate: any;
+	filteredCourses: any;
 };
 
 const initialState: initialType = {
@@ -32,6 +33,7 @@ const initialState: initialType = {
 	unRegisteredCourses: null,
 	clashedCourses: null,
 	courseToUpdate: null,
+	filteredCourses: null,
 };
 
 // function to just add a course without registering for the course
@@ -152,10 +154,10 @@ export const getClashedCourses = createAsyncThunk(
 						? JSON.parse(entry.schedule)
 						: entry.schedule,
 			}));
-			console.log(parsedCourses);
+
 			// send the courses to be checked
 			const result = findTimeClashes(parsedCourses);
-			console.log(result);
+
 			return result;
 		} catch (error) {
 			console.log(error);
@@ -175,6 +177,46 @@ export const getClashedCourses = createAsyncThunk(
 // 		}
 // 	}
 // );
+
+// function to filter courses on the student's UI
+export const filterCourses = createAsyncThunk(
+	"courses/filterCourses",
+	async (filterData: any) => {
+		try {
+			const { courses, searchData } = filterData;
+			console.log({ courses, searchData });
+			// filter the courses that there filter ketys are course-title/code, lecturer unit
+			if (searchData.searchKey !== "day") {
+				// perform first search
+				const filteredCourses = await courses.filter((course: any) => {
+					// Match by key dynamically
+					return (
+						course[searchData.searchKey].toLowerCase().replace(/\s+/g, "") ===
+						searchData.searchValue.toLowerCase().replace(/\s+/g, "")
+					);
+				});
+				console.log(filterCourses);
+				return filteredCourses;
+			} else {
+				const filteredCourses: any = [];
+				// perform the filter for the day
+				await courses.map((course: any) => {
+					JSON.parse(course.schedule).some((item: any) => {
+						if (
+							item.day.toLowerCase() === searchData.searchValue.toLowerCase()
+						) {
+							filteredCourses.push(course);
+						}
+					});
+				});
+				console.log(filteredCourses);
+				return filteredCourses;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
 
 export const CourseSlice = createSlice({
 	name: "course",
@@ -217,6 +259,7 @@ export const CourseSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.data = action.payload;
+				state.filteredCourses = null;
 			})
 			.addCase(getCourses.rejected, (state) => {
 				state.isLoading = false;
@@ -253,6 +296,16 @@ export const CourseSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(getClashedCourses.rejected, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(filterCourses.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.filteredCourses = action.payload;
+			})
+			.addCase(filterCourses.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(filterCourses.rejected, (state) => {
 				state.isLoading = false;
 			});
 	},

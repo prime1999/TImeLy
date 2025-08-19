@@ -1,13 +1,12 @@
 type Props = {
 	notification: {
 		title: string;
-		actions: string; // this is expected to be a JSON string
+		actions: string;
 	};
 };
 
 const CourseRequestDetails = ({ notification }: Props) => {
 	const actions = JSON.parse(notification.actions);
-	console.log({ notification, actions });
 
 	return (
 		<main className="font-inter">
