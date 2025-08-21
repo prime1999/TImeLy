@@ -16,6 +16,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import Courses from "./Pages/Courses";
 import PrivateUserRoutes from "./components/PrivateRoutes/PrivateUserRoute";
 import Tasks from "./Pages/Tasks";
+
 function App() {
 	const router = createBrowserRouter(
 		createRoutesFromElements(

@@ -13,6 +13,7 @@ import { MdTextFields } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import SubmitButton from "@/lib/utils/SubmitButton";
 import { addTask, getTasks, updateTask } from "@/lib/slice/TasksSlice";
+import TaskBody from "../TaskBody";
 
 const status = [
 	{ name: "In-Progress", value: "inProgress" },
@@ -27,6 +28,8 @@ type Props = {
 
 const UpdateTaskForm = ({ setOpen, task }: Props) => {
 	const dispatch = useDispatch<AppDispatch>();
+	// state for the task body
+	const [body, setBody] = useState<string>(task.body);
 	// state to store the status value
 	const [selectedStatus, setSelectedStatus] = useState<String>(task.status);
 	// state to get the task redux state from the rdux store
@@ -35,7 +38,6 @@ const UpdateTaskForm = ({ setOpen, task }: Props) => {
 		resolver: zodResolver(createTaskSchema),
 		defaultValues: {
 			title: task.title,
-			body: task.body,
 			status: task.status,
 			startDate: task.startDate ? new Date(task.startDate) : undefined,
 			endDate: task.endDate ? new Date(task.endDate) : undefined,
@@ -48,14 +50,13 @@ const UpdateTaskForm = ({ setOpen, task }: Props) => {
 			const taskData: any = {
 				$id: task.$id,
 				title: values.title,
-				body: values.body,
+				body,
 				status: selectedStatus,
 				startDate: values.startDate,
 				endDate: values.endDate,
 			};
-			console.log(taskData);
+
 			const res = await dispatch(updateTask(taskData)).unwrap();
-			console.log(res);
 			// send the msg gotten from the appwrite add task functionality
 			toast(res?.msg);
 			if (res && res?.msg === "Document updated Successfully") {
@@ -69,7 +70,7 @@ const UpdateTaskForm = ({ setOpen, task }: Props) => {
 	};
 	console.log(task);
 	return (
-		<div className="">
+		<div className="h-[400px] overflow-auto scrollable-div">
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
@@ -89,16 +90,7 @@ const UpdateTaskForm = ({ setOpen, task }: Props) => {
 							/>
 						</div>
 						<div className="col-span-2 my-4 lg:mb-0">
-							<CustomFormField
-								fieldType={FormFieldType.textArea}
-								control={form.control}
-								name="body"
-								label="Description"
-								placeholder="Task description"
-								type="text"
-								iconSrc={<MdTextFields />}
-								className="w-full"
-							/>
+							<TaskBody body={body} setBody={setBody} />
 						</div>
 						<div className="w-full flex gap-2 items-center mt-4">
 							{status.map((stat) => (

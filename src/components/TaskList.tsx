@@ -42,7 +42,7 @@ const TaskList = () => {
 					tasks?.map((task: any) => (
 						<div
 							key={task.title}
-							className={`grid grid-cols-3 bg-muted ${
+							className={`flex justify-between items-center bg-muted ${
 								task.status === "done"
 									? "after:bg-green-500"
 									: task.status === "inProgress"
@@ -74,17 +74,15 @@ const TaskList = () => {
 								>
 									<MdAdsClick />
 								</button>
-								<span className="flex gap-1 items-center text-xs">
-									<FaRegClock />
-									<p className="font-semibold">
-										{TaskCountdown(task.startDate)}
-									</p>
-								</span>
 							</div>
-							<button className="flex justify-center items-center text-sm gap-4 cursor-pointer duration-500 hover:gap-6">
+							<span className="flex gap-1 items-center text-xs">
+								<FaRegClock />
+								<p className="font-semibold">{TaskCountdown(task.startDate)}</p>
+							</span>
+							{/* <button className="flex justify-center items-center text-sm gap-4 cursor-pointer duration-500 hover:gap-6">
 								<p className="font-semibold">Attach a note</p>{" "}
 								<MdEditDocument className="text-lg text-green-400" />
-							</button>
+							</button> */}
 						</div>
 					))}
 				{!tasks && <h1>No Task to show</h1>}

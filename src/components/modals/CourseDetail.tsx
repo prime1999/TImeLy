@@ -48,9 +48,15 @@ const CourseDetail = ({
 										{JSON.parse(selectedCourse?.schedule).map(
 											(time: any, i: number) => (
 												<li key={i} className="flex flex-col w-full mb-2">
-													<span className="flex gap-2 mb-2">
+													<span className="flex items-center gap-2 mb-2">
 														<h6 className="text-sm text-gray-500 font-semibold">
 															Venue:
+														</h6>
+														<p className="capitalize">{time.venue}: </p>
+													</span>
+													<span className="flex gap-2 items-center mb-2">
+														<h6 className="text-sm text-gray-500 font-semibold">
+															Day:
 														</h6>
 														<p className="capitalize">{time.day}: </p>
 													</span>

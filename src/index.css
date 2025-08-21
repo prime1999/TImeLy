@@ -283,3 +283,22 @@
 		transform: rotate(360deg);
 	}
 }
+
+/* Example using direct CSS targeting */
+.rc-md-editor-toolbar {
+	background-color: #f0f0f0;
+	border-bottom: 1px solid #ddd;
+	padding: 8px;
+}
+
+.rc-md-editor-toolbar-item {
+	margin-right: 5px;
+	padding: 5px 10px;
+	border-radius: 4px;
+	background-color: #eee;
+	cursor: pointer;
+}
+
+.rc-md-editor-toolbar-item:hover {
+	background-color: #e0e0e0;
+}

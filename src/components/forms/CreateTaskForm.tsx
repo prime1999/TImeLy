@@ -13,6 +13,7 @@ import { MdTextFields } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import SubmitButton from "@/lib/utils/SubmitButton";
 import { addTask, getTasks } from "@/lib/slice/TasksSlice";
+import TaskBody from "../TaskBody";
 
 const status = [
 	{ name: "In-Progress", value: "inProgress" },
@@ -25,6 +26,7 @@ type Props = {
 };
 
 const CreateTaskForm = ({ setOpen }: Props) => {
+	const [body, setBody] = useState<string>("**Hello world!!!**");
 	const dispatch = useDispatch<AppDispatch>();
 	// state to store the status value
 	const [selectedStatus, setSelectedStatus] = useState<String>("");
@@ -34,7 +36,6 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 		resolver: zodResolver(createTaskSchema),
 		defaultValues: {
 			title: "",
-			body: "",
 			status: "",
 			startDate: new Date(),
 			endDate: new Date(),
@@ -46,7 +47,7 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 			// dispatch the function to send the task data to redux add task function
 			const taskData: any = {
 				title: values.title,
-				body: values.body,
+				body,
 				status: selectedStatus,
 				startDate: values.startDate,
 				endDate: values.endDate,
@@ -64,7 +65,7 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 		}
 	};
 	return (
-		<div className="">
+		<div className="h-[400px] overflow-auto scrollable-div">
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
@@ -83,7 +84,7 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 								className="w-full"
 							/>
 						</div>
-						<div className="col-span-2 my-4 lg:mb-0">
+						{/* <div className="col-span-2 my-4 lg:mb-0">
 							<CustomFormField
 								fieldType={FormFieldType.textArea}
 								control={form.control}
@@ -94,6 +95,9 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 								iconSrc={<MdTextFields />}
 								className="w-full"
 							/>
+						</div> */}
+						<div className="col-span-2 my-4 lg:mb-0">
+							<TaskBody body={body} setBody={setBody} />
 						</div>
 						<div className="w-full flex gap-2 items-center mt-4">
 							{status.map((stat) => (
@@ -114,7 +118,7 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 								</span>
 							))}
 						</div>
-						<div className="flex items-center gap-2 justify-center flex-wrap my-4 lg:mb-0">
+						<div className="flex flex-col items-center gap-1 justify-center my-4 lg:mb-0 lg:flex-row">
 							<CustomFormField
 								fieldType={FormFieldType.date}
 								control={form.control}

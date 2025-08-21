@@ -78,7 +78,6 @@ export const getTasksFromDB = async () => {
 // function to add the task to the apwrite DB
 export const addTaskToAppwrite = async (taskData: any) => {
 	try {
-		console.log(taskData);
 		// Get the current user
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
@@ -87,10 +86,8 @@ export const addTaskToAppwrite = async (taskData: any) => {
 		const userRelation = await databases.listDocuments(DBID, USER_REALTION_ID, [
 			Query.equal("student", user.$id),
 		]);
-		console.log(userRelation);
 		// if the user relation was not found
 		if (userRelation.total < 1) {
-			console.log("here");
 			// create one for the user
 			const relation = await databases.createDocument(
 				DBID,
@@ -106,7 +103,7 @@ export const addTaskToAppwrite = async (taskData: any) => {
 			return res;
 		}
 		// if the user relation was found, then
-		// add the task to th relation directly
+		// add the task to the relation directly
 		const res = await addTaskToDB(taskData, userRelation.documents[0].$id);
 		return res;
 	} catch (error) {
@@ -114,17 +111,16 @@ export const addTaskToAppwrite = async (taskData: any) => {
 	}
 };
 
-// function to handle the adding of th task tto the DB
+// function to handle the adding of th task to the DB
 export const addTaskToDB = async (data: any, relationId: any) => {
 	try {
-		console.log(relationId);
 		// create the task in the DB
 		const task = await databases.createDocument(DBID, TASKID, ID.unique(), {
 			...data,
 			userRelations: relationId,
 			createdAt: new Date(),
 		});
-		console.log(task);
+
 		// if th task was created, then update the user relation
 		// Get the current relation document
 		const relation = await databases.getDocument(
@@ -147,7 +143,6 @@ export const addTaskToDB = async (data: any, relationId: any) => {
 			}
 		);
 
-		console.log(updatedRelation);
 		// if the relation was update, then
 		return { msg: "Task added", data: task };
 	} catch (error) {

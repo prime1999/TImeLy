@@ -57,7 +57,7 @@ const Tasks = () => {
 				<div className="col-span-2">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-8">
-							<h1 className="flex items-center gap-2 font-semibold text-2xl dark:text-slate-300">
+							<h1 className="flex items-center gap-2 font-semibold text-2xl dark:text-slate-100">
 								My Tasks
 								<span className="text-xs bg-green-400 rounded-full py-1 px-2">
 									{tasks && tasks.length}
