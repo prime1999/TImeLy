@@ -8,7 +8,7 @@ import {
 	updateCourseInDB,
 } from "../actions/Course.action";
 import { findUnRegisteredCouresInDB } from "../actions/TimeTable.action";
-import { findTimeClashes } from "../utils/helperFunctions/helper";
+import { findTimeClashes, getNextClass } from "../utils/helperFunctions/helper";
 
 type initialType = {
 	isLoading: boolean;
@@ -21,6 +21,7 @@ type initialType = {
 	clashedCourses: any;
 	courseToUpdate: any;
 	filteredCourses: any;
+	nextCourse: any;
 };
 
 const initialState: initialType = {
@@ -34,6 +35,7 @@ const initialState: initialType = {
 	clashedCourses: null,
 	courseToUpdate: null,
 	filteredCourses: null,
+	nextCourse: null,
 };
 
 // function to just add a course without registering for the course
@@ -184,7 +186,6 @@ export const filterCourses = createAsyncThunk(
 	async (filterData: any) => {
 		try {
 			const { courses, searchData } = filterData;
-			console.log({ courses, searchData });
 			// filter the courses that there filter ketys are course-title/code, lecturer unit
 			if (searchData.searchKey !== "day") {
 				// perform first search
@@ -195,7 +196,6 @@ export const filterCourses = createAsyncThunk(
 						searchData.searchValue.toLowerCase().replace(/\s+/g, "")
 					);
 				});
-				console.log(filterCourses);
 				return filteredCourses;
 			} else {
 				const filteredCourses: any = [];
@@ -209,8 +209,24 @@ export const filterCourses = createAsyncThunk(
 						}
 					});
 				});
-				console.log(filteredCourses);
 				return filteredCourses;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// function to notify the student of the next course
+export const forNextCourse = createAsyncThunk(
+	"courses/NextCourse",
+	async (data: any) => {
+		try {
+			console.log(data);
+			const res = await getNextClass(data);
+			console.log(res);
+			if (res) {
+				return res;
 			}
 		} catch (error) {
 			console.log(error);
@@ -307,6 +323,9 @@ export const CourseSlice = createSlice({
 			})
 			.addCase(filterCourses.rejected, (state) => {
 				state.isLoading = false;
+			})
+			.addCase(forNextCourse.fulfilled, (state, action) => {
+				state.nextCourse = action.payload;
 			});
 	},
 });

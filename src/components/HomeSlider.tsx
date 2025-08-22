@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { CountDown, Tasks, Notes, Schedule } from "./SliderComponents";
+import { CountDown, Tasks, NextCourse, Schedule } from "./SliderComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { getTasks } from "@/lib/slice/TasksSlice";
@@ -229,7 +229,7 @@ const HomeSlider = () => {
 						) : li === "countdown" ? (
 							<CountDown />
 						) : li === "notes" ? (
-							<Notes />
+							<NextCourse />
 						) : (
 							li === "schedule" && <Schedule />
 						)}

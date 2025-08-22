@@ -38,7 +38,7 @@ const ClashedCourses = () => {
 						</span>
 						<button
 							onClick={() => setOpen(true)}
-							className="flex items-center justify-center mx-auto bg-green-400 p-2 rounded-md mt-4 cursor-pointer duration-700 hover:bg-green-500 text-gray-800 dark:text-slate-200"
+							className="w-full flex items-center justify-center mx-auto bg-green-400 p-2 rounded-md mt-4 cursor-pointer duration-700 hover:bg-green-500 text-gray-800 dark:text-slate-200"
 						>
 							Check
 						</button>

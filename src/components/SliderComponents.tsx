@@ -1,25 +1,31 @@
 import { useEffect } from "react";
 import { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
-import { MdOutlineSchedule, MdAdsClick, MdNoteAlt } from "react-icons/md";
+import { MdAdsClick, MdNoteAlt } from "react-icons/md";
+import { GiDuration } from "react-icons/gi";
 import { PiClockCountdownFill } from "react-icons/pi";
 import { FaCirclePlus } from "react-icons/fa6";
 import { PiNotepadFill } from "react-icons/pi";
 import { getTasks } from "@/lib/slice/TasksSlice";
 import { formatDateRange } from "little-date";
 import TableLoader from "@/lib/utils/tableLoader";
+import { forNextCourse } from "@/lib/slice/CourseSlice";
+import { formatDateInfo } from "@/lib/utils/helperFunctions/helper";
+import { getDuration } from "@/lib/utils/helperFunctions/TimeFormater";
 
 type Props = {
 	setOpenModal: React.Dispatch<any>;
 	setSelectedTask: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+type props = {
+	data: any;
+};
+
 // schedule slide
 export const Tasks = ({ setSelectedTask, setOpenModal }: Props) => {
 	// get the tasks gotten from the DB with other states from the redux store
-	const { filteredTasks, tasks, isLoading, isSuccess } = useSelector(
-		(state: any) => state.tasks
-	);
+	const { filteredTasks, isLoading } = useSelector((state: any) => state.tasks);
 
 	return (
 		<div className="relative glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-start w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
@@ -86,27 +92,39 @@ export const CountDown = () => {
 		</div>
 	);
 };
-// notes slide
-export const Notes = () => {
+
+// next course timer slide
+export const NextCourse = ({ data }: props) => {
+	const dispatch = useDispatch<AppDispatch>();
+	const { nextCourse } = useSelector((state: any) => state.course);
+	useEffect(() => {
+		if (data) {
+			dispatch(forNextCourse(data));
+		}
+	}, [data, dispatch]);
 	return (
-		<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
-			<div className="flex justify-between items-center text-gray-200">
-				<h4 className="font-inter font-semibold text-md">Notes</h4>
-				<MdNoteAlt className="text-md text-green-400 font-semibold" />
+		<div className="w-full">
+			<div className="flex justify-between items-start text-gray-800">
+				<h4 className="font-inter font-semibold text-xl dark:text-slate-400">
+					Next Course: <br />
+					<span className="text-sm text-green-400 font-medium">
+						{nextCourse && nextCourse?.course?.CourseTitle}
+					</span>
+				</h4>
+				<MdNoteAlt className="text-xl text-green-400 font-semibold mb-2" />
 			</div>
-			<span className="flex justify-between items-center text-xs font-inter mt-4">
-				<p className="text-xs font-inter text-slate-300">
-					{/* TODO  show students notes*/}Your notes will show here
-				</p>
-				<button className="text-green-400 font-semibold cursor-pointer duration-700 hover:text-green-500">
-					See all
-				</button>
+			<span className="flex gap-2 items-center text-sm font-inter font-semibold mt-4">
+				<h6>{formatDateInfo(nextCourse?.date)?.day}</h6> -{" "}
+				<h6>{nextCourse?.schedule?.startDate}</h6>
 			</span>
-			<span className="flex items-center gap-2 mt-6 cursor-pointer group">
-				<p className="text-xs font-inter text-slate-300 font-semibold cursor-pointer duration-500 group-hover:text-slate-400">
-					Add more notes
+			<span className="flex items-center gap-2 mt-6">
+				<GiDuration className="text-md text-green-400 duration-1000 group-hover:ml-2" />
+				<p className="text-xs font-inter text-slate-700 font-semibold duration-500 dark:text-slate-300">
+					{getDuration(
+						nextCourse?.schedule?.startDate,
+						nextCourse?.schedule?.endDate
+					)}
 				</p>
-				<FaCirclePlus className="text-md text-green-400 mt-1 duration-1000 group-hover:ml-2" />
 			</span>
 		</div>
 	);

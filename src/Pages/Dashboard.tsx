@@ -1,19 +1,20 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
-import { CountDown, Notes } from "@/components/SliderComponents";
+import { CountDown, NextCourse } from "@/components/SliderComponents";
 import heroImg from "../assets/images/hero.jpg";
 import HomeSlider from "../components/HomeSlider";
 import TimeTable from "@/components/TimeTable";
 import CalendarWithNotes from "@/components/CalendarWithTasks";
 import ClashedCourses from "@/components/ClashedCourses";
 import { getCourses } from "@/lib/slice/CourseSlice";
+import TableLoader from "@/lib/utils/tableLoader";
 
 const Dashboard = () => {
 	const dispatch = useDispatch<AppDispatch>();
 
 	// get the reload function from the store in order to get the lastes courses data
-	const { reload } = useSelector((state: any) => state.course);
+	const { reload, data, isLoading } = useSelector((state: any) => state.course);
 
 	useEffect(() => {
 		dispatch(getCourses());
@@ -65,7 +66,16 @@ const Dashboard = () => {
 			<div className="hidden w-11/12 mx-auto mt-12 grid-cols-4 lg:grid gap-4">
 				<div className="col-span-3">
 					<div className="flex items-center gap-4 mb-8">
-						<Notes />
+						<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
+							{isLoading ? (
+								<div className="w-full flex items-center justify-center">
+									<TableLoader />
+								</div>
+							) : (
+								<NextCourse data={data} />
+							)}
+						</div>
+
 						<CountDown />
 					</div>
 					<div>
@@ -79,22 +89,6 @@ const Dashboard = () => {
 					<CalendarWithNotes />
 				</div>
 			</div>
-			{/* <div className="sticky bottom-10 left-10 z-[100] lg:ml-4">
-				<Tooltip>
-					<TooltipTrigger>
-						<button
-							onClick={() => setOpen(true)}
-							className="bg-green-400 p-4 rounded-full cursor-pointer duration-700 hover:mb-2"
-						>
-							<FaFileUpload className="text-2xl text-black" />
-						</button>
-					</TooltipTrigger>
-					<TooltipContent>
-						<p>Upload time table</p>
-					</TooltipContent>
-				</Tooltip>
-			</div>
-			<UploadTimeTable open={open} setOpen={setOpen} /> */}
 		</main>
 	);
 };

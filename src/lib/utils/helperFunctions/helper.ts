@@ -1,74 +1,17 @@
-import { format, parseISO, parse, isBefore, isAfter } from "date-fns";
+import {
+	format,
+	parseISO,
+	parse,
+	isBefore,
+	isAfter,
+	isWithinInterval,
+	addMinutes,
+	addDays,
+} from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
 export const normalizeString = (value: any) => {
 	return value.toLowerCase().replace(/\s+/g, "").trim();
-};
-
-export const reStructureUniversalTimetable = (data: any[]) => {
-	if (!Array.isArray(data)) return [];
-
-	const structuredData: any[] = [];
-	let currentDay = "";
-	let headerRow: any[] = [];
-	let timeSlots: string[] = [];
-
-	data.forEach((row: any) => {
-		if (
-			!Array.isArray(row) ||
-			row.every((cell) => cell === null || cell === "")
-		) {
-			return; // Skip empty rows
-		}
-
-		// Detect header row (contains 'DAY' and 'VENUE')
-		if (
-			row.some(
-				(cell) => typeof cell === "string" && cell.toLowerCase().includes("day")
-			)
-		) {
-			headerRow = row;
-			timeSlots = row.slice(2).map((slot: string) => slot?.trim()); // times start from index 2
-			return;
-		}
-
-		// Detect new day row
-		if (row[0] && row[0].toString().trim() !== "") {
-			currentDay = row[0].trim();
-
-			structuredData.push({
-				day: currentDay,
-				slots: [],
-			});
-		}
-
-		// Add venue and courses to current day
-		if (currentDay && structuredData.length) {
-			const venue = row[1]?.trim();
-			const dayEntry = structuredData.find((entry) => entry.day === currentDay);
-
-			if (venue && dayEntry) {
-				const courses = [];
-
-				for (let i = 2; i < row.length; i++) {
-					const courseName = row[i]?.trim();
-					if (courseName) {
-						courses.push({
-							time: timeSlots[i - 2], // Times start from index 2
-							course: courseName,
-						});
-					}
-				}
-
-				dayEntry.slots.push({
-					venue,
-					courses,
-				});
-			}
-		}
-	});
-
-	return structuredData;
 };
 
 // functio to compare tasks date for task filtering by date
@@ -131,4 +74,93 @@ export const findTimeClashes = (courses: any) => {
 	}
 
 	return clashes;
+};
+
+// function to get te next course to notify the student
+
+const daysMap: Record<string, number> = {
+	sunday: 0,
+	monday: 1,
+	tuesday: 2,
+	wednesday: 3,
+	thursday: 4,
+	friday: 5,
+	saturday: 6,
+};
+
+export const getNextClass = (courses: any) => {
+	const now = new Date();
+	let nextClass: any = null;
+
+	for (const course of courses) {
+		for (const sch of JSON.parse(course.schedule)) {
+			// Parse the schedule into a Date
+			const classDate = new Date(now);
+
+			const targetDay = daysMap[sch.day.toLowerCase()];
+			const todayDay = classDate.getDay();
+
+			// find how many days ahead
+			let dayDiff = targetDay - todayDay;
+			// next week
+			if (dayDiff < 0) dayDiff += 7;
+
+			classDate.setDate(classDate.getDate() + dayDiff);
+
+			// add the class start time
+			const [time, modifier] = sch.startDate.split(" ");
+			let [hours, minutes] = time.split(":").map(Number);
+
+			if (modifier.toLowerCase() === "pm" && hours < 12) hours += 12;
+			if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
+
+			classDate.setHours(hours, minutes, 0, 0);
+
+			// check only classes within 7 days and in the future
+			const diff = classDate.getTime() - now.getTime();
+			if (diff > 0 && diff <= 7 * 24 * 60 * 60 * 1000) {
+				if (!nextClass || classDate < nextClass.date) {
+					nextClass = { course, schedule: sch, date: classDate };
+				}
+			}
+		}
+	}
+
+	return nextClass;
+};
+
+// fundtion to get the date info (day and time)
+export const formatDateInfo = (data: Date): { time: string; day: string } => {
+	const date = new Date(data);
+	const now = new Date();
+
+	// Format time in hh:mm AM/PM
+	const time = date.toLocaleTimeString("en-US", {
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: true,
+	});
+
+	// If the date is the same day as now
+	const isSameDay =
+		date.getDate() === now.getDate() &&
+		date.getMonth() === now.getMonth() &&
+		date.getFullYear() === now.getFullYear();
+
+	let day: string;
+
+	if (isSameDay) {
+		// If it's earlier today
+		if (date.getTime() < now.getTime()) {
+			day = "Today";
+		} else {
+			// Later today
+			day = "Today";
+		}
+	} else {
+		// Otherwise show the actual weekday
+		day = date.toLocaleDateString("en-US", { weekday: "long" });
+	}
+
+	return { time, day };
 };

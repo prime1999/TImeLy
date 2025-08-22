@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaPlus } from "react-icons/fa6";
-import { formatDateRange } from "little-date";
 import { Calendar } from "@/components/ui/calendar";
 import TaskList from "@/components/TaskList";
 import { AppDispatch } from "@/lib/store";
