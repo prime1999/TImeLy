@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 import { BsPersonCircle } from "react-icons/bs";
 import { BiLogOutCircle } from "react-icons/bi";
@@ -15,9 +15,11 @@ import { AppDispatch } from "@/lib/store";
 import { getNotifications } from "@/lib/slice/NotificationSlice";
 import Notifications from "./Notifications";
 import ProfileModal from "./modals/ProfileModal";
+import { logUserOut } from "@/lib/slice/AuthSlice";
 
 const Navbar = () => {
-	const [openProfileModal, setOpenProfileModal] = useState<boolean>(true);
+	const navigate = useNavigate();
+	const [openProfileModal, setOpenProfileModal] = useState<boolean>(false);
 	const dispatch = useDispatch<AppDispatch>();
 
 	const { isLoading, reload, data } = useSelector(
@@ -36,6 +38,16 @@ const Navbar = () => {
 			(data?.filter((notification: any) => notification.isRead === false)
 				.length as any)
 		);
+	};
+
+	// function to log a user out
+	const logOutUser = async () => {
+		try {
+			await dispatch(logUserOut());
+			navigate(`/signIn`);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 	return (
 		<nav className="">
@@ -109,11 +121,11 @@ const Navbar = () => {
 								Exams
 							</Link>
 						</li>
-						<li>
+						{/* <li>
 							<Link to="/courses" className="duration-700 hover:text-green-400">
 								Courses
 							</Link>
-						</li>
+						</li> */}
 					</ul>
 				</div>
 				<div className="flex items-center gap-8">
@@ -151,7 +163,10 @@ const Navbar = () => {
 											<p>Profile</p>
 										</button>
 									</li>
-									<li className="flex items-center gap-2 duration-700  cursor-pointer hover:gap-4 hover:text-green-400">
+									<li
+										onClick={() => logOutUser()}
+										className="flex items-center gap-2 duration-700  cursor-pointer hover:gap-4 hover:text-green-400"
+									>
 										<BiLogOutCircle className="text-green-400 text-lg w-12 cursor-pointer" />
 										<p>Log-Out</p>
 									</li>

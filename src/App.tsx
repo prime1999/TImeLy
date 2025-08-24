@@ -23,9 +23,9 @@ function App() {
 			<>
 				<Route path="/" element={<RootLayout />}>
 					<Route index={true} path="/" element={<HomePage />} />
-					<Route path="/courses" element={<PrivateUserRoutes />}>
+					{/* <Route path="/courses" element={<PrivateUserRoutes />}>
 						<Route path="/courses" element={<Courses />} />
-					</Route>
+					</Route> */}
 					<Route path="/dashboard" element={<PrivateUserRoutes />}>
 						<Route path="/dashboard" element={<Dashboard />} />
 					</Route>
