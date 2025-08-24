@@ -5,8 +5,6 @@ import { MdAdsClick, MdNoteAlt } from "react-icons/md";
 import { GiDuration } from "react-icons/gi";
 import { PiClockCountdownFill } from "react-icons/pi";
 import { FaCirclePlus } from "react-icons/fa6";
-import { PiNotepadFill } from "react-icons/pi";
-import { getTasks } from "@/lib/slice/TasksSlice";
 import { formatDateRange } from "little-date";
 import TableLoader from "@/lib/utils/tableLoader";
 import { forNextCourse } from "@/lib/slice/CourseSlice";

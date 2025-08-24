@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 export const StudenFormSchema = z.object({
+	MatricNumber: z.coerce
+		.number()
+		.min(100000, "Invalid Matric Number")
+		.max(999999, "Invalid Matric Number"),
 	name: z
 		.string()
 		.min(2, "Name must be at least 2 characters")

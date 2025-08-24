@@ -9,13 +9,15 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { getNotifications } from "@/lib/slice/NotificationSlice";
 import Notifications from "./Notifications";
+import ProfileModal from "./modals/ProfileModal";
 
 const Navbar = () => {
+	const [openProfileModal, setOpenProfileModal] = useState<boolean>(true);
 	const dispatch = useDispatch<AppDispatch>();
 
 	const { isLoading, reload, data } = useSelector(
@@ -26,8 +28,8 @@ const Navbar = () => {
 		dispatch(getNotifications()).unwrap();
 	}, [dispatch, reload]);
 
+	// function to get the length of notification unread
 	const getIsReadLength = () => {
-		console.log(data);
 		return (
 			data !== null &&
 			Array.isArray(data) &&
@@ -141,13 +143,13 @@ const Navbar = () => {
 							<PopoverContent className="w-[150px] py-2 px-2">
 								<ul className="font-inter text-xs">
 									<li className="group mb-4">
-										<Link
-											to="/"
+										<button
+											onClick={() => setOpenProfileModal(true)}
 											className="flex items-center gap-2 duration-700 group-hover:gap-4 group-hover:text-green-400"
 										>
 											<BsPersonCircle className="text-green-400 text-lg w-12 cursor-pointer" />
 											<p>Profile</p>
-										</Link>
+										</button>
 									</li>
 									<li className="flex items-center gap-2 duration-700  cursor-pointer hover:gap-4 hover:text-green-400">
 										<BiLogOutCircle className="text-green-400 text-lg w-12 cursor-pointer" />
@@ -168,6 +170,7 @@ const Navbar = () => {
 				/>
 				<FaSearch className="absolute top-3 left-3 text-green-300" />
 			</div> */}
+			<ProfileModal open={openProfileModal} setOpen={setOpenProfileModal} />
 		</nav>
 	);
 };

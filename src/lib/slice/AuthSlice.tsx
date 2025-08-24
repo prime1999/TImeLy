@@ -3,6 +3,7 @@ import {
 	checkCurrentSession,
 	createAppwriteUser,
 	createuserAppwriteSession,
+	logUserOutFromDB,
 } from "../actions/Student.actions";
 
 type initType = {
@@ -39,7 +40,6 @@ export const createUser = createAsyncThunk(
 		try {
 			// paa the user data to the function that will send it to appwrite
 			const studentRes: any = await createAppwriteUser(userData);
-
 			// if positive res was gotten, then
 			if (studentRes && studentRes.$id) {
 				// const student = {
@@ -74,7 +74,6 @@ export const authUser = createAsyncThunk(
 		try {
 			// send the user data to the function that will send it to appwrite
 			const studentRes: any = await createuserAppwriteSession(userData);
-			console.log(studentRes);
 			// if positive res was gotten, then
 			if (studentRes && studentRes.$id) {
 				const student = {
@@ -88,11 +87,6 @@ export const authUser = createAsyncThunk(
 					student,
 				};
 			} else {
-				console.log({
-					isAuthenticated: false,
-					student: null,
-					msg: studentRes.msg,
-				});
 				// else return a false response
 				return { isAuthenticated: false, student: null, msg: studentRes.msg };
 			}
@@ -116,6 +110,16 @@ export const getCurrentSession = createAsyncThunk(
 		}
 	}
 );
+
+// function to call the apprite log out function
+export const logUserOut = createAsyncThunk("auth/logOut", async () => {
+	try {
+		// call the Appwrite function to log a usre out
+		const res = await logUserOutFromDB();
+	} catch (error) {
+		console.log(error);
+	}
+});
 
 export const AuthSlice = createSlice({
 	name: "auth",

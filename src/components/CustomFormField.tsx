@@ -56,10 +56,10 @@ interface CustomProps {
 	handleSelect?: any;
 	disabled?: boolean;
 	className?: string;
+	defaultValue?: string;
 }
 
 const RenderInput = ({ props, field }: { props: CustomProps; field: any }) => {
-	console.log(props.array);
 	switch (props.fieldType) {
 		case FormFieldType.input:
 			return (
@@ -144,6 +144,7 @@ const RenderInput = ({ props, field }: { props: CustomProps; field: any }) => {
 						field.onChange(value); // Updates form state
 						props.handleSelect?.(value); // Optional custom side effect
 					}}
+					defaultValue={props.defaultValue}
 				>
 					<SelectTrigger className={`w-full ${props.className}`}>
 						<SelectValue placeholder={props.placeholder} />

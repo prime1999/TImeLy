@@ -33,11 +33,9 @@ export const createAppwriteUser = async (userData: any) => {
 	} catch (error: any) {
 		// check if the error is a user already exist error
 		if (error && error.code === 409) {
-			console.log(error);
 			return { error: "User already exists" };
 		}
 		// else if any other error
-		console.log(error);
 		return { error: "An error occurred when creating user, please try again" };
 	}
 };
@@ -45,14 +43,12 @@ export const createAppwriteUser = async (userData: any) => {
 // function to create a session for a created user on Appwrite
 export const createuserAppwriteSession = async (userdata: any) => {
 	try {
-		console.log(userdata);
 		// create a session using the email ans password
 		const res = await account.createEmailPasswordSession(
 			userdata.email,
 			userdata.password
 		);
 		if (!res.$id) return { msg: "Wrong User credentials" };
-		console.log(res);
 		return { msg: "User Authenticated", data: res };
 	} catch (error) {
 		return { msg: "Wrong User credentials" };
@@ -62,7 +58,6 @@ export const createuserAppwriteSession = async (userdata: any) => {
 // function to create the user document in appwrite collection
 export const createAppwriteuserDocument = async (userDocData: any) => {
 	try {
-		console.log(JSON.stringify({ ...userDocData }));
 		// create the document for the student created with the (email & matric-number)
 		const userDoc = await databases.createDocument(
 			DBID,
@@ -73,8 +68,6 @@ export const createAppwriteuserDocument = async (userDocData: any) => {
 				MatricNumber: userDocData.MatricNumber,
 			}
 		);
-		console.log("created");
-
 		return userDoc;
 	} catch (error) {
 		console.log(error);
@@ -95,7 +88,6 @@ export const getCurrentStudent = async (userID: string) => {
 			);
 			return currentStudent;
 		}
-		console.log(res);
 		return null;
 	} catch (error) {
 		console.log(error);
@@ -122,7 +114,6 @@ export const checkCurrentSession = async () => {
 	try {
 		// get the current session if any
 		const resData = await account.get();
-		console.log(resData);
 		return resData;
 	} catch (error) {
 		console.log(error);
@@ -132,12 +123,10 @@ export const checkCurrentSession = async () => {
 // function to list documents based on a query (matricNumber) in appwrite
 export const listDocuments = async (matricNumber: string) => {
 	try {
-		console.log(matricNumber);
 		// get the documents that fit the query
 		const resDoc = await databases.listDocuments(DBID, STUDENTID, [
 			Query.equal("MatricNumber", matricNumber.toString()),
 		]);
-		console.log(resDoc);
 		return resDoc;
 	} catch (error) {
 		console.log(error);
@@ -149,21 +138,70 @@ export const getFacultyTimeTable = async () => {
 	try {
 		// check if the there is a logged in user
 		const session: any = await checkCurrentSession();
-		console.log(session);
 		// if the session exists
 		if (session) {
-			console.log(session.$id);
 			// get the user's document using the user's id
 			const resDoc = await databases.getDocument(DBID, STUDENTID, session.$id);
-			console.log(resDoc);
 			if (resDoc && resDoc.$id) {
 				const resTable = await databases.listDocuments(DBID, TIME_TABLE_ID, [
 					Query.equal("type", "faculty"),
 					Query.equal("part", resDoc.faculty),
 				]);
-				console.log(resTable);
 				return resTable;
 			}
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// appwrite function to get the student's profile from the DB
+export const getStudentProfileFromDB = async () => {
+	try {
+		// check if the there is a logged in user
+		const session: any = await checkCurrentSession();
+		if (session) {
+			// get the user doc info from appwrite
+			const resDoc = await databases.getDocument(DBID, STUDENTID, session.$id);
+			if (resDoc && resDoc.$id) {
+				return resDoc;
+			} else {
+				return "Student does not exist";
+			}
+		}
+	} catch (error) {
+		console.log(error);
+		return "Student does not exist";
+	}
+};
+
+// Appwrite function to update the student's profile
+export const updateProfile = async (data: any) => {
+	try {
+		// check if the there is a logged in user
+		const session: any = await checkCurrentSession();
+		// update the document
+		const res = await databases.updateDocument(
+			DBID,
+			STUDENTID,
+			session.$id,
+			data
+		);
+		if (res && res.$id) {
+			return res;
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// Appwrite function to log a user out
+export const logUserOutFromDB = async () => {
+	try {
+		// get the current session
+		const res = await checkCurrentSession();
+		if (res && res.$id) {
+			await account.deleteSession("current");
 		}
 	} catch (error) {
 		console.log(error);

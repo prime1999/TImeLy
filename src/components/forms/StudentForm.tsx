@@ -5,14 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { BsEnvelope } from "react-icons/bs";
-
 import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import SubmitButton from "@/lib/utils/SubmitButton";
 import { StudenFormSchema } from "../../lib/Validation";
 import "react-phone-number-input/style.css";
 import { departmentsByFaculty, facultyNames } from "@/contants/Faculties.info";
-import { levels, Universities } from "@/contants/Schools.info";
+import { levels } from "@/contants/Schools.info";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { AppDispatch } from "@/lib/store";
@@ -36,7 +35,6 @@ const StudentForm = () => {
 	const [Level, setLevel] = useState<{}[]>(levels);
 
 	const { isLoading, student } = useSelector((state: any) => state.student);
-	console.log(student);
 
 	const form = useForm<z.infer<typeof StudenFormSchema>>({
 		resolver: zodResolver(StudenFormSchema),
@@ -85,7 +83,6 @@ const StudentForm = () => {
 		};
 		// dispatch the funcion to update the user in the appwrite
 		const resData = await dispatch(UpdateUser(DataToUpdate));
-		console.log(resData);
 		// if the process is successful then redirect to the dashboard page
 		if (resData) {
 			navigate(`/dashboard`);

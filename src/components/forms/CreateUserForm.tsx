@@ -6,10 +6,8 @@ import { z } from "zod";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import { MdEmail, MdNumbers } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
 import { Form } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import { createUser } from "@/lib/slice/AuthSlice";
@@ -47,7 +45,7 @@ const CreateUserForm = () => {
 				email: values.email,
 				password: values.password,
 			};
-			console.log("check");
+
 			const newUser = (await dispatch(createUser(user))) as any;
 			if (newUser.payload.student) {
 				navigate(`/register/student/${newUser?.payload?.student?.$id as any}`);

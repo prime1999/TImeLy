@@ -5,16 +5,22 @@ type Props = {
 	className: string;
 	children: ReactNode;
 	isLoading: boolean;
+	disableButton?: boolean;
 };
 
-const SubmitButton = ({ isLoading, children, className }: Props) => {
+const SubmitButton = ({
+	isLoading,
+	children,
+	className,
+	disableButton,
+}: Props) => {
 	return (
 		<button
 			type="submit"
-			disabled={isLoading}
+			disabled={isLoading || disableButton}
 			className={`${className} ${
-				isLoading
-					? "cursor-default py-1"
+				isLoading || disableButton
+					? "cursor-default py-1 bg-green-300"
 					: "cursor-pointer py-2 duration-500 hover:bg-green-600"
 			}`}
 		>

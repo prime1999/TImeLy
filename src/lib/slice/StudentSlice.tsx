@@ -4,6 +4,8 @@ import {
 	UpdateStudentInfo,
 	listDocuments,
 	getFacultyTimeTable,
+	getStudentProfileFromDB,
+	updateProfile,
 } from "../actions/Student.actions";
 
 type initialType = {
@@ -12,6 +14,7 @@ type initialType = {
 	message: string;
 	isSuccess: boolean;
 	student: any | null;
+	data: any;
 };
 
 const initialState: initialType = {
@@ -20,6 +23,7 @@ const initialState: initialType = {
 	message: "",
 	isSuccess: false,
 	student: null,
+	data: null,
 };
 
 // store function to get the current user
@@ -35,7 +39,6 @@ export const getCurrentUser = createAsyncThunk(
 					gender: user.Gender,
 					admin: user.admin,
 				};
-				console.log(student);
 				return student;
 			}
 			return null;
@@ -66,7 +69,6 @@ export const getDocuments = createAsyncThunk(
 	"student/listDocument",
 	async (matricNumber: string) => {
 		try {
-			console.log(matricNumber);
 			const res = await listDocuments(matricNumber);
 			return res;
 		} catch (error) {
@@ -81,11 +83,42 @@ export const getFacultyTable = createAsyncThunk(
 	async () => {
 		try {
 			const res = await getFacultyTimeTable();
-			console.log(res);
 			return res;
 		} catch (error) {
 			console.log(error);
 			return error;
+		}
+	}
+);
+
+// function to call the appwrite funcion to get the student's profile info from appwrite
+export const getStudentProfile = createAsyncThunk(
+	"student/getStudentProfile",
+	async () => {
+		try {
+			// get the response of the function
+			const res: any = await getStudentProfileFromDB();
+			if (res && res.$id) {
+				return res;
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// function to call the appwrite function to update the student profle
+export const updateStudentProfile = createAsyncThunk(
+	"student/updateProfile",
+	async (data) => {
+		try {
+			// call the function
+			const res = await updateProfile(data);
+			if (res && res.$id) {
+				return res;
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 );
@@ -121,6 +154,26 @@ export const StudentSlice = createSlice({
 				state.isLoading = false;
 			})
 			.addCase(UpdateUser.rejected, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(getStudentProfile.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.data = action.payload;
+			})
+			.addCase(getStudentProfile.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getStudentProfile.rejected, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(updateStudentProfile.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateStudentProfile.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.data = action.payload;
+			})
+			.addCase(updateStudentProfile.rejected, (state) => {
 				state.isLoading = false;
 			});
 	},
