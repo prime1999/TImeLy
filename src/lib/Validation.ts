@@ -4,7 +4,8 @@ export const StudenFormSchema = z.object({
 	MatricNumber: z.coerce
 		.number()
 		.min(100000, "Invalid Matric Number")
-		.max(999999, "Invalid Matric Number"),
+		.max(999999, "Invalid Matric Number")
+		.optional(),
 	name: z
 		.string()
 		.min(2, "Name must be at least 2 characters")
@@ -14,7 +15,6 @@ export const StudenFormSchema = z.object({
 		.string()
 		.refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
 	gender: z.enum(["Male", "Female"]),
-
 	faculty: z.string({ required_error: "Invalid Faculty" }),
 	department: z.string({ required_error: "Invalid Department" }),
 	school: z.string({ required_error: "Invalid School name" }),

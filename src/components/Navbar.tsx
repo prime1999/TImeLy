@@ -111,21 +111,21 @@ const Navbar = () => {
 								Dashboard
 							</Link>
 						</li>
-						<li>
+						{/* <li>
 							<Link to="/" className="duration-700 hover:text-green-400">
 								Classes
 							</Link>
-						</li>
+						</li> */}
 						<li>
 							<Link to="/" className="duration-700 hover:text-green-400">
 								Exams
 							</Link>
 						</li>
-						{/* <li>
+						<li>
 							<Link to="/courses" className="duration-700 hover:text-green-400">
 								Courses
 							</Link>
-						</li> */}
+						</li>
 					</ul>
 				</div>
 				<div className="flex items-center gap-8">

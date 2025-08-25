@@ -40,6 +40,7 @@ export const createUser = createAsyncThunk(
 		try {
 			// paa the user data to the function that will send it to appwrite
 			const studentRes: any = await createAppwriteUser(userData);
+			console.log(studentRes);
 			// if positive res was gotten, then
 			if (studentRes && studentRes.$id) {
 				// const student = {
@@ -103,7 +104,6 @@ export const getCurrentSession = createAsyncThunk(
 	async () => {
 		try {
 			const currentSession = await checkCurrentSession();
-			console.log(currentSession);
 			return currentSession;
 		} catch (error) {
 			console.log(error);

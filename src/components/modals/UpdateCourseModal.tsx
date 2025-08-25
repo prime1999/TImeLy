@@ -60,7 +60,6 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 		},
 	});
 	const { getValues } = form;
-
 	// function to select the day
 	const handleSelect = (value: string) => {
 		setDay(value);
@@ -76,8 +75,7 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 			startDate: formatScheduleTime(startDate),
 			endDate: formatScheduleTime(endDate),
 		};
-		console.log(newSchedule);
-		// ceck if any of the data is available before adding the schedule to the array
+		// check if any of the data is available before adding the schedule to the array
 		if (day !== "" && startDate !== "" && endDate !== "") {
 			setSchedule((prev: any) => [...prev, newSchedule]);
 		} else if (day === "" || startDate === "" || endDate === "") {
@@ -210,7 +208,7 @@ const UpdateCourseModal = ({ open, setOpen, course }: Props) => {
 										isLoading={isLoading}
 										className="w-full mx-auto flex justify-center mt-4 bg-green-400 text-black rounded-lg font-inter font-bold"
 									>
-										Send Request
+										Send Update
 									</SubmitButton>
 								</form>
 							</Form>

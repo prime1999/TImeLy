@@ -46,12 +46,13 @@ const CreateUserForm = () => {
 				password: values.password,
 			};
 
-			const newUser = (await dispatch(createUser(user))) as any;
-			if (newUser.payload.student) {
-				navigate(`/register/student/${newUser?.payload?.student?.$id as any}`);
+			const newUser = (await dispatch(createUser(user)).unwrap()) as any;
+			console.log(newUser);
+			if (newUser.student && newUser.student.$id) {
+				navigate(`/register/student/${newUser?.student?.$id as any}`);
 			}
 			// show error message from the server
-			toast.error(newUser.payload.message, {
+			toast.error("Check credentials", {
 				className: "fixed top-[100]",
 				style: { border: "red" },
 			});

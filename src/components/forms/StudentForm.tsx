@@ -36,7 +36,7 @@ const StudentForm = () => {
 
 	const { isLoading, student } = useSelector((state: any) => state.student);
 
-	const form = useForm<z.infer<typeof StudenFormSchema>>({
+	const form = useForm<z.infer<any>>({
 		resolver: zodResolver(StudenFormSchema),
 		defaultValues: {
 			email: "",
@@ -70,149 +70,148 @@ const StudentForm = () => {
 	};
 
 	// function to submit the form
-	const onSubmitForm = async (values: z.infer<typeof StudenFormSchema>) => {
-		const DataToUpdate = {
-			docId: pathId,
-			name: values.name,
-			school: values.school,
-			faculty: values.faculty,
-			department: values.department,
-			PhoneNumber: values.phone.toString(),
-			level: values.level,
-			Gender: values.gender,
-		};
-		// dispatch the funcion to update the user in the appwrite
-		const resData = await dispatch(UpdateUser(DataToUpdate));
-		// if the process is successful then redirect to the dashboard page
-		if (resData) {
-			navigate(`/dashboard`);
+	const onSubmitForm = async (values: z.infer<any>) => {
+		try {
+			const DataToUpdate = {
+				docId: pathId,
+				name: values.name,
+				school: values.school,
+				faculty: values.faculty,
+				department: values.department,
+				PhoneNumber: values.phone.toString(),
+				level: values.level,
+				Gender: values.gender,
+			};
+
+			// dispatch the funcion to update the user in the appwrite
+			const resData = await dispatch(UpdateUser(DataToUpdate));
+			// if the process is successful then redirect to the dashboard page
+			if (resData) {
+				navigate(`/dashboard`);
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	};
 	return (
-		<main className="">
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmitForm)}
-					className="space-y-6 w-full mx-auto"
+		<Form {...form}>
+			<form
+				onSubmit={form.handleSubmit(onSubmitForm)}
+				className="space-y-6 w-full mx-auto"
+			>
+				<h1>Personal Information</h1>
+				<CustomFormField
+					fieldType={FormFieldType.input}
+					control={form.control}
+					name="name"
+					label="name"
+					placeholder="ex: John Doe"
+					type="text"
+					iconSrc=""
+				/>
+				<div className="flex items-center gap-4 w-full">
+					<div className="w-full">
+						<CustomFormField
+							fieldType={FormFieldType.input}
+							control={form.control}
+							name="email"
+							label="Email"
+							placeholder="your email"
+							type="email"
+							inputMode="numeric"
+							iconSrc={<BsEnvelope />}
+							disabled={true}
+						/>
+					</div>
+					<div className="w-full">
+						<CustomFormField
+							fieldType={FormFieldType.phone_input}
+							control={form.control}
+							name="phone"
+							label="Phone Number"
+							placeholder="(555) 123-4567"
+						/>
+					</div>
+				</div>
+				<h1 className="font-inter font-semibold text-2xl">
+					Student Information
+				</h1>
+				<CustomFormField
+					fieldType={FormFieldType.select}
+					control={form.control}
+					name="school"
+					array={[
+						{ name: "University of Ibadan", value: "University of Ibadan" },
+					]}
+					label="School"
+					handleSelect={handleSelect}
+					placeholder="school"
+				/>
+				<CustomFormField
+					fieldType={FormFieldType.select}
+					control={form.control}
+					name="faculty"
+					array={faculties}
+					label="Faculty"
+					handleSelect={handleSelect}
+					placeholder="faculty"
+				/>
+				<CustomFormField
+					fieldType={FormFieldType.select}
+					control={form.control}
+					name="department"
+					label="Department"
+					placeholder="department"
+					array={departments}
+				/>
+				<div className="flex gap-4 items-center justify-between w-full">
+					<div className="w-1/2">
+						<CustomFormField
+							fieldType={FormFieldType.select}
+							control={form.control}
+							name="level"
+							label="Level"
+							placeholder="level"
+							array={Level}
+						/>
+					</div>
+					<div>
+						{" "}
+						<CustomFormField
+							fieldType={FormFieldType.skeleton}
+							control={form.control}
+							name="gender"
+							label="Gender"
+							disabled={true}
+							renderSkeleton={(field) => (
+								<FormControl>
+									<RadioGroup
+										className="flex h-11 gap-6 xl:justify-between"
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+									>
+										{GenderOptions.map((option, i) => (
+											<div key={i}>
+												<RadioGroupItem value={option} id={option} />
+												<Label htmlFor={option} className="cursor-pointer">
+													{option}
+												</Label>
+											</div>
+										))}
+									</RadioGroup>
+								</FormControl>
+							)}
+						/>
+					</div>
+				</div>
+				<SubmitButton
+					isLoading={isLoading}
+					className="w-full bg-green-400 text-black rounded-lg font-inter font-bold cursor-pointer"
 				>
-					<h1>Personal Information</h1>
-					<CustomFormField
-						fieldType={FormFieldType.input}
-						control={form.control}
-						name="name"
-						label="name"
-						placeholder="ex: John Doe"
-						type="text"
-						iconSrc=""
-					/>
-					<div className="flex items-center gap-4 w-full">
-						<div className="w-full">
-							<CustomFormField
-								fieldType={FormFieldType.input}
-								control={form.control}
-								name="email"
-								label="Email"
-								placeholder="your email"
-								type="email"
-								inputMode="numeric"
-								iconSrc={<BsEnvelope />}
-								disabled={true}
-							/>
-						</div>
-						<div className="w-full">
-							<CustomFormField
-								fieldType={FormFieldType.phone_input}
-								control={form.control}
-								name="phone"
-								label="Phone Number"
-								placeholder="(555) 123-4567"
-							/>
-						</div>
-					</div>
-					<h1 className="font-inter font-semibold text-2xl">
-						Student Information
-					</h1>
-					<CustomFormField
-						fieldType={FormFieldType.select}
-						control={form.control}
-						name="school"
-						array={[
-							{ name: "University of Ibadan", value: "University of Ibadan" },
-						]}
-						label="School"
-						handleSelect={handleSelect}
-						placeholder="school"
-					/>
-					<CustomFormField
-						fieldType={FormFieldType.select}
-						control={form.control}
-						name="faculty"
-						array={faculties}
-						label="Faculty"
-						handleSelect={handleSelect}
-						placeholder="faculty"
-					/>
-					<CustomFormField
-						fieldType={FormFieldType.select}
-						control={form.control}
-						name="department"
-						label="Department"
-						placeholder="department"
-						array={departments}
-					/>
-					<div className="flex gap-4 items-center justify-between w-full">
-						<div className="w-1/2">
-							<CustomFormField
-								fieldType={FormFieldType.select}
-								control={form.control}
-								name="level"
-								label="Level"
-								placeholder="level"
-								array={Level}
-							/>
-						</div>
-						<div>
-							{" "}
-							<CustomFormField
-								fieldType={FormFieldType.skeleton}
-								control={form.control}
-								name="gender"
-								label="Gender"
-								disabled={true}
-								renderSkeleton={(field) => (
-									<FormControl>
-										<RadioGroup
-											className="flex h-11 gap-6 xl:justify-between"
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											{GenderOptions.map((option, i) => (
-												<div key={i}>
-													<RadioGroupItem
-														onClick={() => console.log(option)}
-														value={option}
-														id={option}
-													/>
-													<Label htmlFor={option} className="cursor-pointer">
-														{option}
-													</Label>
-												</div>
-											))}
-										</RadioGroup>
-									</FormControl>
-								)}
-							/>
-						</div>
-					</div>
-					<SubmitButton
-						isLoading={isLoading}
-						className="w-full bg-green-400 text-black rounded-lg font-inter font-bold"
-					>
-						Submit Details
-					</SubmitButton>
-				</form>
-			</Form>
-		</main>
+					Submit Details
+				</SubmitButton>
+			</form>
+		</Form>
 	);
 };
 

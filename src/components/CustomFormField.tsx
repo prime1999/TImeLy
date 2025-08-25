@@ -55,6 +55,7 @@ interface CustomProps {
 	class?: string;
 	handleSelect?: any;
 	disabled?: boolean;
+	readOnly?: boolean;
 	className?: string;
 	defaultValue?: string;
 }
@@ -84,6 +85,7 @@ const RenderInput = ({ props, field }: { props: CustomProps; field: any }) => {
 							{...field}
 							inputMode={props.inputMode}
 							disabled={props.disabled}
+							readOnly={props.readOnly}
 							className={`shad-input border-1 pl-8 ${props.className}`}
 						/>
 					</FormControl>

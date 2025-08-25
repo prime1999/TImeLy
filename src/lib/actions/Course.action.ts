@@ -294,12 +294,24 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 // function to submit update a course
 export const submitCourseUpdateRequest = async (data: any) => {
 	try {
-		console.log({ data });
+		const dataToBeSent = {
+			payload: { courseId: data.courseId, data: data.updateData },
+		};
 		const { updateData, notificationData } = data;
 		// Get the current user
-		const user = await checkCurrentSession();
+		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
-		if (!user || !user.$id) return "User not Authorized";
+		const student = await databases.getDocument(DBID, STUDENTID, user.$id);
+		if (!student || !student.$id) return "User not Authorized";
+		// check if the student is an admin
+		if (student.admin === true) {
+			// if the user is an admin then update directly
+			const res = await updateCourseInDB(dataToBeSent);
+			if (res) {
+				console.log(res);
+				return res;
+			}
+		}
 		// if the user authenticated
 		const userId = user.$id;
 		// submit the request
@@ -317,7 +329,6 @@ export const submitCourseUpdateRequest = async (data: any) => {
 				}
 			);
 		}
-		console.log(data);
 		// if the course update request was created or the updateData was not sent
 		if ((req && req.$id) || updateData == null) {
 			// if the updateData is not empty
@@ -329,7 +340,6 @@ export const submitCourseUpdateRequest = async (data: any) => {
 					updateData.courseId
 				);
 			}
-			console.log({ ...notificationData, student: [userId] });
 			// if the course exists
 			if (course || updateData === null) {
 				// create a notification on the course update request
@@ -382,19 +392,14 @@ export const submitCourseUpdateRequest = async (data: any) => {
 // function to get the list of the user's courses
 export const getCoursesFromAppwrite = async () => {
 	try {
-		console.log(123);
 		// get the user's id
 		const session = await checkCurrentSession();
 		//if the user is not authorized
 		if (!session || !session.$id) return "User not Authorized";
-		console.log(session);
-
 		// if the user is authorised ten get the courses id the user registered for
 		const courses = await databases.listDocuments(DBID, USER_COURSE_ID, [
 			Query.equal("userId", session.$id),
 		]);
-		console.log(courses);
-		console.log(789);
 		// if the user has not registered for any course
 		if (courses.total < 1) return "User not registered to any course";
 		// if the user has registered, then get the use the ids to get the courses
@@ -455,7 +460,7 @@ export const updateCourseInDB = async (dataToBeSent: any) => {
 	try {
 		const { payload } = dataToBeSent;
 		const { data } = dataToBeSent.payload;
-		console.log(data);
+
 		// check if the user is an admin and if already authorized
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
@@ -472,7 +477,6 @@ export const updateCourseInDB = async (dataToBeSent: any) => {
 			payload.courseId
 		);
 		if (!checkCourse) {
-			console.log({ msg: "Course does not exist" });
 			return { msg: "Course does not exist" };
 		}
 		// if the course exists, then update the course
@@ -488,6 +492,9 @@ export const updateCourseInDB = async (dataToBeSent: any) => {
 		console.log(error);
 	}
 };
+
+// Appwrite function to update a course
+//export const updateCourseInDB
 
 // // function to send the request to rquest class clashing
 // export const requestForScheduleCorrection = async (data: any) => {
