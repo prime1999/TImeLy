@@ -11,6 +11,7 @@ import UpdateCourseModal from "./modals/UpdateCourseModal";
 import DeleteModal from "./modals/DeleteModal";
 
 const CourseList = ({ data }: any) => {
+	const [selectedCourse, setSelectedCourse] = useState<any>(null);
 	// state for the modals
 	const [openRemoveModal, setOpenRemoveModal] = useState<boolean>(false);
 	const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
@@ -61,7 +62,10 @@ const CourseList = ({ data }: any) => {
 								Full details
 							</h6>
 							<button
-								onClick={() => setShowCourseDetails(true)}
+								onClick={() => {
+									setSelectedCourse(course);
+									setShowCourseDetails(true);
+								}}
 								className="text-sm cursor-pointer"
 							>
 								<MdAdsClick className="tetx-sm" />
@@ -78,7 +82,10 @@ const CourseList = ({ data }: any) => {
 									<ul className="font-inter">
 										<li className="text-sm mt-2">
 											<button
-												onClick={() => setOpenRemoveModal(true)}
+												onClick={() => {
+													setSelectedCourse(course);
+													setOpenRemoveModal(true);
+												}}
 												className="flex items-center gap-2  cursor-pointer duration-700 hover:gap-4"
 											>
 												<MdRemoveCircle className="text-red-500" />{" "}
@@ -87,7 +94,10 @@ const CourseList = ({ data }: any) => {
 										</li>
 										<li className="text-sm mt-2">
 											<button
-												onClick={() => setOpenUpdateModal(true)}
+												onClick={() => {
+													setSelectedCourse(course);
+													setOpenUpdateModal(true);
+												}}
 												className="flex items-center gap-2  cursor-pointer duration-700 hover:gap-4"
 											>
 												<MdModeEdit className="text-green-500" />{" "}
@@ -101,21 +111,23 @@ const CourseList = ({ data }: any) => {
 					</div>
 					{showCourseDetails && (
 						<CourseDetail
-							selectedCourse={course}
+							selectedCourse={selectedCourse}
 							showCourseDetails={showCourseDetails}
 							setShowCourseDetails={setShowCourseDetails}
 						/>
 					)}
-					<UpdateCourseModal
-						course={course}
-						open={openUpdateModal}
-						setOpen={setOpenUpdateModal}
-					/>
+					{openUpdateModal && (
+						<UpdateCourseModal
+							course={selectedCourse}
+							open={openUpdateModal}
+							setOpen={setOpenUpdateModal}
+						/>
+					)}
 					<DeleteModal
 						open={openRemoveModal}
 						setOpen={setOpenRemoveModal}
 						//	handleRemove={handleRemove}
-						course={course}
+						course={selectedCourse}
 					>
 						<div>
 							<h4 className="font-inter text-md font-semibold text-black dark:text-gray-300">

@@ -7,7 +7,7 @@ const FindCourses = ({ handleFindCourse }: any) => {
 			</h4>
 			<button
 				onClick={() => handleFindCourse()}
-				className="w-24 text-sm font-semibold p-2 rounded-md bg-green-500 cursor-pointer duration-700 hover:bg-green-600"
+				className="w-24 text-sm font-semibold p-2 text-slate-200 rounded-md bg-green-500 cursor-pointer duration-700 hover:bg-green-600"
 			>
 				Find
 			</button>
