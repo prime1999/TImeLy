@@ -50,7 +50,7 @@ const Courses = () => {
 		dispatch(getCourses());
 	}, [reload]);
 
-	//
+	// funcion to filter courses on the UI
 	const handleSubmit = async (values: z.infer<any>) => {
 		try {
 			const searchData = {

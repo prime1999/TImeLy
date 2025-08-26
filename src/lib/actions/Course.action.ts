@@ -495,6 +495,32 @@ export const updateCourseInDB = async (dataToBeSent: any) => {
 	}
 };
 
+// function to delete the course from the DB
+export const deleteCourseFromDb = async (courseId: string) => {
+	try {
+		//check if the course exists
+		const courseExists = await databases.getDocument(
+			DBID,
+			COURSES_ID,
+			courseId
+		);
+		// if the course does not exists, then
+		if (!courseExists || !courseExists.$id) {
+			return { msg: "Course does not exist in DB" };
+		}
+		// but if the course exists, then
+		// delete the course
+		const deleteCourse = await databases.deleteDocument(
+			DBID,
+			COURSES_ID,
+			courseId
+		);
+		return { msg: "Course deleted" };
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 // Appwrite function to update a course
 //export const updateCourseInDB
 

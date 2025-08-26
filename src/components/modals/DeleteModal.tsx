@@ -10,26 +10,20 @@ import {
 import { removeCourse } from "@/lib/slice/CourseSlice";
 
 type Props = {
-	course: any;
 	open: boolean;
 	setOpen: any;
+	handleRemove: any;
+	course: any;
 	children: any;
 };
 
-const DeleteModal = ({ children, course, open, setOpen }: Props) => {
-	// init the dispatch
-	const dispatch = useDispatch<AppDispatch>();
-	// function to handle the un-registration of a course
-	const handleRemove = async (courseId: string) => {
-		try {
-			// dispatch th redux slice function to remove the course
-			await dispatch(removeCourse(courseId));
-			// close the modal
-			setOpen(false);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+const DeleteModal = ({
+	children,
+	course,
+	open,
+	setOpen,
+	handleRemove,
+}: Props) => {
 	return (
 		<>
 			<Dialog open={open}>

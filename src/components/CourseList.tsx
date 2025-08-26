@@ -1,21 +1,91 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/store";
 import { MdAdsClick, MdRemoveCircle, MdModeEdit } from "react-icons/md";
 import { BiDotsVerticalRounded } from "react-icons/bi";
+import { FaTrashAlt } from "react-icons/fa";
+import { IoIosInformationCircle } from "react-icons/io";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { toast } from "sonner";
 import CourseDetail from "./modals/CourseDetail";
 import UpdateCourseModal from "./modals/UpdateCourseModal";
-import DeleteModal from "./modals/DeleteModal";
+import { getStudentProfile } from "@/lib/slice/StudentSlice";
+import DeleteCourseModal from "./modals/DeleteCourseModal";
+import { forDeleteCourse, removeCourse } from "@/lib/slice/CourseSlice";
+import Alert from "@/lib/utils/Alert";
 
 const CourseList = ({ data }: any) => {
+	const dispatch = useDispatch<AppDispatch>();
+	// state to keep track if te user/student is an admin
+	const [isAdmin, setIsAdmin] = useState<boolean>(false);
+	const [deleteCourse, setDeleteCourse] = useState<boolean>(false);
 	const [selectedCourse, setSelectedCourse] = useState<any>(null);
+	// state to show message for the delete course modal
+	const [deleteModalMessage, setDeleteModalMessage] = useState<string>("");
 	// state for the modals
 	const [openRemoveModal, setOpenRemoveModal] = useState<boolean>(false);
 	const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
 	const [showCourseDetails, setShowCourseDetails] = useState<boolean>(false);
+
+	const { isLoading } = useSelector((state: any) => state.course);
+
+	// function to handle the un-registration of a course
+	const handleRemove = async (courseId: string) => {
+		try {
+			setDeleteCourse(false);
+			// dispatch th redux slice function to remove the course
+			await dispatch(removeCourse(courseId));
+			// close the modal
+			setOpenRemoveModal(false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	// function to check if te user is an admin before showing the delete modal
+	const checkUser = async () => {
+		try {
+			// get he studnets profile info from the appwrite DB
+			const student = await dispatch(getStudentProfile()).unwrap();
+			setIsAdmin(student.admin);
+			console.log(student);
+			setDeleteCourse(true);
+			// if the student is not an admin then
+			if (!student.admin) {
+				// show a modal that says student can update if not admin
+				setOpenRemoveModal(true);
+				// set the message modal
+				setDeleteModalMessage(
+					"Only Admins can delete courses, Students can unregister for the courses only."
+				);
+			} else {
+				// but if the user is an admin then we ispatch the function to delete a course
+				setOpenRemoveModal(true);
+				// set the message modal
+				setDeleteModalMessage(
+					"This course will be permanently deleted from the database."
+				);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	// function to delete a course
+	const handleDeleteCourse = async (courseId: string) => {
+		try {
+			// dispatch the function to delete te course
+			const res = await dispatch(forDeleteCourse(courseId)).unwrap();
+			// show the message from the response
+			toast(res?.msg);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<main className="w-full bg-gray-100 rounded-md p-2 mt-4 dark:bg-gray-700">
@@ -71,7 +141,7 @@ const CourseList = ({ data }: any) => {
 								<MdAdsClick className="tetx-sm" />
 							</button>
 						</div>
-						<div className="absolute right-5 bottom-5 flex justify-end">
+						<div className="absolute right-15 bottom-5 flex justify-end gap-8">
 							<Popover>
 								<PopoverTrigger>
 									<button>
@@ -85,6 +155,9 @@ const CourseList = ({ data }: any) => {
 												onClick={() => {
 													setSelectedCourse(course);
 													setOpenRemoveModal(true);
+													setDeleteModalMessage(
+														"You are about to un-register this course and wont get any update about the course after this"
+													);
 												}}
 												className="flex items-center gap-2  cursor-pointer duration-700 hover:gap-4"
 											>
@@ -107,6 +180,14 @@ const CourseList = ({ data }: any) => {
 									</ul>
 								</PopoverContent>
 							</Popover>
+							<div>
+								<button
+									onClick={() => checkUser()}
+									className="text-xs cursor-pointer text-red-500 duration-500 hover:text-[14px]"
+								>
+									<FaTrashAlt />
+								</button>
+							</div>
 						</div>
 					</div>
 					{showCourseDetails && (
@@ -123,25 +204,41 @@ const CourseList = ({ data }: any) => {
 							setOpen={setOpenUpdateModal}
 						/>
 					)}
-					<DeleteModal
+
+					{/* for deleting a course */}
+					<DeleteCourseModal
 						open={openRemoveModal}
 						setOpen={setOpenRemoveModal}
-						//	handleRemove={handleRemove}
-						course={selectedCourse}
 					>
-						<div>
-							<h4 className="font-inter text-md font-semibold text-black dark:text-gray-300">
-								Remove Course
-							</h4>
-							<hr className="my-2" />
-							<p className="text-xs font-inter">
-								You are about to un-register this course and won't get any
-								update about the course after this.
-							</p>
+						<div className="w-full">
+							<span className="flex items-start gap-2">
+								<IoIosInformationCircle className="text-xl font-semibold text-green-400" />
+								<p className="text-sm font-inter">{deleteModalMessage}</p>
+							</span>
+							{deleteCourse ? (
+								<button
+									onClick={() => {
+										isAdmin
+											? handleDeleteCourse(course.$id)
+											: handleRemove(course.$id);
+									}}
+									className="w-full mt-4 bg-green-400 rounded-md p-2 text-xs font-semibold text-gray-700 cursor-pointer duration-700 hover:bg-green-500"
+								>
+									{isAdmin ? "Delete Course" : "Remove Course"}
+								</button>
+							) : (
+								<button
+									onClick={() => handleRemove(course.$id)}
+									className="w-full mt-4 bg-green-400 rounded-md p-2 text-xs font-semibold text-gray-700 cursor-pointer duration-700 hover:bg-green-500"
+								>
+									Continue
+								</button>
+							)}
 						</div>
-					</DeleteModal>
+					</DeleteCourseModal>
 				</div>
 			))}
+			<Alert />
 		</main>
 	);
 };

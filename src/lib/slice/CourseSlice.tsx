@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
 	addCourse,
 	addCourseToAppwrite,
+	deleteCourseFromDb,
 	getCoursesFromAppwrite,
 	submitCourseUpdateRequest,
 	unRegisterCourse,
@@ -234,6 +235,20 @@ export const forNextCourse = createAsyncThunk(
 	}
 );
 
+// function to call the delete course function
+export const forDeleteCourse = createAsyncThunk(
+	"courses/deleteCourse",
+	async (courseId: string) => {
+		try {
+			// call the function to delete the course
+			const res = await deleteCourseFromDb(courseId);
+			return res;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
 export const CourseSlice = createSlice({
 	name: "course",
 	initialState,
@@ -326,6 +341,15 @@ export const CourseSlice = createSlice({
 			})
 			.addCase(forNextCourse.fulfilled, (state, action) => {
 				state.nextCourse = action.payload;
+			})
+			.addCase(forDeleteCourse.fulfilled, (state) => {
+				state.isLoading = false;
+			})
+			.addCase(forDeleteCourse.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(forDeleteCourse.rejected, (state) => {
+				state.isLoading = false;
 			});
 	},
 });

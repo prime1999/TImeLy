@@ -30,6 +30,8 @@ const SubmitCourseUpdateRequest = ({
 						<DialogDescription className="my-2">
 							{isAdmin ? (
 								<>
+									The course info is quite different from what is in the current
+									database <br />
 									Would you like to update the course with the submitted info as
 									an admin?.
 								</>
