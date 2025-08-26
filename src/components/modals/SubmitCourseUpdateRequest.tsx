@@ -10,11 +10,16 @@ import {
 
 type Props = {
 	open: boolean;
+	isAdmin: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	handleUpdate: () => any;
 };
-const SubmitCourseUpdateRequest = ({ setOpen, open, handleUpdate }: Props) => {
-	const { student } = useSelector((state: any) => state.student);
+const SubmitCourseUpdateRequest = ({
+	setOpen,
+	open,
+	isAdmin,
+	handleUpdate,
+}: Props) => {
 	const { isLoading } = useSelector((state: any) => state.course);
 	return (
 		<>
@@ -23,7 +28,7 @@ const SubmitCourseUpdateRequest = ({ setOpen, open, handleUpdate }: Props) => {
 					<DialogHeader>
 						<DialogTitle>Course Info Exists.</DialogTitle>
 						<DialogDescription className="my-2">
-							{student?.admin ? (
+							{isAdmin ? (
 								<>
 									Would you like to update the course with the submitted info as
 									an admin?.
@@ -49,7 +54,7 @@ const SubmitCourseUpdateRequest = ({ setOpen, open, handleUpdate }: Props) => {
 								<span className="flex gap-2 justify-center">
 									<Loader /> <p>Loading...</p>
 								</span>
-							) : student?.admin ? (
+							) : isAdmin ? (
 								<p>Update Course</p>
 							) : (
 								<p>Submit update request</p>

@@ -12,7 +12,11 @@ import { courseSchema } from "@/lib/Validation";
 import { MdNumbers, MdTextFields } from "react-icons/md";
 import DayAndTime from "../DayAndTime";
 import SubmitButton from "@/lib/utils/SubmitButton";
-import { registerCourse, submitUpdateRequest } from "@/lib/slice/CourseSlice";
+import {
+	registerCourse,
+	submitUpdateRequest,
+	updateCourse,
+} from "@/lib/slice/CourseSlice";
 import { formatScheduleTime } from "@/lib/utils/helperFunctions/TimeFormater";
 import { checkCurrentSession } from "@/lib/actions/Student.actions";
 import SubmitCourseUpdateRequest from "../modals/SubmitCourseUpdateRequest";
@@ -27,6 +31,8 @@ const days = [
 
 const AddCourse = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	// state to chack if the current student is an admin
+	const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
 	const [startDate, setStartDate] = useState<any>(new Date());
 	const [endDate, setEndDate] = useState<any>(new Date());
@@ -47,10 +53,9 @@ const AddCourse = () => {
 	const [open, setOpen] = useState<boolean>(false);
 	const { getValues } = form;
 	// get the course and student states from the redux state
-	const { isLoading, data, courseToUpdate } = useSelector(
+	const { isLoading, courseToUpdate } = useSelector(
 		(state: any) => state.course
 	);
-	const { student } = useSelector((state: any) => state.student);
 
 	// function to select the day
 	const handleSelect = (value: string) => {
@@ -102,6 +107,7 @@ const AddCourse = () => {
 			// check if the course info exist and if the user info corresponds
 			if (res && res.exist) {
 				// if it exists and does not correspond,
+				setIsAdmin(res.isAdmin);
 				// open the submit request modal
 				setOpen(true);
 			}
@@ -118,9 +124,21 @@ const AddCourse = () => {
 	const handleUpdate = async () => {
 		try {
 			// check if the student is an admin
-			if (student?.admin === true) {
-				// TODO
+			if (isAdmin === true) {
 				// update directly
+				const data = {
+					payload: {
+						courseId: courseToUpdate.courseId,
+						data: courseToUpdate.data,
+					},
+				};
+				const res = await dispatch(updateCourse(data)).unwrap();
+				if (res) {
+					// close the modal
+					setOpen(false);
+					// show success toast
+					toast("Course Updated.");
+				}
 			} else {
 				// create the actions array
 				let actions = [
@@ -270,6 +288,7 @@ const AddCourse = () => {
 			<SubmitCourseUpdateRequest
 				setOpen={setOpen}
 				open={open}
+				isAdmin={isAdmin}
 				handleUpdate={handleUpdate}
 			/>
 			<Toaster />

@@ -57,7 +57,6 @@ const Courses = () => {
 				searchKey: values.select,
 				searchValue: values.value,
 			};
-			console.log(searchData);
 
 			await dispatch(filterCourses({ searchData, courses: data }));
 		} catch (error) {

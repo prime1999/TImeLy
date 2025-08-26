@@ -17,10 +17,15 @@ const databases = new Databases(client);
 // function to register a course on appwrite
 export const addCourse = async (courseData: any) => {
 	try {
+		let student = null;
 		// Get the current user
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
 		if (!user || !user.$id) return "User not Authorized";
+		if (user && user.$id) {
+			// get the user doc info from appwrite
+			student = await databases.getDocument(DBID, STUDENTID, user.$id);
+		}
 		// check if the course already exist in the database
 		const checkCourse = await databases.listDocuments(DBID, COURSES_ID, [
 			Query.equal(
@@ -54,15 +59,13 @@ export const addCourse = async (courseData: any) => {
 				courseData
 			);
 			// TODO
-			// check if the user is an admin so has to update the course directly
-			if (user.admin === true) {
-				// TODO
-				// update the course without creating the course update ticket
-				// send the notification to confirm the course update
-			}
+			// // check if the user is an admin so has to update the course directly
+			// if (user.admin === true) {
+			// }
 			// if a course with the same info exists
 			if (compared.exists) {
 				return {
+					isAdmin: student?.admin,
 					exist: true,
 					data: compared.payload,
 					courseId: checkCourse.documents[0].$id,
@@ -77,7 +80,6 @@ export const addCourse = async (courseData: any) => {
 		// check if the user is an admin
 		// if yes, then create the course directly and register the user
 		if (user.admin === true) {
-			//TODO
 			// create the course and the register the user
 			const courseRes = await databases.createDocument(
 				DBID,

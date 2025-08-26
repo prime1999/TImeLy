@@ -62,7 +62,7 @@ export const createAppwriteuserDocument = async (userDocData: any) => {
 		const userDoc = await databases.createDocument(
 			DBID,
 			STUDENTID,
-			ID.unique(),
+			userDocData.userId,
 			{
 				Email: userDocData.Email,
 				MatricNumber: userDocData.MatricNumber,
