@@ -72,10 +72,27 @@ const Courses = () => {
 				experience.
 			</h4>
 			<hr className="my-8" />
-			<div className="flex items-center justify-between">
-				<h4 className="font-inter text-sm font-semibold">Course List</h4>
+			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-0">
+				<div className="flex justify-between items-center">
+					<h4 className="font-inter text-sm font-semibold">Course List</h4>
+					<Sheet>
+						<SheetTrigger className="flex items-center font-inter text-xs font-semibold text-black p-2 rounded-md bg-gradient-to-l from-green-300 to-green-500 cursor-pointer duration-1000 hover:from-green-500 hover:to-green-300 md:hidden">
+							<FaPlus className="text-black" />
+						</SheetTrigger>
+						<SheetContent className="overflow-y-auto scrollable-div">
+							<SheetHeader>
+								<SheetTitle className="font-inter font-bold">
+									Register your course or add a new one
+								</SheetTitle>
+								<SheetDescription>
+									<AddCourse />
+								</SheetDescription>
+							</SheetHeader>
+						</SheetContent>
+					</Sheet>
+				</div>
 
-				<div className="flex gap-4 items-center justify-end w-2/3">
+				<div className="flex gap-4 items-center justify-end w-full lg:w-2/3">
 					<Form {...form}>
 						<form
 							onSubmit={form.handleSubmit(handleSubmit)}
@@ -90,7 +107,7 @@ const Courses = () => {
 								label=""
 								handleSelect={(value: string) => setValue(value)}
 								placeholder="Filter Key"
-								className="w-[250px]"
+								className="w-[150px] lg:w-[250px]"
 							/>
 							<CustomFormField
 								fieldType={FormFieldType.input}
@@ -99,21 +116,27 @@ const Courses = () => {
 								placeholder="Filter courses search"
 								type="text"
 								iconSrc={<MdTextFields />}
-								className="w-full"
+								className="w-[150px] lg:w-full"
 							/>
-							<SubmitButton
-								isLoading={isLoading}
-								className="px-6 mx-auto flex justify-center bg-green-400 text-xs text-black rounded-lg font-inter font-bold"
-							>
-								Search
-							</SubmitButton>
+							<span className="hidden md:block">
+								<SubmitButton
+									isLoading={isLoading}
+									className="px-6 mx-auto flex justify-center bg-green-400 text-xs text-black rounded-lg font-inter font-bold"
+								>
+									Search
+								</SubmitButton>
+							</span>
 						</form>
+						<button
+							disabled={isLoading}
+							type="submit"
+							className="block text-green-500 bg-gray-300 rounded-full p-2 cursor-pointer dark:bg-gray-600 dark:text-green-300 lg:hidden md:hidden"
+						>
+							<FaMagnifyingGlass />
+						</button>
 					</Form>
-					<button className="mr-4 text-gray-800 bg-gray-300 rounded-full p-2 cursor-pointer dark:bg-gray-600 dark:text-gray-400 lg:hidden">
-						<FaMagnifyingGlass />
-					</button>
 					<Sheet>
-						<SheetTrigger className="flex items-center font-inter text-xs font-semibold text-black p-2 rounded-md bg-gradient-to-l from-green-300 to-green-500 cursor-pointer duration-1000 hover:from-green-500 hover:to-green-300">
+						<SheetTrigger className="hidden items-center font-inter text-xs font-semibold text-black p-2 rounded-md bg-gradient-to-l from-green-300 to-green-500 cursor-pointer duration-1000 hover:from-green-500 hover:to-green-300 md:flex">
 							Register Course <FaPlus className="text-black ml-2" />
 						</SheetTrigger>
 						<SheetContent className="overflow-y-auto scrollable-div">

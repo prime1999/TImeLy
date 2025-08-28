@@ -218,7 +218,6 @@ export const passwordRecovery = async (data: any) => {
 			data.secret,
 			data.password
 		);
-
 		if (res) {
 			return res;
 		}
