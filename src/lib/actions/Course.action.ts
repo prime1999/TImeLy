@@ -510,11 +510,7 @@ export const deleteCourseFromDb = async (courseId: string) => {
 		}
 		// but if the course exists, then
 		// delete the course
-		const deleteCourse = await databases.deleteDocument(
-			DBID,
-			COURSES_ID,
-			courseId
-		);
+		await databases.deleteDocument(DBID, COURSES_ID, courseId);
 		return { msg: "Course deleted" };
 	} catch (error) {
 		console.log(error);

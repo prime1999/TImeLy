@@ -17,10 +17,15 @@ import { authUser } from "@/lib/slice/AuthSlice";
 import { checkCurrentSession } from "@/lib/actions/Student.actions";
 import note from "@/assets/images/Notebook-bro.png";
 import SubmitButton from "@/lib/utils/SubmitButton";
+import ForgotPasswordModal from "@/components/modals/ForgotPasswordModal";
 
 const SignIn = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const navigate = useNavigate();
+
+	// state to open/close the forgot password modal
+	const [openForotPasswordModal, setOpenForgotPasswordModal] =
+		useState<boolean>(false);
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const { isLoading } = useSelector((state: any) => state.auth);
@@ -36,14 +41,12 @@ const SignIn = () => {
 		const checkSession = async () => {
 			try {
 				const session = await checkCurrentSession();
-				console.log(session);
+
 				// if a session already exists
 				if (session) {
-					console.log("in");
 					// redirect the student to his/her dashboard
 					navigate(`/dashboard`);
 				}
-				console.log("out");
 			} catch (error) {
 				console.log(error);
 			}
@@ -67,9 +70,9 @@ const SignIn = () => {
 			// dispatch the function to authenticate the user
 			const logInRes = (await dispatch(authUser(userData)).unwrap()) as any;
 			console.log(logInRes);
+
 			// redirect the user if the authentication is successful
-			if (logInRes && logInRes.payload?.student?.id) {
-				console.log(logInRes);
+			if (logInRes && logInRes.student?.id) {
 				toast(logInRes.msg);
 				navigate(`/dashboard`);
 			} else {
@@ -89,7 +92,7 @@ const SignIn = () => {
 					className="absolute -top-20 -z-50 w-52 h-52"
 				/>
 				<Logo />
-				<div className="mb-12">
+				<div className="mb-8">
 					<h1 className="text-3xl font-inter font-semibold">Hi there 👋</h1>
 					<p className="text-gray-300 text-sm mt-2">
 						Time to check your schedule.
@@ -146,11 +149,23 @@ const SignIn = () => {
 						Register
 					</Link>
 				</div>
+				<span className="flex items-center justify-center mt-2">
+					<button
+						onClick={() => setOpenForgotPasswordModal(true)}
+						className="text-xs text-center font-inter font-semibold cursor-pointer duration-700 hover:text-slate-400"
+					>
+						Forgot password
+					</button>
+				</span>
 				<p className="text-xs font-inter text-center text-gray-400 font-semibold mt-4">
 					©timelycopyright
 				</p>
 			</div>
 			<Toaster />
+			<ForgotPasswordModal
+				open={openForotPasswordModal}
+				setOpen={setOpenForgotPasswordModal}
+			/>
 		</main>
 	);
 };

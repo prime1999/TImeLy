@@ -49,7 +49,10 @@ export const createuserAppwriteSession = async (userdata: any) => {
 			userdata.password
 		);
 		if (!res.$id) return { msg: "Wrong User credentials" };
-		return { msg: "User Authenticated", data: res };
+		// if the session is created then
+		// get the user's documents
+		const userDoc = await databases.getDocument(DBID, STUDENTID, res.userId);
+		return { msg: "User Authenticated", data: userDoc };
 	} catch (error) {
 		return { msg: "Wrong User credentials" };
 	}
@@ -98,12 +101,7 @@ export const getCurrentStudent = async (userID: string) => {
 export const UpdateStudentInfo = async (DataToUpdate: any) => {
 	try {
 		const { docId, ...data } = DataToUpdate;
-		const resData = await databases.updateDocument(
-			DBID,
-			STUDENTID,
-			docId,
-			data
-		);
+		await databases.updateDocument(DBID, STUDENTID, docId, data);
 	} catch (error) {
 		console.log(error);
 	}
@@ -188,6 +186,40 @@ export const updateProfile = async (data: any) => {
 			data
 		);
 		if (res && res.$id) {
+			return res;
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// Appwrite function for the create password recovery token
+export const createPasswordRecovery = async (email: string) => {
+	try {
+		// call te function
+		const token = await account.createRecovery(
+			email,
+			"http://localhost:5173/forgotPassword"
+		);
+		if (token) {
+			return token;
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// Appwrite function for the Update password recovery (confirmation)
+export const passwordRecovery = async (data: any) => {
+	try {
+		// call the function
+		const res = await account.updateRecovery(
+			data.userId,
+			data.secret,
+			data.password
+		);
+
+		if (res) {
 			return res;
 		}
 	} catch (error) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { MdAdsClick, MdRemoveCircle, MdModeEdit } from "react-icons/md";
 import { BiDotsVerticalRounded } from "react-icons/bi";
@@ -30,8 +30,6 @@ const CourseList = ({ data }: any) => {
 	const [openRemoveModal, setOpenRemoveModal] = useState<boolean>(false);
 	const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
 	const [showCourseDetails, setShowCourseDetails] = useState<boolean>(false);
-
-	const { isLoading } = useSelector((state: any) => state.course);
 
 	// function to handle the un-registration of a course
 	const handleRemove = async (courseId: string) => {
