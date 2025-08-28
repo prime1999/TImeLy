@@ -18,7 +18,6 @@ import {
 	updateCourse,
 } from "@/lib/slice/CourseSlice";
 import { formatScheduleTime } from "@/lib/utils/helperFunctions/TimeFormater";
-import { checkCurrentSession } from "@/lib/actions/Student.actions";
 import SubmitCourseUpdateRequest from "../modals/SubmitCourseUpdateRequest";
 
 const days = [

@@ -9,7 +9,7 @@ const ClashedCourses = () => {
 	// state to control the modal for showing the clashed courses
 	const [open, setOpen] = useState<boolean>(false);
 	// state for the course state selection from the store
-	const { isLoading, reload, clashedCourses, data } = useSelector(
+	const { reload, clashedCourses, data } = useSelector(
 		(state: any) => state.course
 	);
 	useEffect(() => {
