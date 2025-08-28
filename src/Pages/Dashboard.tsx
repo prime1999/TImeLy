@@ -66,7 +66,7 @@ const Dashboard = () => {
 			<div className="hidden w-11/12 mx-auto mt-12 grid-cols-4 lg:grid gap-4">
 				<div className="col-span-3">
 					<div className="flex items-center gap-4 mb-8">
-						<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
+						<div className="flex flex-col justify-center items w-full h-full lg:h-48 lg:gap-4">
 							{isLoading ? (
 								<div className="w-full flex items-center justify-center">
 									<TableLoader />
@@ -75,7 +75,6 @@ const Dashboard = () => {
 								<NextCourse data={data} />
 							)}
 						</div>
-
 						<CountDown />
 					</div>
 					<div>

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import { MdAdsClick, MdNoteAlt } from "react-icons/md";
@@ -26,20 +27,20 @@ export const Tasks = ({ setSelectedTask, setOpenModal }: Props) => {
 	const { filteredTasks, isLoading } = useSelector((state: any) => state.tasks);
 
 	return (
-		<div className="relative glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-start w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
+		<div className="relative glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-start w-full h-full p-2 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
 			{filteredTasks &&
 				filteredTasks?.map((task: any) => (
 					<div
 						key={task.title}
-						className={`flex items-center justify-between bg-muted ${
+						className={`flex items-center justify-between bg-muted mb-2 h-11 ${
 							task.status === "done"
 								? "after:bg-green-500"
 								: task.status === "inProgress"
 								? "after:bg-yellow-500"
 								: "after:bg-red-500"
-						} relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full dark: dark:bg-[rgb(255,255,255,0.05)]`}
+						} relative rounded-md p-2 pl-6 text-sm after:absolute after:inset-y-2 after:left-2 after:w-1 after:rounded-full dark:bg-[rgb(255,255,255,0.05)]`}
 					>
-						<div>
+						<div className="">
 							{" "}
 							<div className="font-medium">{task.title}</div>
 							<div className="text-muted-foreground text-xs">
@@ -59,10 +60,13 @@ export const Tasks = ({ setSelectedTask, setOpenModal }: Props) => {
 						</button>
 					</div>
 				))}
-			<span className="absolute bottom-2 right-5">
-				<button className="text-xs font-inter duration-700 hover:text-slate-300">
+			<span className="absolute bottom-1 right-5">
+				<Link
+					to="/tasks"
+					className="text-xs font-inter duration-700 hover:text-slate-300"
+				>
 					See full tasks
-				</button>
+				</Link>
 			</span>
 			<div className="h-full flex items-center justify-center">
 				{isLoading && <TableLoader />}
@@ -101,7 +105,7 @@ export const NextCourse = ({ data }: props) => {
 		}
 	}, [data, dispatch]);
 	return (
-		<div className="w-full">
+		<div className="glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] border-1 flex flex-col justify-center items w-full h-full p-4 text-gray-800 rounded-md dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] dark:text-slate-400 lg:h-48 lg:gap-4">
 			<div className="flex justify-between items-start text-gray-800">
 				<h4 className="font-inter font-semibold text-xl dark:text-slate-400">
 					Next Course: <br />

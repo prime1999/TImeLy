@@ -8,6 +8,8 @@ import { getTasks } from "@/lib/slice/TasksSlice";
 
 const HomeSlider = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	// get the reload function from the store in order to get the lastes courses data
+	const { data } = useSelector((state: any) => state.course);
 	// state to handle the task selected
 	const [selectedTask, setSelectedTask] = useState<any>(null);
 	// state to handle the show full task details modal
@@ -36,8 +38,7 @@ const HomeSlider = () => {
 		const getUsersTasks = async () => {
 			try {
 				// call the function to get the tasks
-				const res = await dispatch(getTasks()).unwrap();
-				console.log(res);
+				await dispatch(getTasks()).unwrap();
 			} catch (error) {
 				console.log(error);
 			}
@@ -229,7 +230,7 @@ const HomeSlider = () => {
 						) : li === "countdown" ? (
 							<CountDown />
 						) : li === "notes" ? (
-							<NextCourse />
+							<NextCourse data={data} />
 						) : (
 							li === "schedule" && <Schedule />
 						)}
