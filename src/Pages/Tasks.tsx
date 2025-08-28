@@ -19,6 +19,7 @@ const Tasks = () => {
 	// state to handle the current choose date value
 	const [date, setDate] = useState<Date | undefined>(new Date(2025, 5, 12));
 	const { tasks } = useSelector((state: any) => state.tasks);
+
 	// filter task by their dates
 	const handleDate = async (value: any) => {
 		try {
@@ -51,12 +52,32 @@ const Tasks = () => {
 		}
 	};
 	return (
-		<main className="w-11/12 mx-auto mt-4">
+		<main className="w-11/12 mx-auto my-4">
 			<div className="w-full grid grid-cols-3 gap-8 mt-20">
-				<div className="col-span-2">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-8">
+				<div className="w-full col-span-3 lg:col-span-2">
+					<div className="w-full flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+						{/* for the mobile view */}
+						<div className="w-full flex items-center justify-between lg:hidden">
+							{" "}
 							<h1 className="flex items-center gap-2 font-semibold text-2xl dark:text-slate-100">
+								My Tasks
+								<span className="text-xs bg-green-400 rounded-full py-1 px-2">
+									{tasks && tasks.length}
+								</span>
+							</h1>
+							<button
+								onClick={() => setOpen(true)}
+								className="flex gap-2 items-center text-sm font-inter font-semibold cursor-pointer duration-700 hover:gap-4 lg:hidden"
+							>
+								Add task{" "}
+								<span className="bg-green-400 rounded-full p-2">
+									<FaPlus />
+								</span>
+							</button>
+						</div>
+						<div className="flex flex-col items-stretch gap-8 lg:flex-row lg:items-center">
+							{/* for the desktop view */}{" "}
+							<h1 className="hidden items-center gap-2 font-semibold text-2xl dark:text-slate-100 lg:flex">
 								My Tasks
 								<span className="text-xs bg-green-400 rounded-full py-1 px-2">
 									{tasks && tasks.length}
@@ -66,7 +87,7 @@ const Tasks = () => {
 								{tasks && selectedStatus !== "" ? (
 									<button
 										onClick={() => handleStatusFilter("all")}
-										className="flex items-center gap-2 rounded-md py-1 px-2 bg-gray-300 duration-500 cursor-pointer hover:bg-gray-500"
+										className="flex items-center gap-2 rounded-md py-1 px-2 bg-gray-300 duration-500 cursor-pointer dark:bg-gray-400 hover:bg-gray-800"
 									>
 										<p>All</p>
 									</button>
@@ -104,7 +125,7 @@ const Tasks = () => {
 						<span>
 							<button
 								onClick={() => setOpen(true)}
-								className="flex gap-2 items-center text-sm font-inter font-semibold cursor-pointer duration-700 hover:gap-4"
+								className="hidden gap-2 items-center text-sm font-inter font-semibold cursor-pointer duration-700 hover:gap-4 lg:flex"
 							>
 								Add task{" "}
 								<span className="bg-green-400 rounded-full p-2">
@@ -119,7 +140,7 @@ const Tasks = () => {
 					mode="single"
 					selected={date}
 					captionLayout="dropdown"
-					className="col-span-1 glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+					className="hidden col-span-1 glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] text-card-foreground flex-col gap-6 rounded-xl border py-6 shadow-sm lg:flex"
 					onSelect={(date) => {
 						handleDate(date);
 					}}
