@@ -31,7 +31,7 @@ const CreateTaskForm = ({ setOpen }: Props) => {
 	// state to store the status value
 	const [selectedStatus, setSelectedStatus] = useState<String>("");
 	// gt the state on the task store from the redux store
-	const { tasks, isLoading } = useSelector((state: any) => state.tasks);
+	const { isLoading } = useSelector((state: any) => state.tasks);
 	const form = useForm<z.infer<typeof createTaskSchema>>({
 		resolver: zodResolver(createTaskSchema),
 		defaultValues: {

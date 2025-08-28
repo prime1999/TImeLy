@@ -30,9 +30,7 @@ const StudentForm = () => {
 	const navigate = useNavigate();
 
 	const [pathId, setPathId] = useState<string>("");
-	const [faculties, setFaculties] = useState<any>(facultyNames);
 	const [departments, setdepartments] = useState<any>(null);
-	const [Level, setLevel] = useState<{}[]>(levels);
 
 	const { isLoading, student } = useSelector((state: any) => state.student);
 
@@ -151,7 +149,7 @@ const StudentForm = () => {
 					fieldType={FormFieldType.select}
 					control={form.control}
 					name="faculty"
-					array={faculties}
+					array={facultyNames}
 					label="Faculty"
 					handleSelect={handleSelect}
 					placeholder="faculty"
@@ -172,7 +170,7 @@ const StudentForm = () => {
 							name="level"
 							label="Level"
 							placeholder="level"
-							array={Level}
+							array={levels}
 						/>
 					</div>
 					<div>

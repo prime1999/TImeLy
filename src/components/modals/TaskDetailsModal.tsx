@@ -44,7 +44,7 @@ const TaskDetailsModal = ({ open, setOpen, task }: Props) => {
 	return (
 		<>
 			<Dialog open={open}>
-				<DialogContent className="sm:max-w-[550px] flex flex-col">
+				<DialogContent className="w-[700px] flex flex-col">
 					<DialogHeader>
 						<DialogTitle>Task details</DialogTitle>
 						<hr />

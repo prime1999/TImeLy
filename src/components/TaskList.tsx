@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AppDispatch } from "@/lib/store";
 import { useSelector, useDispatch } from "react-redux";
-import { MdAdsClick, MdEditDocument } from "react-icons/md";
+import { MdAdsClick } from "react-icons/md";
 import { FaRegClock } from "react-icons/fa";
 import { getTasks } from "@/lib/slice/TasksSlice";
 import { TaskCountdown } from "@/lib/utils/helperFunctions/TimeFormater";
@@ -12,14 +12,11 @@ const TaskList = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	// state to handle the task selected
 	const [selectedTask, setSelectedTask] = useState<any>(null);
-	// state to handle the create task modal
-	const [open, setOpen] = useState<boolean>(false);
+
 	// state to handle the show full task details modal
 	const [openModal, setOpenModal] = useState<boolean>(false);
 
-	const { tasks, filteredTasks, isLoading, isSuccess } = useSelector(
-		(state: any) => state.tasks
-	);
+	const { tasks, isLoading } = useSelector((state: any) => state.tasks);
 
 	useEffect(() => {
 		// dispatch the fuction to get the users tasks
@@ -79,10 +76,6 @@ const TaskList = () => {
 								<FaRegClock />
 								<p className="font-semibold">{TaskCountdown(task.startDate)}</p>
 							</span>
-							{/* <button className="flex justify-center items-center text-sm gap-4 cursor-pointer duration-500 hover:gap-6">
-								<p className="font-semibold">Attach a note</p>{" "}
-								<MdEditDocument className="text-lg text-green-400" />
-							</button> */}
 						</div>
 					))}
 				{!tasks && <h1>No Task to show</h1>}

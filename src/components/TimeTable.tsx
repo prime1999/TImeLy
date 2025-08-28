@@ -1,21 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
-import { MdAdsClick, MdRemoveCircle, MdModeEdit } from "react-icons/md";
-import { BiDotsVerticalRounded } from "react-icons/bi";
+import { MdAdsClick } from "react-icons/md";
 import { FaBookOpen } from "react-icons/fa";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
 import { AppDispatch } from "@/lib/store";
-import { findUnRegisteredCourses, getCourses } from "@/lib/slice/CourseSlice";
+import { findUnRegisteredCourses } from "@/lib/slice/CourseSlice";
 import CourseDetail from "./modals/CourseDetail";
-import UpdateCourseModal from "./modals/UpdateCourseModal";
 import TableLoader from "@/lib/utils/tableLoader";
-import DeleteModal from "./modals/DeleteModal";
 import {
 	getDuration,
 	getToday,
@@ -26,16 +18,14 @@ import ShowUnregisteredCourses from "./modals/ShowUnregisteredCourses";
 const TimeTable = () => {
 	// state for the selected course
 	const [selectedCourse, setSelectedCourse] = useState<any>(null);
-	// state for the modals
-	const [openRemoveModal, setOpenRemoveModal] = useState<boolean>(false);
-	const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
+
 	const [showCourseDetails, setShowCourseDetails] = useState<boolean>(false);
 	// modal state to show unreistered related courses
 	const [open, setOpen] = useState<boolean>(false);
 	// init the dispatch
 	const dispatch = useDispatch<AppDispatch>();
 	// state for the course state selection from the store
-	const { isLoading, reload, data, unRegisteredCourses } = useSelector(
+	const { isLoading, data, unRegisteredCourses } = useSelector(
 		(state: any) => state.course
 	);
 

@@ -39,7 +39,7 @@ const initialState: initialType = {
 	nextCourse: null,
 };
 
-// function to just add a course without registering for the course
+// function to just add a course without registering for the course (for notification approval)
 export const addStudentCourse = createAsyncThunk(
 	"course/addCourse",
 	async (data) => {
@@ -76,6 +76,7 @@ export const registerCourse = createAsyncThunk(
 	"course/registerCourse",
 	async (dataSent: any) => {
 		try {
+			console.log(dataSent);
 			// call the function to carry out the appwrite function
 			const response: any = await addCourse(dataSent);
 			if (response && response.exist === true) {

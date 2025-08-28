@@ -23,7 +23,7 @@ const CalendarWithNotes = () => {
 	// state to handle the current choose date value
 	const [date, setDate] = useState<Date | undefined>(new Date(2025, 5, 12));
 	// get the tasks gotten from the DB with other states from the redux store
-	const { filteredTasks, tasks, isLoading, isSuccess } = useSelector(
+	const { filteredTasks, tasks, isLoading } = useSelector(
 		(state: any) => state.tasks
 	);
 

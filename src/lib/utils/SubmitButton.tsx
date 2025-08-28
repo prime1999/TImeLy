@@ -1,9 +1,8 @@
-import React, { ReactNode } from "react";
 import Loader from "./Loader";
 
 type Props = {
 	className: string;
-	children: ReactNode;
+	children: React.ReactNode;
 	isLoading: boolean;
 	disableButton?: boolean;
 };

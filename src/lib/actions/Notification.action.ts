@@ -1,17 +1,14 @@
-import { Account, Databases, ID, Query } from "appwrite";
+import { Databases, ID, Query } from "appwrite";
 import client from "../appwrite.config";
 import {
 	DBID,
 	STUDENTID,
-	COURSES_ID,
-	USER_COURSE_ID,
-	COURSE_UPDATE_REQUEST_ID,
 	NOTIFICATION_ID,
 	USER_REALTION_ID,
 } from "@/contants/env.file";
 import { checkCurrentSession, getCurrentStudent } from "./Student.actions";
 
-const account = new Account(client);
+// const account = new Account(client);
 
 const databases = new Databases(client);
 
@@ -36,7 +33,7 @@ export const getUsersToBeNotified = async (curentUserId: string) => {
 		const userRes = await getCurrentStudent(curentUserId);
 
 		// get the list of users to get the notification
-		const users = await databases.listDocuments(DBID, STUDENTID, [
+		await databases.listDocuments(DBID, STUDENTID, [
 			Query.equal("faculty", userRes?.faculty),
 		]);
 	} catch (error) {

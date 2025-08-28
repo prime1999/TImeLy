@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import {
@@ -33,7 +33,6 @@ const select = [
 
 const Courses = () => {
 	const dispatch = useDispatch<AppDispatch>();
-	const [value, setValue] = useState<any>("");
 	// state for the course state selection from the store
 	const { isLoading, reload, data, filteredCourses } = useSelector(
 		(state: any) => state.course
@@ -105,7 +104,7 @@ const Courses = () => {
 								name="select"
 								array={select}
 								label=""
-								handleSelect={(value: string) => setValue(value)}
+								//handleSelect={(value: string) => setValue(value)}
 								placeholder="Filter Key"
 								className="w-[150px] lg:w-[250px]"
 							/>

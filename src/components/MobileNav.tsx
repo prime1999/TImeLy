@@ -6,13 +6,14 @@ import { PiNotepadFill } from "react-icons/pi";
 
 import ProfileModal from "./modals/ProfileModal";
 
+const linkState = [
+	{ name: "dashboard", icon: <MdHome />, isActive: false },
+	{ name: "Exam", icon: <PiNotepadFill />, isActive: false },
+	{ name: "Courses", icon: <FaBookOpen />, isActive: false },
+];
+
 const MobileNav = () => {
 	const [openProfileModal, setOpenProfileModal] = useState<boolean>(false);
-	const [linkState, setLinkState] = useState<any>([
-		{ name: "dashboard", icon: <MdHome />, isActive: false },
-		{ name: "Exam", icon: <PiNotepadFill />, isActive: false },
-		{ name: "Courses", icon: <FaBookOpen />, isActive: false },
-	]);
 
 	const location = useLocation();
 	// get the pathname from the current url

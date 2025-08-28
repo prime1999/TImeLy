@@ -18,6 +18,7 @@ const databases = new Databases(client);
 export const addCourse = async (courseData: any) => {
 	try {
 		let student = null;
+		console.log(courseData);
 		// Get the current user
 		const user: any = await checkCurrentSession();
 		// If somehow the user is not authenticated, then
@@ -34,6 +35,7 @@ export const addCourse = async (courseData: any) => {
 			),
 			Query.equal("CourseCode", courseData.courseCode || courseData.CourseCode),
 		]);
+		console.log(checkCourse);
 		// if it does
 		if (checkCourse.total > 0) {
 			// check if the user already registered for the course
@@ -76,11 +78,13 @@ export const addCourse = async (courseData: any) => {
 				exist: false,
 			};
 		}
-		// but if the user hasn't registered for the course and the course doesn't exist in the DB
-		// check if the user is an admin
-		// if yes, then create the course directly and register the user
-		if (user.admin === true) {
-			// create the course and the register the user
+		console.log({ user, student });
+		// but if the student hasn't registered for the course and the course doesn't exist in the DB
+		// check if the student is an admin
+		// if yes, then create the course directly and register the student
+		if (student?.admin === true) {
+			console.log(student.admin);
+			// create the course and the register the student
 			const courseRes = await databases.createDocument(
 				DBID,
 				COURSES_ID,
@@ -177,7 +181,7 @@ export const addCourse = async (courseData: any) => {
 	}
 };
 
-//  function to just add a course
+//  function to just add a course (for notification approval)
 export const addCourseToAppwrite = async (sentData: any) => {
 	try {
 		const { data } = sentData.payload;
@@ -256,13 +260,6 @@ export const compareCourseInfo = async (courseId: string, updateData: any) => {
 
 			if (updateData.unit && updateData.unit.toString() !== existingCourse.unit)
 				updatePayload.unit = updateData.unit;
-
-			// if (
-			// 	updateData.venue &&
-			// 	normalizeString(updateData.venue) !==
-			// 		normalizeString(existingCourse.venue)
-			// )
-			//updatePayload.venue = updateData.venue;
 
 			if (
 				updateData.lecturer &&

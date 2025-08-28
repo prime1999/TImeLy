@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "@/components/ui/sonner";
@@ -7,7 +5,7 @@ import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { MdNumbers, MdTextFields, MdOutlineLocationOn } from "react-icons/md";
+import { MdNumbers, MdTextFields } from "react-icons/md";
 import { Form } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import { courseSchema } from "@/lib/Validation";

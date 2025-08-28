@@ -1,5 +1,3 @@
-import { AppDispatch } from "@/lib/store";
-import { useDispatch } from "react-redux";
 import {
 	Dialog,
 	DialogClose,
@@ -7,7 +5,6 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "@/components/ui/dialog";
-import { removeCourse } from "@/lib/slice/CourseSlice";
 
 type Props = {
 	open: boolean;

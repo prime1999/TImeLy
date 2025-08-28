@@ -1,15 +1,6 @@
 import { Databases, ID, Query } from "appwrite";
 import client from "../appwrite.config";
-import {
-	DBID,
-	COURSES_ID,
-	USER_COURSE_ID,
-	COURSE_UPDATE_REQUEST_ID,
-	NOTIFICATION_ID,
-	USER_REALTION_ID,
-	STUDENTID,
-	TASKID,
-} from "@/contants/env.file";
+import { DBID, USER_REALTION_ID, TASKID } from "@/contants/env.file";
 import { checkCurrentSession } from "./Student.actions";
 import { normalizeString } from "../utils/helperFunctions/helper";
 
@@ -134,14 +125,9 @@ export const addTaskToDB = async (data: any, relationId: any) => {
 		const updatedTasks = [...existingTasks, task.$id];
 
 		// Update user relation document
-		const updatedRelation = await databases.updateDocument(
-			DBID,
-			USER_REALTION_ID,
-			relationId,
-			{
-				tasks: updatedTasks,
-			}
-		);
+		await databases.updateDocument(DBID, USER_REALTION_ID, relationId, {
+			tasks: updatedTasks,
+		});
 
 		// if the relation was update, then
 		return { msg: "Task added", data: task };

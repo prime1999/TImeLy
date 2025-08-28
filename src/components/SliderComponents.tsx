@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,18 +11,18 @@ import TableLoader from "@/lib/utils/tableLoader";
 import { forNextCourse } from "@/lib/slice/CourseSlice";
 import { formatDateInfo } from "@/lib/utils/helperFunctions/helper";
 import { getDuration } from "@/lib/utils/helperFunctions/TimeFormater";
-
-type Props = {
-	setOpenModal: React.Dispatch<any>;
-	setSelectedTask: React.Dispatch<React.SetStateAction<boolean>>;
-};
+import TaskDetailsModal from "./modals/TaskDetailsModal";
 
 type props = {
 	data: any;
 };
 
 // schedule slide
-export const Tasks = ({ setSelectedTask, setOpenModal }: Props) => {
+export const Tasks = () => {
+	// state to handle the task selected
+	const [selectedTask, setSelectedTask] = useState<any>(null);
+	// state to handle the show full task details modal
+	const [openModal, setOpenModal] = useState<boolean>(false);
 	// get the tasks gotten from the DB with other states from the redux store
 	const { filteredTasks, isLoading } = useSelector((state: any) => state.tasks);
 
@@ -71,6 +71,11 @@ export const Tasks = ({ setSelectedTask, setOpenModal }: Props) => {
 			<div className="h-full flex items-center justify-center">
 				{isLoading && <TableLoader />}
 			</div>
+			<TaskDetailsModal
+				task={selectedTask}
+				open={openModal}
+				setOpen={setOpenModal}
+			/>
 		</div>
 	);
 };

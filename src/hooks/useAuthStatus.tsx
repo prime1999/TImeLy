@@ -1,6 +1,5 @@
 import { checkCurrentSession } from "@/lib/actions/Student.actions";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 
 export const useUserAuthStatus = () => {
 	const [checkingStatus, setCheckingStatus] = useState<boolean>(true);

@@ -6,23 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { getTasks } from "@/lib/slice/TasksSlice";
 
+const array = ["courses", "countdown", "notes", "schedule"];
+
 const HomeSlider = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	// get the reload function from the store in order to get the lastes courses data
 	const { data } = useSelector((state: any) => state.course);
-	// state to handle the task selected
-	const [selectedTask, setSelectedTask] = useState<any>(null);
-	// state to handle the show full task details modal
-	const [openModal, setOpenModal] = useState<boolean>(false);
+
 	const imageSpanRef = useRef<(HTMLSpanElement | null)[]>([]);
 	const imageDivRef = useRef<(HTMLDivElement | null)[]>([]);
 	const animRef = useRef<any>(null);
-	const [array, setArray] = useState<string[]>([
-		"courses",
-		"countdown",
-		"notes",
-		"schedule",
-	]);
+
 	// state for the slider playing progress (to keep track of the whole slider animation)
 	const [sliderAnimation, setSliderAnimation] = useState({
 		isPlaying: false,
@@ -223,10 +217,7 @@ const HomeSlider = () => {
 						className={`w-[70vw] h-[20vh] mx-2 shrink-0 rounded-xl overflow-hidden flex items-center relative`}
 					>
 						{li === "courses" ? (
-							<Tasks
-								setSelectedTask={setSelectedTask}
-								setOpenModal={setOpenModal}
-							/>
+							<Tasks />
 						) : li === "countdown" ? (
 							<CountDown />
 						) : li === "notes" ? (

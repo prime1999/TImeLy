@@ -37,7 +37,6 @@ const AddCourse = () => {
 	const [startDate, setStartDate] = useState<any>(new Date());
 	const [endDate, setEndDate] = useState<any>(new Date());
 	const [day, setDay] = useState<string>("");
-	const [venue, setVenue] = useState("");
 	const [schedule, setSchedule] = useState<any>([]);
 	const form = useForm<z.infer<typeof courseSchema>>({
 		resolver: zodResolver(courseSchema),
@@ -92,15 +91,13 @@ const AddCourse = () => {
 	// function to submit the add course form
 	const onSubmit = async (values: z.infer<any>) => {
 		try {
-			const student = await checkCurrentSession();
 			// put the data to send together
 			const data = {
-				userId: student?.$id,
-				courseCode: values.courseCode,
-				courseTitle: values.courseTitle,
-				unit: values.courseUnit,
+				CourseCode: values.courseCode,
+				CourseTitle: values.courseTitle,
+				unit: values.courseUnit.toString(),
 				lecturer: values.lecturer,
-				schedule,
+				schedule: JSON.stringify(schedule),
 			};
 			// dispatch the function to register course
 			const res: any = await dispatch(registerCourse(data)).unwrap();
@@ -266,7 +263,6 @@ const AddCourse = () => {
 								setStartDate={setStartDate}
 								setEndDate={setEndDate}
 								setDay={setDay}
-								setVenue={setVenue}
 								handleSelect={handleSelect}
 								form={form}
 								array={days}

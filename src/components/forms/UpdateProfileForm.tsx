@@ -9,7 +9,7 @@ import { MdNumbers } from "react-icons/md";
 import { StudenFormSchema } from "@/lib/Validation";
 import { levels } from "@/contants/Schools.info";
 import { departmentsByFaculty, facultyNames } from "@/contants/Faculties.info";
-import { Form, FormControl } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import { useDispatch, useSelector } from "react-redux";
 import SubmitButton from "@/lib/utils/SubmitButton";
@@ -21,9 +21,9 @@ declare type Gender = "Male" | "Female";
 const UpdateProfileForm = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const [disableButton, setDisableButton] = useState<boolean>(false);
-	const [faculties, setFaculties] = useState<any>(facultyNames);
+
 	const [departments, setdepartments] = useState<any>(null);
-	const [Level, setLevel] = useState<{}[]>(levels);
+
 	const { isLoading, data } = useSelector((state: any) => state.student);
 	const form = useForm<z.infer<typeof StudenFormSchema>>({
 		resolver: zodResolver(StudenFormSchema),
@@ -50,7 +50,7 @@ const UpdateProfileForm = () => {
 		try {
 			const profileData: any = {
 				MatricNumber:
-					values.MatricNumber.toString() !== data.MatricNumber.toString()
+					values.MatricNumber?.toString() !== data.MatricNumber.toString()
 						? values.MatricNumber
 						: null,
 				name: values.name !== data.name ? values.name : null,
@@ -137,7 +137,7 @@ const UpdateProfileForm = () => {
 								fieldType={FormFieldType.select}
 								control={form.control}
 								name="faculty"
-								array={faculties}
+								array={facultyNames}
 								label="Faculty"
 								handleSelect={handleSelect}
 								placeholder="faculty"
@@ -164,7 +164,7 @@ const UpdateProfileForm = () => {
 									name="level"
 									label="Level"
 									placeholder="level"
-									array={Level}
+									array={levels}
 									defaultValue={data.level}
 								/>
 							</div>

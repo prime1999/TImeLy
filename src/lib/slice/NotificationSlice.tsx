@@ -26,9 +26,9 @@ const initialState: initialType = {
 // export function to send notification
 export const sendNotification = createAsyncThunk(
 	"notification/sendNotification",
-	async (payload: any, thunkAPI: any) => {
+	async (payload: any) => {
 		try {
-			const notification: any = await sendAppwriteNotification(payload);
+			await sendAppwriteNotification(payload);
 		} catch (error) {
 			console.log(error);
 		}

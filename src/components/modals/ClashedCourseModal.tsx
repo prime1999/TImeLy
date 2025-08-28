@@ -14,9 +14,7 @@ type Props = {
 const ClashedCourseModal = ({ open, setOpen }: Props) => {
 	const dispatch = useDispatch<AppDispatch>();
 	// state for the course state selection from the store
-	const { isLoading, clashedCourses } = useSelector(
-		(state: any) => state.course
-	);
+	const { clashedCourses } = useSelector((state: any) => state.course);
 
 	// function to notify the admin of the changes
 	const notifyAdmin = async () => {

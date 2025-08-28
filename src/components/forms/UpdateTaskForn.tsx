@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { date, z } from "zod";
+import { z } from "zod";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { Form } from "@/components/ui/form";
@@ -12,7 +12,7 @@ import { createTaskSchema } from "@/lib/Validation";
 import { MdTextFields } from "react-icons/md";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import SubmitButton from "@/lib/utils/SubmitButton";
-import { addTask, getTasks, updateTask } from "@/lib/slice/TasksSlice";
+import { getTasks, updateTask } from "@/lib/slice/TasksSlice";
 import TaskBody from "../TaskBody";
 
 const status = [
@@ -33,7 +33,7 @@ const UpdateTaskForm = ({ setOpen, task }: Props) => {
 	// state to store the status value
 	const [selectedStatus, setSelectedStatus] = useState<String>(task.status);
 	// state to get the task redux state from the rdux store
-	const { isLoading, isSuccess } = useSelector((state: any) => state.tasks);
+	const { isLoading } = useSelector((state: any) => state.tasks);
 	const form = useForm<z.infer<typeof createTaskSchema>>({
 		resolver: zodResolver(createTaskSchema),
 		defaultValues: {
