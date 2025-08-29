@@ -6,6 +6,7 @@ import {
 	getFacultyTimeTable,
 	getStudentProfileFromDB,
 	updateProfile,
+	BugAndUpdate,
 } from "../actions/Student.actions";
 
 type initialType = {
@@ -117,6 +118,20 @@ export const updateStudentProfile = createAsyncThunk(
 			if (res && res.$id) {
 				return res;
 			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+// function to call the appwrite function to report a bug or sugest an update
+export const reportBugAndUpdate = createAsyncThunk(
+	"student/update",
+	async (data) => {
+		try {
+			// call the function
+			const res = await BugAndUpdate(data);
+			return res;
 		} catch (error) {
 			console.log(error);
 		}

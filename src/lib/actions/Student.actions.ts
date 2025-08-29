@@ -1,6 +1,11 @@
 import { Account, Databases, ID, Query } from "appwrite";
 import client from "../appwrite.config";
-import { DBID, STUDENTID, TIME_TABLE_ID } from "@/contants/env.file";
+import {
+	DBID,
+	STUDENTID,
+	TIME_TABLE_ID,
+	BUG_UPDATE_ID,
+} from "@/contants/env.file";
 
 const account = new Account(client);
 
@@ -234,6 +239,35 @@ export const logUserOutFromDB = async () => {
 		if (res && res.$id) {
 			await account.deleteSession("current");
 		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// Appwrite function to report bugs and sugest updates
+export const BugAndUpdate = async (data: any) => {
+	try {
+		// get the current session
+		const res = await checkCurrentSession();
+		if (!res || !res.$id) {
+			return { msg: "User not Authorized" };
+		}
+		// get the student data
+		const student = await databases.getDocument(DBID, STUDENTID, res.$id);
+		const dataToSend = {
+			title: data.title,
+			type: data.type,
+			Description: data.message,
+			email: student.Email,
+		};
+		// create the update or report the bug
+		const resData = await databases.createDocument(
+			DBID,
+			BUG_UPDATE_ID,
+			ID.unique(),
+			dataToSend
+		);
+		return { msg: `${data.type} report created`, data: resData };
 	} catch (error) {
 		console.log(error);
 	}
