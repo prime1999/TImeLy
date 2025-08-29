@@ -1,8 +1,7 @@
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "../ui/textarea";
 import { useState } from "react";
-import SubmitButton from "@/lib/utils/SubmitButton";
-// import Alert from "@/lib/utils/Alert";
+import Alert from "@/lib/utils/Alert";
 
 type Props = {
 	open: boolean;
@@ -78,7 +77,7 @@ const ReportBugModal = ({ open, setOpen }: Props) => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
-			{/* <Alert /> */}
+			<Alert />
 		</main>
 	);
 };
