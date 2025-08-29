@@ -1,54 +1,48 @@
-# React + TypeScript + Vite
+# ⚡ Node.js Starter Function
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple starter function. Edit `src/main.js` to get started and create something awesome! 🚀
 
-Currently, two official plugins are available:
+## 🧰 Usage
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### GET /ping
 
-## Expanding the ESLint configuration
+- Returns a "Pong" message.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Response**
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+Sample `200` Response:
+
+```text
+Pong
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### GET, POST, PUT, PATCH, DELETE /
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Returns a "Learn More" JSON response.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+**Response**
+
+Sample `200` Response:
+
+```json
+{
+  "motto": "Build like a team of hundreds_",
+  "learn": "https://appwrite.io/docs",
+  "connect": "https://appwrite.io/discord",
+  "getInspired": "https://builtwith.appwrite.io"
+}
 ```
+
+## ⚙️ Configuration
+
+| Setting           | Value         |
+| ----------------- | ------------- |
+| Runtime           | Node (18.0)   |
+| Entrypoint        | `src/main.js` |
+| Build Commands    | `npm install` |
+| Permissions       | `any`         |
+| Timeout (Seconds) | 15            |
+
+## 🔒 Environment Variables
+
+No environment variables required.
