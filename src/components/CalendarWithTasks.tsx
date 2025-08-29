@@ -116,7 +116,7 @@ const CalendarWithNotes = () => {
 							{tasks && tasks.length > 2 && (
 								<Link
 									to="/tasks"
-									className="absolute bottom-3 right-5 font-inter font-semibold text-sm cursor-pointer text-slate-300 duration-700 hover:text-slate-400"
+									className="flex justify-end mt-2 font-inter font-semibold text-sm cursor-pointer text-slate-300 duration-700 hover:text-slate-400"
 								>
 									See All
 								</Link>
