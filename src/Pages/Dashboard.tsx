@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { CountDown, NextCourse } from "@/components/SliderComponents";
@@ -9,9 +9,12 @@ import CalendarWithNotes from "@/components/CalendarWithTasks";
 import ClashedCourses from "@/components/ClashedCourses";
 import { getCourses } from "@/lib/slice/CourseSlice";
 import TableLoader from "@/lib/utils/tableLoader";
+import ReportBugModal from "@/components/modals/reportBugModal";
 
 const Dashboard = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	// state to handle the report bug modal
+	const [open, setOpen] = useState<boolean>(false);
 
 	// get the reload function from the store in order to get the lastes courses data
 	const { reload, data, isLoading } = useSelector((state: any) => state.course);
@@ -88,6 +91,14 @@ const Dashboard = () => {
 					<CalendarWithNotes />
 				</div>
 			</div>
+
+			<button
+				onClick={() => setOpen(true)}
+				className="fixed bottom-10 left-10 font-semibold glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] rounded-xl py-2 px-4 font-inter text-xs text-green-400 border-1 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] cursor-pointer duration-500 hover:text-green-600"
+			>
+				suggest updates/report bug
+			</button>
+			{open && <ReportBugModal open={open} setOpen={setOpen} />}
 		</main>
 	);
 };
