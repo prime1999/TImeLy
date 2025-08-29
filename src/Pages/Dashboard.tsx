@@ -94,7 +94,7 @@ const Dashboard = () => {
 
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-10 left-10 font-semibold glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] rounded-xl py-2 px-4 font-inter text-xs text-green-400 border-1 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] cursor-pointer duration-500 hover:text-green-600"
+        className="fixed top-20 left-10 font-semibold glassmorphism bg-[rgb(255,255,255,0.05)] border-[rgb(234,234,234)] shadow-[0_4px_30px_rgba(80,80,80,0.1)] rounded-xl py-2 px-4 font-inter text-xs text-green-400 border-1 dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgb(68,68,68)] cursor-pointer duration-500 hover:text-green-600"
       >
         suggest updates/report bug
       </button>
